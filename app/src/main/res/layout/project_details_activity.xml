@@ -46,7 +46,7 @@
             android:background="@drawable/rounded_button"
             android:insetLeft="@dimen/padding_30"
             android:insetRight="@dimen/padding_30"
-            android:text="@string/start"
+            android:text="Start (Bio)"
             android:textAppearance="@style/basicButtonStyle" />
 
         <com.google.android.material.button.MaterialButton

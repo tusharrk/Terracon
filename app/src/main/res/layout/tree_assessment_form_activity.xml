@@ -17,173 +17,241 @@
         android:layout_height="match_parent">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="@dimen/basic_page_padding">
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/date_edit_text"
-            style="@style/textInputEditTextStyle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/date"
-            android:focusable="false"
-            app:startIconDrawable="@drawable/baseline_calendar_month_24">
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/basic_page_padding">
 
-            <com.google.android.material.textfield.TextInputEditText
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/date_edit_text"
+                style="@style/textInputEditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
+                android:layout_marginTop="@dimen/padding_10"
                 android:focusable="false"
-                android:text=""
-                />
+                android:hint="@string/date"
+                app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/time_edit_text"
-            style="@style/textInputEditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/time"
-            android:focusable="false"
-            app:startIconDrawable="@drawable/baseline_access_time_24">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:text="" />
 
-            <com.google.android.material.textfield.TextInputEditText
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/time_edit_text"
+                style="@style/textInputEditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
+                android:layout_marginTop="@dimen/padding_10"
                 android:focusable="false"
-                android:text=""
-                />
+                android:hint="@string/time"
+                app:startIconDrawable="@drawable/baseline_access_time_24">
 
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/gps_edit_text"
-            style="@style/textInputEditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/gps_location"
-            android:focusable="false"
-            app:endIconMode="custom"
-            app:startIconDrawable="@drawable/baseline_location_on_24"
-            app:endIconDrawable="@drawable/baseline_refresh_24">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:text="" />
 
-            <com.google.android.material.textfield.TextInputEditText
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/gps_edit_text"
+                style="@style/textInputEditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
+                android:layout_marginTop="@dimen/padding_10"
                 android:focusable="false"
-                android:text=""
-                />
+                android:hint="@string/gps_location"
+                app:endIconDrawable="@drawable/baseline_refresh_24"
+                app:endIconMode="custom"
+                app:startIconDrawable="@drawable/baseline_location_on_24">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:text="" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/point_number_edit_text"
-            style="@style/textInputEditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/point_number"
-            app:startIconDrawable="@drawable/baseline_123_24">
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/point_number_edit_text"
+                style="@style/textInputEditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                />
+                android:layout_marginTop="@dimen/padding_10"
+                android:hint="@string/point_number"
+                app:startIconDrawable="@drawable/baseline_123_24">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/landmark_edit_text"
-            style="@style/textInputEditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/landmark"
-            app:startIconDrawable="@drawable/baseline_landscape_24">
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/landmark_edit_text"
+                style="@style/textInputEditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                />
+                android:layout_marginTop="@dimen/padding_10"
+                android:hint="@string/landmark"
+                app:startIconDrawable="@drawable/baseline_landscape_24">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/plot_type_edit_text"
-            style="@style/textInputEditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/plot_type"
-            app:startIconDrawable="@drawable/baseline_category_24">
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/plot_type_edit_text"
+                style="@style/textInputEditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                />
+                android:layout_marginTop="@dimen/padding_10"
+                android:hint="@string/plot_type"
+                app:startIconDrawable="@drawable/baseline_category_24">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/plot_dimension_edit_text"
-            style="@style/textInputEditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/plot_dimension"
-            app:startIconDrawable="@drawable/baseline_design_services_24">
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                />
+                android:layout_marginVertical="@dimen/padding_10"
+                android:layout_marginTop="@dimen/padding_10"
+                android:background="@drawable/border"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_10">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="@dimen/basic_item_padding"
+                    android:text="@string/plot_dimension"
+                    android:textAppearance="@style/secondaryTextStyle" />
 
+                <RadioGroup
+                    android:id="@+id/radioBtngrp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/circularRadioBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/circular" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/habitat_edit_text"
-            style="@style/textInputEditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/habitat"
-            app:startIconDrawable="@drawable/baseline_forest_24">
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/rectangularRadioBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/rectangular" />
+                </RadioGroup>
 
-            <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/radius_edit_text"
+                    style="@style/textInputEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:hint="@string/radius">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/length_edit_text"
+                    style="@style/textInputEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:hint="@string/length"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/width_edit_text"
+                    style="@style/textInputEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:hint="@string/width"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/habitat_edit_text"
+                style="@style/textInputDropDownStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                />
+                android:layout_marginTop="@dimen/padding_10"
+                android:hint="@string/habitat"
+                app:startIconDrawable="@drawable/baseline_forest_24">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <AutoCompleteTextView
+                    android:id="@+id/habitatAutoCompleteTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/saveBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/padding_40"
-            android:background="@drawable/rounded_button"
-            android:insetLeft="@dimen/padding_30"
-            android:insetRight="@dimen/padding_30"
-            android:text="@string/save_next"
-            android:textAppearance="@style/basicButtonStyle" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/saveBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/padding_40"
+                android:background="@drawable/rounded_button"
+                android:insetLeft="@dimen/padding_30"
+                android:insetRight="@dimen/padding_30"
+                android:text="@string/save_next"
+                android:textAppearance="@style/basicButtonStyle" />
 
 
-    </LinearLayout>
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>

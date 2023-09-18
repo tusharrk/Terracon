@@ -56,6 +56,11 @@
     <string name="comments">Comments</string>
     <string name="species_name">Species Name</string>
     <string name="view_failed_entries">View Failed Entries</string>
+    <string name="circular">Circular</string>
+    <string name="rectangular">Rectangular</string>
+    <string name="radius">Radius (Meter)</string>
+    <string name="length">Length (Meter)</string>
+    <string name="width">Width (Meter)</string>
 
     <string-array name="season_names">
         <item>Spring</item>
@@ -76,5 +81,18 @@
         <item>Foggy</item>
         <item>Thunder &amp; Lightning</item>
         <item>Windy</item>
+    </string-array>
+
+    <string-array name="habitat_names">
+        <item>Woodland</item>
+        <item>Forest</item>
+        <item>Scrubland/ Grassland</item>
+        <item>Cropland</item>
+        <item>Barren land</item>
+        <item>Open Vegetation</item>
+        <item>Built Up</item>
+        <item>Wetland</item>
+        <item>Coast</item>
+<!--        <item>Other</item>-->
     </string-array>
 </resources>

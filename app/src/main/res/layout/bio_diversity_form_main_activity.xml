@@ -118,22 +118,24 @@
                 android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/habitat_edit_text"
-            style="@style/textInputEditTextStyle"
+            style="@style/textInputDropDownStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_10"
             android:hint="@string/habitat"
             app:startIconDrawable="@drawable/baseline_forest_24">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <AutoCompleteTextView
+                android:id="@+id/habitatAutoCompleteTextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                />
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/saveBtn"

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.terracon.survey.R
 import com.terracon.survey.databinding.HomeActivityBinding
+import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.ErrorUtils
 import com.terracon.survey.views.login.LoginActivity
 import com.terracon.survey.views.project_details.ProjectDetailsActivity
@@ -112,9 +113,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == R.id.logoutBtn) {
-            Toast.makeText(this, "Logout", Toast.LENGTH_LONG).show()
-            val intent = Intent(this, LoginActivity::class.java)
-            this.startActivity(intent)
+            AppUtils.logoutUser(this)
             return true
         }
         return super.onOptionsItemSelected(item)

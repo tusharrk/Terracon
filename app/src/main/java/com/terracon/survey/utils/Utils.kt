@@ -1,5 +1,7 @@
 package com.terracon.survey.utils
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.style.ForegroundColorSpan
@@ -7,12 +9,14 @@ import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.text.buildSpannedString
 import com.bumptech.glide.Glide
 import com.google.gson.GsonBuilder
 import com.terracon.survey.R
 import com.terracon.survey.model.User
+import com.terracon.survey.views.login.LoginActivity
 
 object AppUtils {
     private var gson = GsonBuilder().setLenient().serializeNulls().create()
@@ -75,5 +79,12 @@ object AppUtils {
             else -> Glide.with(imageView.context).load(url).error(R.drawable.ic_baseline_error_24)
                 .into(imageView)
         }
+    }
+
+    fun logoutUser(activity: Activity){
+        Toast.makeText(activity, "Logout", Toast.LENGTH_LONG).show()
+        val intent = Intent(activity, LoginActivity::class.java)
+        activity.startActivity(intent)
+        activity.finishAffinity()
     }
 }

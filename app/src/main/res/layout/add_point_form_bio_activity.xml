@@ -40,31 +40,107 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/plot_area_edit_text"
-                style="@style/textInputEditTextStyle"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/padding_10"
                 android:layout_marginTop="@dimen/padding_10"
-                android:hint="@string/plot_dimension">
+                android:background="@drawable/border"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_10">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="@dimen/basic_item_padding"
+                    android:text="@string/plot_dimension"
+                    android:textAppearance="@style/secondaryTextStyle" />
+
+                <RadioGroup
+                    android:id="@+id/radioBtngrp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"
-                    android:text="" />
+                    android:orientation="horizontal">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/circularRadioBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/circular" />
 
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/rectangularRadioBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/rectangular" />
+                </RadioGroup>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/radius_edit_text"
+                    style="@style/textInputEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:hint="@string/radius">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/length_edit_text"
+                    style="@style/textInputEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:hint="@string/length"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/width_edit_text"
+                    style="@style/textInputEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:hint="@string/width"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/border"
                 android:layout_marginVertical="@dimen/padding_10"
+                android:background="@drawable/border"
+                android:orientation="vertical"
                 android:padding="@dimen/padding_10">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -75,45 +151,45 @@
                     android:textAppearance="@style/secondaryTextStyle" />
 
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/projectsRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:overScrollMode="never"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/list_item_point_species_bio" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/projectsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/list_item_point_species_bio" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/addBlankItemBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/basic_item_padding_big"
-                android:layout_marginHorizontal="@dimen/padding_10"
-                android:background="@drawable/rounded_button"
-                android:insetLeft="@dimen/padding_30"
-                android:insetRight="@dimen/padding_30"
-                app:icon="@drawable/baseline_add_24"
-                android:text="@string/add_new_item"
-                android:textAppearance="@style/basicButtonStyle" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addBlankItemBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/padding_10"
+                    android:layout_marginTop="@dimen/basic_item_padding_big"
+                    android:background="@drawable/rounded_button"
+                    android:insetLeft="@dimen/padding_30"
+                    android:insetRight="@dimen/padding_30"
+                    android:text="@string/add_new_item"
+                    android:textAppearance="@style/basicButtonStyle"
+                    app:icon="@drawable/baseline_add_24" />
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/uploadImage"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:insetLeft="@dimen/padding_10"
+                android:insetTop="@dimen/padding_10"
                 android:insetRight="@dimen/padding_10"
                 android:insetBottom="@dimen/padding_10"
-                android:insetTop="@dimen/padding_10"
                 android:paddingVertical="@dimen/padding_10"
                 android:text="@string/capture_upload_image"
-                app:icon="@drawable/baseline_file_upload_24"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:textAppearance="@style/basicButtonStyle"
                 app:cornerRadius="5dp"
+                app:icon="@drawable/baseline_file_upload_24"
                 app:strokeColor="@color/textColor"
-                app:strokeWidth="1dp"
-                android:textAppearance="@style/basicButtonStyle" />
+                app:strokeWidth="1dp" />
 
 
             <com.google.android.material.textfield.TextInputLayout

@@ -49,17 +49,17 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/list_item_project" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/failedEntriesBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/padding_40"
-                    android:layout_gravity="bottom"
-                    android:background="@drawable/rounded_button"
-                    android:insetLeft="@dimen/padding_30"
-                    android:insetRight="@dimen/padding_30"
-                    android:text="@string/view_failed_entries"
-                    android:textAppearance="@style/basicButtonStyle" />
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    android:id="@+id/failedEntriesBtn"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_margin="@dimen/padding_40"-->
+<!--                    android:layout_gravity="bottom"-->
+<!--                    android:background="@drawable/rounded_button"-->
+<!--                    android:insetLeft="@dimen/padding_30"-->
+<!--                    android:insetRight="@dimen/padding_30"-->
+<!--                    android:text="@string/view_failed_entries"-->
+<!--                    android:textAppearance="@style/basicButtonStyle" />-->
 
             </LinearLayout>
 

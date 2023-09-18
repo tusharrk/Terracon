@@ -10,6 +10,8 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +25,7 @@ import com.google.android.material.timepicker.TimeFormat
 import com.terracon.survey.R
 import com.terracon.survey.databinding.BioDiversityFormMainActivityBinding
 import com.terracon.survey.model.Project
+import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.DateUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -162,6 +165,9 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         binding.seasonNameAutoCompleteTextView.setAdapter(ArrayAdapter(this, R.layout.dropdown_item, resources.getStringArray(R.array.season_names)))
 
         binding.weatherConditionNameAutoCompleteTextView.setAdapter(ArrayAdapter(this, R.layout.dropdown_item, resources.getStringArray(R.array.weather_condition_names)))
+
+        binding.habitatAutoCompleteTextView.setAdapter(ArrayAdapter(this, R.layout.dropdown_item, resources.getStringArray(R.array.habitat_names)))
+
     }
 
 
@@ -199,5 +205,18 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         this.finish()
         return true
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.logoutBtn) {
+            AppUtils.logoutUser(this)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

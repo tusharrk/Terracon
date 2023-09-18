@@ -10,6 +10,10 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -19,8 +23,10 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK
 import com.google.android.material.timepicker.TimeFormat
+import com.terracon.survey.R
 import com.terracon.survey.databinding.TreeAssessmentFormActivityBinding
 import com.terracon.survey.model.Project
+import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.DateUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -157,7 +163,22 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
         binding.dateEditText.editText?.setText(DateUtils.getTodayDateOrTime("dd MMM yyyy"))
         binding.timeEditText.editText?.setText(DateUtils.getTodayDateOrTime("hh:mm a"))
 
+        binding.habitatAutoCompleteTextView.setAdapter(ArrayAdapter(this, R.layout.dropdown_item, resources.getStringArray(R.array.habitat_names)))
 
+        binding.radioBtngrp.setOnCheckedChangeListener { radioGroup, i ->
+            when (i) {
+                R.id.circularRadioBtn -> {
+                    binding.radiusEditText.visibility = View.VISIBLE
+                    binding.lengthEditText.visibility = View.GONE
+                    binding.widthEditText.visibility = View.GONE
+                }
+                R.id.rectangularRadioBtn -> {
+                    binding.radiusEditText.visibility = View.GONE
+                    binding.lengthEditText.visibility = View.VISIBLE
+                    binding.widthEditText.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 
 
@@ -195,5 +216,18 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         this.finish()
         return true
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.logoutBtn) {
+            AppUtils.logoutUser(this)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

@@ -3,6 +3,8 @@ package com.terracon.survey.views.flora_fauna
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -13,6 +15,7 @@ import com.terracon.survey.R
 import com.terracon.survey.databinding.FloraFaunaActivityBinding
 import com.terracon.survey.databinding.LoginActivityBinding
 import com.terracon.survey.model.Project
+import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.AppUtils.spannableStringWithColor
 import com.terracon.survey.utils.ErrorUtils
 import com.terracon.survey.views.home.ProjectsListAdapter
@@ -106,5 +109,18 @@ class FloraFaunaActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         this.finish()
         return true
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.logoutBtn) {
+            AppUtils.logoutUser(this)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
