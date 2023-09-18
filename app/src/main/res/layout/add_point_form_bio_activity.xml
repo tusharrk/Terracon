@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/basic_page_padding">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/plot_type_edit_text"
+                style="@style/textInputEditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/plot_type">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:text="" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/plot_area_edit_text"
+                style="@style/textInputEditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_10"
+                android:hint="@string/plot_dimension">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:text="" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/border"
+                android:layout_marginVertical="@dimen/padding_10"
+                android:padding="@dimen/padding_10">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="@dimen/basic_item_padding"
+                    android:text="@string/species_list"
+                    android:textAppearance="@style/secondaryTextStyle" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/projectsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/list_item_point_species_bio" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addBlankItemBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/basic_item_padding_big"
+                android:layout_marginHorizontal="@dimen/padding_10"
+                android:background="@drawable/rounded_button"
+                android:insetLeft="@dimen/padding_30"
+                android:insetRight="@dimen/padding_30"
+                app:icon="@drawable/baseline_add_24"
+                android:text="@string/add_new_item"
+                android:textAppearance="@style/basicButtonStyle" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/uploadImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:insetLeft="@dimen/padding_10"
+                android:insetRight="@dimen/padding_10"
+                android:insetBottom="@dimen/padding_10"
+                android:insetTop="@dimen/padding_10"
+                android:paddingVertical="@dimen/padding_10"
+                android:text="@string/capture_upload_image"
+                app:icon="@drawable/baseline_file_upload_24"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                app:cornerRadius="5dp"
+                app:strokeColor="@color/textColor"
+                app:strokeWidth="1dp"
+                android:textAppearance="@style/basicButtonStyle" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/comment_edit_text"
+                style="@style/textInputEditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_10"
+                android:hint="@string/comment">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:text="" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/saveBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/padding_40"
+                android:background="@drawable/rounded_button"
+                android:insetLeft="@dimen/padding_30"
+                android:insetRight="@dimen/padding_30"
+                android:text="@string/submit"
+                android:textAppearance="@style/basicButtonStyle" />
+
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

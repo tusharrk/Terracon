@@ -1,0 +1,80 @@
+<resources>
+    <string name="app_name">TERRACON</string>
+    <string name="login_mobile_txt">Continue with Mobile Number</string>
+    <string name="register_now_txt">Don\'t have an account? Register  </string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="login">Login</string>
+    <string name="full_name">Full Name</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="login_text_signup_page">Already have an Account? Login</string>
+    <string name="otp_sent_msg">Enter 4 Digit OTP sent to %s</string>
+    <string name="verify_otp">Verify OTP</string>
+    <string name="otp_resend_msg">Don\'t receive the OTP? RESEND OTP</string>
+    <string name="otp">OTP</string>
+    <string name="project_image">Project Image</string>
+
+
+    <string name="server_error_title">Internal Server Error</string>
+    <string name="server_error_desc">Something went wrong on our end. Sorry about that. \nWe are working on fixing it right now.</string>
+
+
+    <string name="internet_error_title">No internet Connection!</string>
+    <string name="internet_error_desc">No Internet connection found.\nCheck your connection or try again.</string>
+
+
+    <string name="no_projects_error_title">Oops! No Projects</string>
+    <string name="no_projects_error_desc">Looks like there are no ongoing projects here.</string>
+
+    <string name="no_data_error_title">No Data Found</string>
+    <string name="no_data_error_desc">no Data Found Here.</string>
+
+    <string name="retry">Retry</string>
+    <string name="start">Start</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="gps_location">GPS Location</string>
+    <string name="season_name">Season Name</string>
+    <string name="weather_condition">Weather Condition</string>
+    <string name="habitat">Habitat</string>
+    <string name="save_next"><![CDATA[Save & Next]]></string>
+    <string name="plot_type">Plot Type</string>
+    <string name="plot_area">Plot Area</string>
+    <string name="comment">Comment</string>
+    <string name="count">Count</string>
+    <string name="species">Species</string>
+    <string name="add_new_item">Add New Item</string>
+    <string name="submit">Submit</string>
+    <string name="species_list">Species List</string>
+    <string name="capture_upload_image"><![CDATA[Capture & Upload Image]]></string>
+    <string name="point_number">Point Number</string>
+    <string name="landmark">Landmark</string>
+    <string name="plot_dimension">Plot Dimension</string>
+    <string name="serial_number">Serial Number</string>
+    <string name="girth_at_gbh">Girth At GBH</string>
+    <string name="approx_height">Approx Height</string>
+    <string name="canopy_diameter">Canopy Diameter</string>
+    <string name="comments">Comments</string>
+    <string name="species_name">Species Name</string>
+    <string name="view_failed_entries">View Failed Entries</string>
+
+    <string-array name="season_names">
+        <item>Spring</item>
+        <item>Summer</item>
+        <item>Monsoon</item>
+        <item>Autumn</item>
+        <item>Winter</item>
+    </string-array>
+
+    <string-array name="weather_condition_names">
+        <item>Sunny</item>
+        <item>Cloudy</item>
+        <item>Clear Sky</item>
+        <item>Partially Cloudy</item>
+        <item>Overcast</item>
+        <item>Raining</item>
+        <item>Snowing</item>
+        <item>Foggy</item>
+        <item>Thunder &amp; Lightning</item>
+        <item>Windy</item>
+    </string-array>
+</resources>

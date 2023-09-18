@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@color/backgroundColor"
+    android:padding="@dimen/basic_page_padding">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/errorImageView"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:alpha="0.5"
+        android:src="@drawable/baseline_inbox_24"
+        android:tint="@color/secondaryTextColor" />
+
+    <TextView
+        android:id="@+id/errorTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_50"
+        android:textSize="@dimen/heading_text_size"
+        android:text="@string/no_projects_error_title"
+        tools:text="@string/no_projects_error_title"
+        android:textStyle="bold"
+        android:textColor="@color/textBlack"
+        />
+
+    <TextView
+        android:id="@+id/errorDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_10"
+        android:textSize="@dimen/desc_text_size"
+        android:textColor="@color/secondaryTextColor"
+        android:gravity="center"
+        android:text="@string/no_projects_error_desc"
+        tools:text="@string/no_projects_error_desc" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/retryBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/retry"
+        android:textSize="@dimen/desc_text_size"
+        android:layout_marginVertical="@dimen/padding_50"
+        android:paddingVertical="15dp"
+        android:paddingHorizontal="40dp"
+        android:textColor="@color/white"
+        app:cornerRadius="10dp"
+        android:elevation="8dp" />
+
+
+</LinearLayout>

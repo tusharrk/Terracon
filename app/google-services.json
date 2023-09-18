@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1068723194116",
+    "project_id": "terracon-f09dd",
+    "storage_bucket": "terracon-f09dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1068723194116:android:5177acb63a587725192851",
+        "android_client_info": {
+          "package_name": "com.terracon.survey"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBIOQ3ntgj0V1j64R19Lunf8F9pv2sYb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

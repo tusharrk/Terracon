@@ -1,0 +1,29 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="alert_icon_size">36dp</dimen>
+
+    <dimen name="splash_icon_size">80dp</dimen>
+    <dimen name="splash_padding">80dp</dimen>
+
+    <dimen name="basic_page_padding">20dp</dimen>
+
+    <dimen name="big_padding">25dp</dimen>
+
+    <dimen name="basic_item_padding">5dp</dimen>
+    <dimen name="medium_item_padding">8dp</dimen>
+    <dimen name="basic_item_padding_big">20dp</dimen>
+    <dimen name="heading_text_size">22sp</dimen>
+    <dimen name="basic_text_size">18sp</dimen>
+    <dimen name="desc_text_size">16sp</dimen>
+
+
+    <dimen name="padding_10">10dp</dimen>
+    <dimen name="padding_15">15dp</dimen>
+    <dimen name="padding_20">20dp</dimen>
+    <dimen name="padding_30">30dp</dimen>
+    <dimen name="padding_40">40dp</dimen>
+    <dimen name="padding_50">50dp</dimen>
+    <dimen name="padding_60">60dp</dimen>
+    <dimen name="padding_70">70dp</dimen>
+
+</resources>

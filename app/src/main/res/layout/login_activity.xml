@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+
+    android:padding="@dimen/basic_page_padding">
+
+    <ImageView
+        android:layout_width="@dimen/splash_icon_size"
+        android:layout_height="@dimen/splash_icon_size"
+        android:layout_marginTop="@dimen/padding_70"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/big_padding"
+        android:letterSpacing="0.1"
+        android:text="@string/app_name"
+        android:textAppearance="@style/HeadingTextStyle"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginTop="@dimen/padding_50"
+        android:text="@string/login_mobile_txt"
+        android:textAppearance="@style/secondaryTextStyle" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/outlined_text_input_layout"
+        style="@style/textInputEditTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/basic_item_padding"
+        android:hint="@string/mobile_number"
+        app:prefixText="+91"
+        app:startIconDrawable="@drawable/baseline_local_phone_24">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/outlined_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLength="10"
+            android:inputType="numberSigned" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/loginBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/padding_40"
+        android:layout_marginTop="@dimen/padding_40"
+        android:background="@drawable/rounded_button"
+        android:insetLeft="@dimen/padding_30"
+        android:insetRight="@dimen/padding_30"
+        android:text="@string/login"
+        android:textAppearance="@style/basicButtonStyle" />
+
+    <TextView
+        android:id="@+id/registerNowText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_50"
+        android:paddingHorizontal="@dimen/basic_item_padding"
+        android:text="@string/register_now_txt"
+        android:textAppearance="@style/secondaryTextStyle" />
+
+</LinearLayout>

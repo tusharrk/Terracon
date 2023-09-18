@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/projectCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/basic_item_padding"
+    android:orientation="horizontal">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/season_name_edit_text"
+        style="@style/textInputDropDownStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/basic_item_padding"
+        android:hint="@string/species">
+
+        <AutoCompleteTextView
+            android:id="@+id/seasonNameAutoCompleteTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/incrementCount"
+        android:layout_width="20sp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_button"
+        android:layout_marginHorizontal="@dimen/basic_item_padding"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        android:layout_weight="1"
+        android:text="+"
+        android:textAppearance="@style/basicButtonStyle" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/count_edit_text"
+        style="@style/textInputEditTextStyle"
+        android:layout_weight="0.5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/basic_item_padding"
+        android:hint="@string/count">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:text="" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/decrementCount"
+        android:layout_width="20sp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_button"
+        android:layout_marginStart="@dimen/basic_item_padding"
+        android:layout_weight="1"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        android:text="-"
+        android:textAppearance="@style/basicButtonStyle" />
+
+
+
+</LinearLayout>
