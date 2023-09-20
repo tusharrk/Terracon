@@ -7,16 +7,25 @@ import java.io.Serializable
 @Entity
 data class User(
     @PrimaryKey
-    var id: Int = 0,
-    var name: String = "",
-    var role: String = "",
-    var status: String = "",
-    var createdBy: String = "",
-    var lastModifiedBy: String = "",
-    var createdAt: String = "",
-    var lastModifiedAt: String = "",
+    val id: Int = 0,
+    val account_verify_flag: String = "",
+    val created_at: String = "",
+    val mobile: String = "",
+    val name: String = "",
+    val status: String = "",
+    val token: String = "",
+    val updated_at: String = ""
     ) : Serializable {
 
 
 }
 
+data class UserResponse(
+    val data: Data,
+    val message: String,
+    val status: String
+)
+
+data class Data(
+    val user: User
+)

@@ -28,10 +28,6 @@ class LoginViewModel(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _errorState = MutableLiveData<ErrorState?>()
-    val errorState: LiveData<ErrorState?> = _errorState
-
-
 
     private var gson = GsonBuilder().setLenient().serializeNulls().create()
 
@@ -51,38 +47,40 @@ class LoginViewModel(
        }
     }
 
-    private fun fetchUsersDetailsFromServer(userId: String,activity: LoginActivity) {
+     fun loginUser(activity: LoginActivity) {
         _isLoading.value = true
-        _errorState.value = null
         viewModelScope.launch {
-            usersRepository.getAllUsers(UserApiRequestDTO(receiverId = userId))
+            usersRepository.getAllUsers(UserApiRequestDTO())
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {
                             _isLoading.value = false
-                            _errorState.value = null
                             if (it.data?.isNotEmpty() == true) {
                                 Log.d("TAG_X",it.data.toString())
                             } else {
-                                _errorState.value = ErrorState.NoData
+                                //_errorState.value = ErrorState.NoData
                             }
                         }
 
                         Result.Status.LOADING -> {
                             _isLoading.value = true
-                            _errorState.value = null
                         }
 
                         Result.Status.ERROR -> {
                             _isLoading.value = false
-                            _errorState.value = ErrorState.ServerError
                         }
 
-                        else -> _errorState.value = ErrorState.NoData
+                        else -> {
+                           // _errorState.value = ErrorState.NoData
+                        }
                     }
                 }
 
 
         }
+    }
+
+    fun showErrorAlert(){
+
     }
 }

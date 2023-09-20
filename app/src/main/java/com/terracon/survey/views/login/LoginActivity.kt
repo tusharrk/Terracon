@@ -64,7 +64,8 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.loginBtn.setOnClickListener {
-             loginViewModel.navigateToOtpVerify(this@LoginActivity)
+            // loginViewModel.navigateToOtpVerify(this@LoginActivity)
+            loginViewModel.loginUser(this)
         }
 
     }
