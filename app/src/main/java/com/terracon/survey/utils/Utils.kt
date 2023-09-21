@@ -17,6 +17,7 @@ import com.google.gson.GsonBuilder
 import com.terracon.survey.R
 import com.terracon.survey.model.User
 import com.terracon.survey.views.login.LoginActivity
+import java.util.regex.Pattern
 
 object AppUtils {
     private var gson = GsonBuilder().setLenient().serializeNulls().create()
@@ -86,5 +87,17 @@ object AppUtils {
         val intent = Intent(activity, LoginActivity::class.java)
         activity.startActivity(intent)
         activity.finishAffinity()
+    }
+
+     fun isValidMail(email: String): Boolean {
+        val EMAIL_STRING = ("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+        return Pattern.compile(EMAIL_STRING).matcher(email).matches()
+    }
+
+     fun isValidMobile(phone: String): Boolean {
+        return if (!Pattern.matches("[a-zA-Z]+", phone)) {
+             phone.length == 10
+        } else false
     }
 }

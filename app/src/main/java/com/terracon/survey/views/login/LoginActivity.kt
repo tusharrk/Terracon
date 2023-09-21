@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.terracon.survey.R
 import com.terracon.survey.databinding.LoginActivityBinding
+import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.AppUtils.spannableStringWithColor
 import com.terracon.survey.views.register.RegisterActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -64,8 +65,11 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.loginBtn.setOnClickListener {
-            // loginViewModel.navigateToOtpVerify(this@LoginActivity)
-            loginViewModel.loginUser(this)
+            if(binding.mobileEditText.text.toString() != "" && AppUtils.isValidMobile(binding.mobileEditText.text.toString())){
+                loginViewModel.loginUser(binding.mobileEditText.text.toString(),this)
+            }else{
+                Toast.makeText(this,getString(R.string.invalid_mobile_number_msg),Toast.LENGTH_SHORT).show()
+            }
         }
 
     }

@@ -22,15 +22,17 @@ class OtpVerifyActivity : AppCompatActivity() {
     }
 
     private fun setupUi() {
+        val value = intent.getStringExtra("mobile")
+
         binding.otpSentText.text = getString(
             R.string.otp_sent_msg,
-            "+91 8796964465"
+            "+91 $value"
         )
         spannableStringWithColor(
             binding.otpSentText,
             26,
             binding.otpSentText.text.length,
-            getString(R.string.otp_sent_msg,"+91 8796964465"),
+            getString(R.string.otp_sent_msg,"+91 $value"),
             R.color.colorAccent
         )
         spannableStringWithColor(

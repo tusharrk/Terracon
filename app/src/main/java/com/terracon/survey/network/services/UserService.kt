@@ -13,7 +13,7 @@ interface UserService {
     suspend fun getAllUsersByUserId() : Response<List<User>>
 
     @POST("/api/send-OTP")
-    suspend fun sendOtp(@Body body: UserApiRequestDTO) : Response<UserResponse>
+    suspend fun sendOTP(@Body body: UserApiRequestDTO) : Response<UserResponse>
 
     @POST("/api/register")
     suspend fun registerUser(@Body body: UserApiRequestDTO) : Response<UserResponse>

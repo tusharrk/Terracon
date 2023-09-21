@@ -57,7 +57,7 @@ class OtpVerifyViewModel(
         _isLoading.value = true
         _errorState.value = null
         viewModelScope.launch {
-            usersRepository.getAllUsers(UserApiRequestDTO(receiverId = userId))
+            usersRepository.getAllUsers(UserApiRequestDTO(id = 0))
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {

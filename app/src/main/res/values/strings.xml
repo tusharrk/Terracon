@@ -61,6 +61,7 @@
     <string name="radius">Radius (Meter)</string>
     <string name="length">Length (Meter)</string>
     <string name="width">Width (Meter)</string>
+    <string name="invalid_mobile_number_msg">Please Enter Valid Mobile Number</string>
 
     <string-array name="season_names">
         <item>Spring</item>

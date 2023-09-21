@@ -45,7 +45,7 @@ class FloraFaunaViewModel(
         _isLoading.value = true
         _errorState.value = null
         viewModelScope.launch {
-            projectRepository.getFloraFaunaCategories(UserApiRequestDTO(receiverId = userId))
+            projectRepository.getFloraFaunaCategories(UserApiRequestDTO(id = 0))
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {

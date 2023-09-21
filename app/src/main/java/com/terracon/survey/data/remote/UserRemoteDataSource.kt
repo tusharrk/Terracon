@@ -3,6 +3,7 @@ package com.terracon.survey.data.remote
 import com.terracon.survey.model.Result
 import com.terracon.survey.model.User
 import com.terracon.survey.model.UserApiRequestDTO
+import com.terracon.survey.model.UserResponse
 import com.terracon.survey.network.services.UserService
 import com.terracon.survey.utils.ErrorUtils
 import retrofit2.Response
@@ -10,11 +11,26 @@ import retrofit2.Retrofit
 
 class UserRemoteDataSource (private val userService: UserService, private val retrofit: Retrofit) {
 
+    suspend fun sendOTP(payload: UserApiRequestDTO): Result<UserResponse> {
+        return getResponse(
+            request = { userService.sendOTP(payload) },
+            defaultErrorMessage = "Error fetching data")
+    }
+
+    suspend fun registerUser(payload: UserApiRequestDTO): Result<UserResponse> {
+        return getResponse(
+            request = { userService.registerUser(payload) },
+            defaultErrorMessage = "Error fetching data")
+    }
+    suspend fun loginUser(payload: UserApiRequestDTO): Result<UserResponse> {
+        return getResponse(
+            request = { userService.loginUser(payload) },
+            defaultErrorMessage = "Error fetching data")
+    }
     suspend fun getAllUsersByUserId(payload: UserApiRequestDTO): Result<List<User>> {
         return getResponse(
             request = { userService.getAllUsersByUserId() },
             defaultErrorMessage = "Error fetching list")
-
     }
 
 
@@ -33,5 +49,4 @@ class UserRemoteDataSource (private val userService: UserService, private val re
             Result.error(e.toString(), null)
         }
     }
-
 }

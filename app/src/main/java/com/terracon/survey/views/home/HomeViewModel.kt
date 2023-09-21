@@ -37,7 +37,7 @@ class HomeViewModel(
         _isLoading.value = true
         _errorState.value = null
         viewModelScope.launch {
-            projectRepository.getAllProjects(UserApiRequestDTO(receiverId = userId))
+            projectRepository.getAllProjects(UserApiRequestDTO(id = 0))
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {

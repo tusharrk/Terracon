@@ -33,7 +33,7 @@
         android:textAppearance="@style/secondaryTextStyle" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/outlined_text_input_layout"
+        android:id="@+id/mobile_text_input_layout"
         style="@style/textInputEditTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
         app:startIconDrawable="@drawable/baseline_local_phone_24">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/outlined_edit_text"
+            android:id="@+id/mobile_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLength="10"

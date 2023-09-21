@@ -2,12 +2,15 @@ package com.terracon.survey.views.login
 
 import android.content.Intent
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.GsonBuilder
 import com.michaelflisar.lumberjack.L
+import com.terracon.survey.R
 import com.terracon.survey.data.UserRepository
 import com.terracon.survey.model.ErrorState
 import com.terracon.survey.model.Result
@@ -31,33 +34,42 @@ class LoginViewModel(
 
     private var gson = GsonBuilder().setLenient().serializeNulls().create()
 
-    fun navigateToOtpVerify(activity: LoginActivity) {
-            val homeIntent = Intent(activity, OtpVerifyActivity::class.java)
-            activity.startActivity(homeIntent)
+    private fun navigateToOtpVerify(mobile: String, activity: LoginActivity) {
+        val homeIntent = Intent(activity, OtpVerifyActivity::class.java)
+        homeIntent.putExtra("mobile", mobile);
+        activity.startActivity(homeIntent)
     }
 
-    fun checkIfUserLoggedIn(activity: LoginActivity){
-        val userId:String = Prefs["userId", ""]
-       if(userId != ""){
-           L.d { "user is already logged in: $userId" }
-           //fetchUsersDetailsFromServer(userId,activity)
-       }else{
-           L.d { "user is not logged in..." }
+    fun checkIfUserLoggedIn(activity: LoginActivity) {
+        val userId: String = Prefs["userId", ""]
+        if (userId != "") {
+            L.d { "user is already logged in: $userId" }
+            //fetchUsersDetailsFromServer(userId,activity)
+        } else {
+            L.d { "user is not logged in..." }
 
-       }
+        }
     }
 
-     fun loginUser(activity: LoginActivity) {
+    fun loginUser(mobile: String, activity: LoginActivity) {
         _isLoading.value = true
         viewModelScope.launch {
-            usersRepository.getAllUsers(UserApiRequestDTO())
+            usersRepository.sendOTP(UserApiRequestDTO(mobile = mobile))
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {
                             _isLoading.value = false
-                            if (it.data?.isNotEmpty() == true) {
-                                Log.d("TAG_X",it.data.toString())
+                            if (it.data?.status == "success") {
+                                Log.d("TAG_X", it.data.toString())
+                                navigateToOtpVerify(mobile, activity)
                             } else {
+                                activity.runOnUiThread {
+                                    Toast.makeText(
+                                        activity,
+                                        it.data?.message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                                 //_errorState.value = ErrorState.NoData
                             }
                         }
@@ -67,11 +79,20 @@ class LoginViewModel(
                         }
 
                         Result.Status.ERROR -> {
+                            activity.runOnUiThread {
+                                Toast.makeText(
+                                    activity,
+                                    it.data?.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+
                             _isLoading.value = false
                         }
 
                         else -> {
-                           // _errorState.value = ErrorState.NoData
+                            // _errorState.value = ErrorState.NoData
                         }
                     }
                 }
@@ -80,7 +101,7 @@ class LoginViewModel(
         }
     }
 
-    fun showErrorAlert(){
+    fun showErrorAlert() {
 
     }
 }
