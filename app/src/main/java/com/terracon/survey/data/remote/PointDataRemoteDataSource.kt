@@ -31,7 +31,7 @@ class PointDataRemoteDataSource (private val pointDataService: PointDataService,
                 return Result.success(result.body())
             } else {
                 val errorResponse = ErrorUtils.parseError(result, retrofit)
-                Result.error(errorResponse?.status_message ?: defaultErrorMessage, errorResponse)
+                Result.error(errorResponse?.message ?: defaultErrorMessage, errorResponse)
             }
         } catch (e: Throwable) {
             Result.error(e.toString(), null)

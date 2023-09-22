@@ -18,6 +18,10 @@ object Prefs {
         editor.apply()
     }
 
+    fun clearAll(){
+        preferences.edit().clear().commit();
+    }
+
     operator fun set(key: String, value: Any?) =
         when (value) {
             is String? -> preferences.edit { it.putString(key, value) }

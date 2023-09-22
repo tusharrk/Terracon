@@ -83,6 +83,7 @@ object AppUtils {
     }
 
     fun logoutUser(activity: Activity){
+        Prefs.clearAll()
         Toast.makeText(activity, "Logout", Toast.LENGTH_LONG).show()
         val intent = Intent(activity, LoginActivity::class.java)
         activity.startActivity(intent)

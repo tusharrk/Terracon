@@ -7,7 +7,7 @@
     <string name="full_name">Full Name</string>
     <string name="sign_up">Sign Up</string>
     <string name="login_text_signup_page">Already have an Account? Login</string>
-    <string name="otp_sent_msg">Enter 4 Digit OTP sent to %s</string>
+    <string name="otp_sent_msg">Enter 6 Digit OTP sent to %s</string>
     <string name="verify_otp">Verify OTP</string>
     <string name="otp_resend_msg">Don\'t receive the OTP? RESEND OTP</string>
     <string name="otp">OTP</string>
@@ -62,6 +62,7 @@
     <string name="length">Length (Meter)</string>
     <string name="width">Width (Meter)</string>
     <string name="invalid_mobile_number_msg">Please Enter Valid Mobile Number</string>
+    <string name="invalid_otp_msg">Please Enter Valid OTP</string>
 
     <string-array name="season_names">
         <item>Spring</item>

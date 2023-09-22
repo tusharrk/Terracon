@@ -46,22 +46,37 @@
             android:id="@+id/mobile_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="10"
-            android:inputType="numberSigned" />
+            android:inputType="numberSigned"
+            android:text="9284211039"
+            android:maxLength="10" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/loginBtn"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/padding_40"
-        android:layout_marginTop="@dimen/padding_40"
-        android:background="@drawable/rounded_button"
-        android:insetLeft="@dimen/padding_30"
-        android:insetRight="@dimen/padding_30"
-        android:text="@string/login"
-        android:textAppearance="@style/basicButtonStyle" />
+        android:layout_marginTop="@dimen/padding_40">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/loginBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/padding_40"
+            android:background="@drawable/rounded_button"
+            android:insetLeft="@dimen/padding_30"
+            android:insetRight="@dimen/padding_30"
+            android:text="@string/login"
+            android:textAppearance="@style/basicButtonStyle" />
+
+        <include
+            android:id="@+id/progressView"
+            layout="@layout/progress_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
+
 
     <TextView
         android:id="@+id/registerNowText"

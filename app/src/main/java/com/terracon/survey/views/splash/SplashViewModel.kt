@@ -41,8 +41,8 @@ class SplashViewModel(
 
 
     fun checkIfUserLoggedIn(activity: SplashActivity) {
-        val userId: String = Prefs["userId", ""]
-        if (userId != "") {
+        val userId: Int = Prefs["userId", 0]
+        if (userId != 0) {
             L.d { "user is already logged in: $userId" }
             val user: User? = AppUtils.getUserData()
             if (user != null) {
@@ -73,7 +73,7 @@ class SplashViewModel(
         }
     }
 
-    private fun fetchUsersDetailsFromServer(userId: String, activity: SplashActivity) {
+    private fun fetchUsersDetailsFromServer(userId: Int, activity: SplashActivity) {
         navigateToHome(activity = activity)
         return
         _isLoading.value = true

@@ -25,8 +25,6 @@ class LoginViewModel(
     private val usersRepository: UserRepository,
 ) : ViewModel() {
 
-    private val _usersList = MutableLiveData<List<User>?>()
-    val usersList: MutableLiveData<List<User>?> = _usersList
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -61,6 +59,15 @@ class LoginViewModel(
                             _isLoading.value = false
                             if (it.data?.status == "success") {
                                 Log.d("TAG_X", it.data.toString())
+                                activity.runOnUiThread {
+                                    val msg = it.data.message
+                                    Toast.makeText(
+                                        activity,
+                                        msg,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                }
                                 navigateToOtpVerify(mobile, activity)
                             } else {
                                 activity.runOnUiThread {
@@ -80,9 +87,13 @@ class LoginViewModel(
 
                         Result.Status.ERROR -> {
                             activity.runOnUiThread {
+                                val errorMsg =
+                                    if (it.error != null) it.error.message else activity.resources.getString(
+                                        R.string.server_error_desc
+                                    )
                                 Toast.makeText(
                                     activity,
-                                    it.data?.message,
+                                    errorMsg,
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
@@ -96,8 +107,6 @@ class LoginViewModel(
                         }
                     }
                 }
-
-
         }
     }
 

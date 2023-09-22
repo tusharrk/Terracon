@@ -1,7 +1,10 @@
 package com.terracon.survey.model
 
-data class Error(val status_code: Int = 0,
-                 val status_message: String? = null)
+//data class Error(val status_code: Int = 0,
+//                 val status_message: String? = null)
+
+data class Error(val status: String = "",
+                 val message: String? = null)
 
 
 sealed class ErrorState {
