@@ -8,11 +8,11 @@ import java.io.Serializable
 data class User(
     @PrimaryKey
     val id: Int = 0,
-    val account_verify_flag: String = "",
+    var account_verify_flag: String = "",
     val created_at: String = "",
     val mobile: String = "",
-    val name: String = "",
-    val status: String = "",
+    var name: String = "",
+    var status: String = "",
     val token: String = "",
     val updated_at: String = ""
     ) : Serializable {

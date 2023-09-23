@@ -64,6 +64,7 @@
     <string name="invalid_mobile_number_msg">Please Enter Valid Mobile Number</string>
     <string name="invalid_name_msg">Please Enter Valid Name</string>
     <string name="invalid_otp_msg">Please Enter Valid OTP</string>
+    <string name="account_blocked_msg">Your account has been Blocked</string>
 
     <string-array name="season_names">
         <item>Spring</item>

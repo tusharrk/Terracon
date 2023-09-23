@@ -52,7 +52,7 @@ class SplashViewModel(
             val user: User? = AppUtils.getUserData()
             if (user != null) {
                 GlobalData.userData = user
-                getUserDetails(userId, activity)
+                getUserDetails(user, activity)
             } else {
                 navigateToLogin(activity = activity)
             }
@@ -63,7 +63,8 @@ class SplashViewModel(
     }
 
     private fun navigateToLogin(activity: SplashActivity) {
-        Timer().schedule(1000) {
+        Timer().schedule(100) {
+            Prefs.clearAll()
             val homeIntent = Intent(activity, LoginActivity::class.java)
             activity.startActivity(homeIntent)
             activity.finish()
@@ -71,32 +72,26 @@ class SplashViewModel(
     }
 
     private fun navigateToHome(activity: SplashActivity) {
-        Timer().schedule(3000) {
+        Timer().schedule(100) {
             val homeIntent = Intent(activity, HomeActivity::class.java)
             activity.startActivity(homeIntent)
             activity.finish()
         }
     }
 
-    private fun getUserDetails(user: User, activity: OtpVerifyActivity) {
+    private fun getUserDetails(user: User, activity: SplashActivity) {
         _isLoading.value = true
+        L.d{"calling getUserDetails Api"}
         viewModelScope.launch {
-            usersRepository.loginUser(UserApiRequestDTO(mobile = mobile, otp = otp))
+            usersRepository.getUserDetails(getHeaderMap(user))
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {
+                            L.d{"getUserDetails Api SUCCESS"}
                             _isLoading.value = false
                             if (it.data?.status == "success") {
                                 Log.d("TAG_X", it.data.toString())
                                 saveSuccessUserLoginData(it.data,activity)
-                                activity.runOnUiThread {
-                                    val msg = it.data.message
-                                    Toast.makeText(
-                                        activity,
-                                        msg,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
                             } else {
                                 activity.runOnUiThread {
                                     Toast.makeText(
@@ -114,6 +109,8 @@ class SplashViewModel(
                         }
 
                         Result.Status.ERROR -> {
+                            L.d{"getUserDetails Api ERROR"}
+
                             activity.runOnUiThread {
                                 val errorMsg =
                                     if (it.error != null) it.error.message else activity.resources.getString(
@@ -124,7 +121,11 @@ class SplashViewModel(
                                     errorMsg,
                                     Toast.LENGTH_SHORT
                                 ).show()
+                                if(errorMsg == "Token not found, Invalid request"){
+                                    navigateToLogin(activity)
+                                }
                             }
+
                             _isLoading.value = false
                         }
                         else -> {
@@ -135,12 +136,40 @@ class SplashViewModel(
         }
     }
 
-    private fun saveSuccessUserLoginData(userResponse: UserResponse, activity: SplashActivity){
-        Prefs["userId"] = userResponse.data.user.id
-        Prefs["token"] = userResponse.data.user.token
-        Prefs["userData"] = Gson().toJson(userResponse.data.user)
-        GlobalData.userData = userResponse.data.user
+    private fun getHeaderMap(user: User): Map<String, String> {
+        val headerMap = mutableMapOf<String, String>()
+        headerMap["token"] = user.token
+        return headerMap
+    }
 
-        navigateToHome(activity)
+    private fun saveSuccessUserLoginData(userResponse: UserResponse, activity: SplashActivity){
+        if (userResponse.data.user.status == "Block") {
+            Toast.makeText(
+                activity,
+                activity.getString(R.string.account_blocked_msg),
+                Toast.LENGTH_SHORT
+            ).show()
+            navigateToLogin(activity)
+        } else {
+            val user: User? = AppUtils.getUserData()
+            if(user!=null){
+                user.name = userResponse.data.user.name
+                user.account_verify_flag = userResponse.data.user.account_verify_flag
+                user.status = userResponse.data.user.status
+                Prefs["userData"] = Gson().toJson(user)
+                GlobalData.userData = user
+                navigateToHome(activity)
+            }else{
+                val errorMsg = activity.resources.getString(R.string.server_error_desc)
+                Toast.makeText(
+                    activity,
+                    errorMsg,
+                    Toast.LENGTH_SHORT
+                ).show()
+                navigateToLogin(activity)
+            }
+
+        }
+
     }
 }

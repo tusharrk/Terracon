@@ -66,7 +66,6 @@ class LoginViewModel(
                                         msg,
                                         Toast.LENGTH_SHORT
                                     ).show()
-
                                 }
                                 navigateToOtpVerify(mobile, activity)
                             } else {

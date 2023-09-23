@@ -9,7 +9,9 @@ import com.terracon.survey.data.ProjectRepository
 import com.terracon.survey.model.ErrorState
 import com.terracon.survey.model.Project
 import com.terracon.survey.model.Result
+import com.terracon.survey.model.User
 import com.terracon.survey.model.UserApiRequestDTO
+import com.terracon.survey.utils.AppUtils
 import kotlinx.coroutines.launch
 
 
@@ -28,6 +30,8 @@ class HomeViewModel(
 
 
     private var gson = GsonBuilder().setLenient().serializeNulls().create()
+
+    //val user: User? = AppUtils.getUserData()
 
     init {
         fetchProjects("asd")

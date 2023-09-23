@@ -27,6 +27,11 @@ class UserRemoteDataSource (private val userService: UserService, private val re
             request = { userService.loginUser(payload) },
             defaultErrorMessage = "Error fetching data")
     }
+    suspend fun getUserDetails(payload: Map<String, String>): Result<UserResponse> {
+        return getResponse(
+            request = { userService.getUserDetails(payload) },
+            defaultErrorMessage = "Error fetching data")
+    }
     suspend fun getAllUsersByUserId(payload: UserApiRequestDTO): Result<List<User>> {
         return getResponse(
             request = { userService.getAllUsersByUserId() },

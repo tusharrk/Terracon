@@ -38,7 +38,7 @@ class OtpVerifyViewModel(
         activity.finishAffinity()
     }
 
-    fun loginUser(mobile: String,otp: String, activity: OtpVerifyActivity) {
+    fun loginUser(mobile: String, otp: String, activity: OtpVerifyActivity) {
         _isLoading.value = true
         viewModelScope.launch {
             usersRepository.loginUser(UserApiRequestDTO(mobile = mobile, otp = otp))
@@ -48,15 +48,8 @@ class OtpVerifyViewModel(
                             _isLoading.value = false
                             if (it.data?.status == "success") {
                                 Log.d("TAG_X", it.data.toString())
-                                saveSuccessUserLoginData(it.data,activity)
-                                activity.runOnUiThread {
-                                    val msg = it.data.message
-                                    Toast.makeText(
-                                        activity,
-                                        msg,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                                saveSuccessUserLoginData(it.data, activity)
+
                             } else {
                                 activity.runOnUiThread {
                                     Toast.makeText(
@@ -87,6 +80,7 @@ class OtpVerifyViewModel(
                             }
                             _isLoading.value = false
                         }
+
                         else -> {
                             // _errorState.value = ErrorState.NoData
                         }
@@ -95,7 +89,7 @@ class OtpVerifyViewModel(
         }
     }
 
-    fun resendOtp(mobile :String,activity: OtpVerifyActivity){
+    fun resendOtp(mobile: String, activity: OtpVerifyActivity) {
         viewModelScope.launch {
             usersRepository.sendOTP(UserApiRequestDTO(mobile = mobile))
                 .collect {
@@ -121,6 +115,7 @@ class OtpVerifyViewModel(
                                 }
                             }
                         }
+
                         Result.Status.ERROR -> {
                             activity.runOnUiThread {
                                 val errorMsg =
@@ -134,6 +129,7 @@ class OtpVerifyViewModel(
                                 ).show()
                             }
                         }
+
                         else -> {
                             // _errorState.value = ErrorState.NoData
                         }
@@ -142,12 +138,27 @@ class OtpVerifyViewModel(
         }
     }
 
-    private fun saveSuccessUserLoginData(userResponse: UserResponse,activity: OtpVerifyActivity){
-        Prefs["userId"] = userResponse.data.user.id
-        Prefs["token"] = userResponse.data.user.token
-        Prefs["userData"] = Gson().toJson(userResponse.data.user)
-        GlobalData.userData = userResponse.data.user
-
-        navigateToHome(activity)
+    private fun saveSuccessUserLoginData(userResponse: UserResponse, activity: OtpVerifyActivity) {
+        if (userResponse.data.user.status == "Block") {
+            Toast.makeText(
+                activity,
+                activity.getString(R.string.account_blocked_msg),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Prefs["userId"] = userResponse.data.user.id
+            Prefs["token"] = userResponse.data.user.token
+            Prefs["userData"] = Gson().toJson(userResponse.data.user)
+            GlobalData.userData = userResponse.data.user
+            activity.runOnUiThread {
+                val msg = userResponse.message
+                Toast.makeText(
+                    activity,
+                    msg,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            navigateToHome(activity)
+        }
     }
 }

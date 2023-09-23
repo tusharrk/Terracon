@@ -14,6 +14,7 @@ import com.terracon.survey.R
 import com.terracon.survey.databinding.HomeActivityBinding
 import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.ErrorUtils
+import com.terracon.survey.utils.GlobalData
 import com.terracon.survey.views.login.LoginActivity
 import com.terracon.survey.views.project_details.ProjectDetailsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -95,7 +96,7 @@ class HomeActivity : AppCompatActivity() {
         if(supportActionBar != null){
            // supportActionBar?.setDisplayHomeAsUpEnabled(true)
             //supportActionBar?.setDisplayShowHomeEnabled(true)
-            supportActionBar?.title = "Welcome, Tushar Kalsara"
+            supportActionBar?.title = "Welcome, ${GlobalData.userData.name}"
         }
 
         binding.pullToRefresh.setOnRefreshListener {
