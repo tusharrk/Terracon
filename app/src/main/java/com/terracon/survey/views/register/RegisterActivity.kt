@@ -2,9 +2,11 @@ package com.terracon.survey.views.register
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.terracon.survey.R
 import com.terracon.survey.databinding.RegisterActivityBinding
+import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.AppUtils.spannableStringWithColor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -35,7 +37,28 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.signupBtn.setOnClickListener {
-            registerViewModel.navigateToOtpVerify(this@RegisterActivity)
+            if(binding.fullNameInput.editText?.text.toString() == ""){
+                Toast.makeText(
+                    this,
+                    getString(R.string.invalid_name_msg),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }else if(binding.fullNameInput.editText?.text.toString() == ""){
+                Toast.makeText(
+                    this,
+                    getString(R.string.invalid_mobile_number_msg),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+           else if (!AppUtils.isValidMobile(binding.mobileNumberInput.editText?.text.toString())) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.invalid_mobile_number_msg),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                registerViewModel.registerUser(binding.mobileNumberInput.editText?.text.toString(),binding.fullNameInput.editText?.text.toString(),this@RegisterActivity)
+            }
         }
 
     }

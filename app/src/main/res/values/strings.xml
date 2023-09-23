@@ -62,6 +62,7 @@
     <string name="length">Length (Meter)</string>
     <string name="width">Width (Meter)</string>
     <string name="invalid_mobile_number_msg">Please Enter Valid Mobile Number</string>
+    <string name="invalid_name_msg">Please Enter Valid Name</string>
     <string name="invalid_otp_msg">Please Enter Valid OTP</string>
 
     <string-array name="season_names">
