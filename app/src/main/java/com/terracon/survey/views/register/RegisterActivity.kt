@@ -1,6 +1,7 @@
 package com.terracon.survey.views.register
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.terracon.survey.R
 import com.terracon.survey.databinding.RegisterActivityBinding
@@ -18,6 +19,7 @@ class RegisterActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
         setupUi()
+        setupObservers()
     }
 
     private fun setupUi() {
@@ -36,5 +38,17 @@ class RegisterActivity : AppCompatActivity() {
             registerViewModel.navigateToOtpVerify(this@RegisterActivity)
         }
 
+    }
+
+    private fun setupObservers() {
+        registerViewModel.isLoading.observe(this) { isLoading ->
+            if (isLoading) {
+                binding.progressView.root.visibility = View.VISIBLE
+                binding.signupBtn.visibility = View.INVISIBLE
+            } else {
+                binding.progressView.root.visibility = View.GONE
+                binding.signupBtn.visibility = View.VISIBLE
+            }
+        }
     }
 }
