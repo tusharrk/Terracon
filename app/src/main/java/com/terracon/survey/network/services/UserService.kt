@@ -6,6 +6,7 @@ import com.terracon.survey.model.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface UserService {
@@ -20,5 +21,8 @@ interface UserService {
 
     @POST("/api/login")
     suspend fun loginUser(@Body body: UserApiRequestDTO) : Response<UserResponse>
+
+    @POST("/api/user-detail")
+    suspend fun getUserDetails(@Header) : Response<UserResponse>
 
 }
