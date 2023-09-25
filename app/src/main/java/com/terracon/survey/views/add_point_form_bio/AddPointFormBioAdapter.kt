@@ -2,6 +2,7 @@ package com.terracon.survey.views.add_point_form_bio
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -9,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.terracon.survey.R
 import com.terracon.survey.databinding.ListItemPointSpeciesBioBinding
-import com.terracon.survey.model.SpeciesBio
+import com.terracon.survey.model.Species
 import kotlinx.coroutines.NonDisposableHandle.parent
 
 
@@ -18,13 +19,13 @@ class AddPointFormBioAdapter internal constructor(
     private val viewModel: AddPointFormBioViewModel,
     private val context: Context
 ) :
-    ListAdapter<(SpeciesBio), AddPointFormBioAdapter.ViewHolder>(ChatDiffCallback()) {
+    ListAdapter<(Species), AddPointFormBioAdapter.ViewHolder>(ChatDiffCallback()) {
 
     class ViewHolder(private val binding: ListItemPointSpeciesBioBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             viewModel: AddPointFormBioViewModel,
-            item: SpeciesBio,
+            item: Species,
             onClickListener: OnClickListener,
             context: Context,
             position: Int
@@ -32,39 +33,55 @@ class AddPointFormBioAdapter internal constructor(
             //binding.projectNameText.text = item.projectName
             // binding.projectDescText.text = item.clientName
             // AppUtils.imageWithGLide(binding.userProfileImage,item.projectUrl)
-            binding.countEditText.editText?.setText("${item.count}")
+            binding.speciesNameTxt.text = item.name
+            binding.countTxt.text = item.count
+            binding.indexTxt.text = (position+1).toString()
+            binding.commentTxt.text = item.comment
 
-            binding.seasonNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
-                val value: String = adapterView.getItemAtPosition(i).toString()
-                item.speciesName = value
-                binding.seasonNameEditText.editText?.clearFocus()
-                binding.seasonNameAutoCompleteTextView.clearFocus()
-                onClickListener.onClick(item)
+            if(item.images.isNotBlank()){
+                binding.imageView.visibility = View.VISIBLE
+            }else{
+                binding.imageView.visibility = View.GONE
 
             }
 
-
-                binding.seasonNameAutoCompleteTextView.setText(item.speciesName)
-                binding.seasonNameAutoCompleteTextView.setAdapter(
-                    ArrayAdapter(
-                        context, R.layout.dropdown_item, context.resources.getStringArray(
-                            R.array.season_names
-                        )
-                    )
-                )
-
-
-            binding.incrementCount.setOnClickListener {
-                item.count = item.count+1
+            binding.editBtn.setOnClickListener {
                 onClickListener.onClick(item)
             }
-            binding.decrementCount.setOnClickListener {
-                if(item.count>0){
-                    item.count = item.count-1
-                    onClickListener.onClick(item)
-                }
 
-            }
+
+
+//            binding.seasonNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
+//                val value: String = adapterView.getItemAtPosition(i).toString()
+//                item.name = value
+//                binding.seasonNameEditText.editText?.clearFocus()
+//                binding.seasonNameAutoCompleteTextView.clearFocus()
+//                onClickListener.onClick(item)
+//
+//            }
+
+
+//                binding.seasonNameAutoCompleteTextView.setText(item.name)
+//                binding.seasonNameAutoCompleteTextView.setAdapter(
+//                    ArrayAdapter(
+//                        context, R.layout.dropdown_item, context.resources.getStringArray(
+//                            R.array.season_names
+//                        )
+//                    )
+//                )
+
+
+//            binding.incrementCount.setOnClickListener {
+//                item.count = ((Integer.parseInt(item.count)+1).toString())
+//                onClickListener.onClick(item)
+//            }
+//            binding.decrementCount.setOnClickListener {
+//                if(Integer.parseInt(item.count)>0){
+//                    item.count = (Integer.parseInt(item.count)-1).toString()
+//                    onClickListener.onClick(item)
+//                }
+//
+//            }
 
         }
     }
@@ -79,17 +96,17 @@ class AddPointFormBioAdapter internal constructor(
         return ViewHolder(binding)
     }
 
-    class OnClickListener(val clickListener: (projects: SpeciesBio) -> Unit) {
-        fun onClick(projects: SpeciesBio) = clickListener(projects)
+    class OnClickListener(val clickListener: (projects: Species) -> Unit) {
+        fun onClick(projects: Species) = clickListener(projects)
     }
 }
 
-class ChatDiffCallback : DiffUtil.ItemCallback<SpeciesBio>() {
-    override fun areItemsTheSame(oldItem: SpeciesBio, itemWithUserInfo: SpeciesBio): Boolean {
+class ChatDiffCallback : DiffUtil.ItemCallback<Species>() {
+    override fun areItemsTheSame(oldItem: Species, itemWithUserInfo: Species): Boolean {
         return oldItem == itemWithUserInfo
     }
 
-    override fun areContentsTheSame(oldItem: SpeciesBio, itemWithUserInfo: SpeciesBio): Boolean {
-        return (oldItem.speciesId == itemWithUserInfo.speciesId)
+    override fun areContentsTheSame(oldItem: Species, itemWithUserInfo: Species): Boolean {
+        return (oldItem.id == itemWithUserInfo.id)
     }
 }

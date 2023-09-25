@@ -14,6 +14,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.terracon.survey.R
 import com.terracon.survey.databinding.FloraFaunaActivityBinding
 import com.terracon.survey.databinding.LoginActivityBinding
+import com.terracon.survey.model.BioPoint
 import com.terracon.survey.model.Project
 import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.AppUtils.spannableStringWithColor
@@ -77,13 +78,14 @@ class FloraFaunaActivity : AppCompatActivity() {
 
     private fun setupUi() {
          floraFaunaViewModel.project = intent.getSerializableExtra("projectData") as Project
+        floraFaunaViewModel.pointBio = intent.getSerializableExtra("pointData") as BioPoint
 
         setSupportActionBar(binding.mainToolbar.root)
         // add back arrow to toolbar
         if (supportActionBar != null) {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowHomeEnabled(true)
-             supportActionBar?.title = floraFaunaViewModel.project.projectName
+             supportActionBar?.title = floraFaunaViewModel.project.name
         }
         setupTabs()
 

@@ -84,6 +84,10 @@
             android:theme="@style/Theme.Terracon" />
 
         <activity
+            android:name=".views.points_list.PointsListActivity"
+            android:theme="@style/Theme.Terracon" />
+
+        <activity
             android:name="com.app.imagepickerlibrary.ui.activity.ImagePickerActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/SSImagePicker" />

@@ -26,6 +26,7 @@ import com.terracon.survey.views.flora_fauna.FloraFaunaViewModel
 import com.terracon.survey.views.home.HomeViewModel
 import com.terracon.survey.views.login.LoginViewModel
 import com.terracon.survey.views.otp_verify.OtpVerifyViewModel
+import com.terracon.survey.views.points_list.PointsListViewModel
 import com.terracon.survey.views.project_details.ProjectDetailsViewModel
 import com.terracon.survey.views.register.RegisterViewModel
 import com.terracon.survey.views.splash.SplashViewModel
@@ -48,9 +49,10 @@ val viewModelModule = module {
     viewModel { ProjectDetailsViewModel(get()) }
     viewModel { BioDiversityFormMainViewModel(get()) }
     viewModel { FloraFaunaViewModel(get()) }
-    viewModel { AddPointFormBioViewModel(get()) }
+    viewModel { AddPointFormBioViewModel(get(),get()) }
     viewModel { TreeAssessmentFormViewModel(get()) }
     viewModel { TreeAssessmentDetailsFormViewModel(get()) }
+    viewModel { PointsListViewModel(get()) }
 }
 
 

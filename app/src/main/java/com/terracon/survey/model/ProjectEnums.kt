@@ -1,9 +1,9 @@
 package com.terracon.survey.model
 
 
-enum class TopicEnums(private val symbol: String) {
-    TOPIC_STATUS("status.messages"),
-    TOPIC_CHAT_MESSAGE("private.messages");
+enum class ProjectTypeEnums(private val symbol: String) {
+    TREE_ASSESSMENT("tree_assessment"),
+    BIO_DIVERSITY("bio_diversity");
 
     override fun toString(): String {
         return symbol

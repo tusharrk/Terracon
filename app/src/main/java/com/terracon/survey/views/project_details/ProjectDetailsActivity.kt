@@ -4,12 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.terracon.survey.R
 import com.terracon.survey.databinding.ProjectDetailsActivityBinding
 import com.terracon.survey.model.Project
+import com.terracon.survey.model.ProjectTypeEnums
 import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.views.bio_diversity_form_main.BioDiversityFormMainActivity
+import com.terracon.survey.views.points_list.PointsListActivity
 import com.terracon.survey.views.tree_assessment_form.TreeAssessmentFormActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.Serializable
@@ -31,9 +34,20 @@ class ProjectDetailsActivity : AppCompatActivity() {
     private fun setupUi() {
 
         val project: Project = intent.getSerializableExtra("projectData") as Project
-        binding.projectDescText.text = project.projectDesc
+        binding.projectDescText.text = project.description
+        binding.projectLocationTxt.text = getString(R.string.project_location, project.location_of_survey)
+        binding.projectAreaTxt.text = getString(R.string.project_area, project.total_study_area_in_sq_km)
+        if(project.type == "bio_diversity"){
+            binding.startSurveyBtn.visibility = View.VISIBLE
+            binding.startSurveyTreeBtn.visibility = View.GONE
+        }else{
+            binding.startSurveyBtn.visibility = View.GONE
+            binding.startSurveyTreeBtn.visibility = View.VISIBLE
+
+        }
         binding.startSurveyBtn.setOnClickListener {
-            val intent = Intent(this, BioDiversityFormMainActivity::class.java)
+          //  val intent = Intent(this, BioDiversityFormMainActivity::class.java)
+            val intent = Intent(this, PointsListActivity::class.java)
             intent.putExtra("projectData", project as Serializable)
             this.startActivity(intent)
         }
@@ -48,7 +62,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
         if (supportActionBar != null) {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowHomeEnabled(true)
-            supportActionBar?.title = project.projectName
+            supportActionBar?.title = project.name
         }
 
 

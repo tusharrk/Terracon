@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.terracon.survey.databinding.ListItemProjectBinding
 import com.terracon.survey.model.Project
+import com.terracon.survey.views.points_list.PointsListViewModel
 
 
 class ProjectsListAdapter internal constructor(private val onClickListener: OnClickListener,private val viewModel: HomeViewModel) :
@@ -15,8 +16,8 @@ class ProjectsListAdapter internal constructor(private val onClickListener: OnCl
     class ViewHolder(private val binding: ListItemProjectBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(viewModel: HomeViewModel, item: Project, onClickListener: OnClickListener) {
-            binding.projectNameText.text = item.projectName
-            binding.projectDescText.text = item.clientName
+            binding.projectNameText.text = item.name
+            binding.projectDescText.text = item.client_name
            // AppUtils.imageWithGLide(binding.userProfileImage,item.projectUrl)
             binding.projectCard.setOnClickListener {
                 onClickListener.onClick(item)

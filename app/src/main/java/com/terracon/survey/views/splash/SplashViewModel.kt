@@ -83,7 +83,7 @@ class SplashViewModel(
         _isLoading.value = true
         L.d{"calling getUserDetails Api"}
         viewModelScope.launch {
-            usersRepository.getUserDetails(getHeaderMap(user))
+            usersRepository.getUserDetails(AppUtils.getApiHeaderMap())
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {
@@ -110,6 +110,7 @@ class SplashViewModel(
 
                         Result.Status.ERROR -> {
                             L.d{"getUserDetails Api ERROR"}
+                            L.d{it.toString()}
 
                             activity.runOnUiThread {
                                 val errorMsg =
@@ -123,6 +124,8 @@ class SplashViewModel(
                                 ).show()
                                 if(errorMsg == "Token not found, Invalid request"){
                                     navigateToLogin(activity)
+                                }else{
+                                    activity.finish()
                                 }
                             }
 
@@ -136,11 +139,7 @@ class SplashViewModel(
         }
     }
 
-    private fun getHeaderMap(user: User): Map<String, String> {
-        val headerMap = mutableMapOf<String, String>()
-        headerMap["token"] = user.token
-        return headerMap
-    }
+
 
     private fun saveSuccessUserLoginData(userResponse: UserResponse, activity: SplashActivity){
         if (userResponse.data.user.status == "Block") {

@@ -48,8 +48,12 @@ private var pageType:String? = ""
         listAdapter = FloraFaunaListAdapter(FloraFaunaListAdapter.OnClickListener { item ->
             val intent = Intent(context, AddPointFormBioActivity::class.java)
             intent.putExtra("projectData", floraFaunaViewModel.project as Serializable)
-            this.startActivity(intent)
+            intent.putExtra("pointData", floraFaunaViewModel.pointBio as Serializable)
+            intent.putExtra("subType", item)
+            intent.putExtra("type", pageType)
 
+
+            this.startActivity(intent)
         }, floraFaunaViewModel)
         binding.floraOrFaunaRecyclerView.adapter = listAdapter
         binding.floraOrFaunaRecyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))

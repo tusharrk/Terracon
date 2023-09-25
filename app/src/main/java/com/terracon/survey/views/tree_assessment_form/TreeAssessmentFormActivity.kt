@@ -132,7 +132,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
         if (supportActionBar != null) {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowHomeEnabled(true)
-            supportActionBar?.title = project.projectName
+            supportActionBar?.title = project.name
         }
 
         binding.dateEditText.editText?.setOnClickListener {

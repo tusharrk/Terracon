@@ -42,7 +42,7 @@
     <string name="comment">Comment</string>
     <string name="count">Count</string>
     <string name="species">Species</string>
-    <string name="add_new_item">Add New Item</string>
+    <string name="add_new_item">Add Item</string>
     <string name="submit">Submit</string>
     <string name="species_list">Species List</string>
     <string name="capture_upload_image"><![CDATA[Capture & Upload Image]]></string>
@@ -65,6 +65,11 @@
     <string name="invalid_name_msg">Please Enter Valid Name</string>
     <string name="invalid_otp_msg">Please Enter Valid OTP</string>
     <string name="account_blocked_msg">Your account has been Blocked</string>
+    <string name="project_details">Project Details</string>
+    <string name="project_location">"Project Location: %s"</string>
+    <string name="project_area">"Project Area: %s"</string>
+    <string name="plot_code">Plot Code</string>
+    <string name="village">Village</string>
 
     <string-array name="season_names">
         <item>Spring</item>

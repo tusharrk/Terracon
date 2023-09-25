@@ -1,90 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/projectCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/basic_item_padding"
-    android:orientation="horizontal">
+    android:padding="@dimen/padding_10"
+    android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/season_name_edit_text"
-        style="@style/textInputDropDownStyle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginEnd="@dimen/basic_item_padding"
-        android:hint="@string/species"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:orientation="horizontal">
 
-        <AutoCompleteTextView
-            android:maxLines="1"
-            android:id="@+id/seasonNameAutoCompleteTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/incrementCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_button"
-        android:layout_marginHorizontal="@dimen/basic_item_padding"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        app:icon="@drawable/baseline_add_24"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp"
-        android:textAppearance="@style/basicButtonStyle"
-        app:layout_constraintTop_toBottomOf="@+id/season_name_edit_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/count_edit_text"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/count_edit_text"
-        style="@style/textInputEditTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/basic_item_padding"
-        android:hint="@string/count"
-        app:layout_constraintTop_toBottomOf="@+id/season_name_edit_text"
-        app:layout_constraintStart_toEndOf="@+id/incrementCount"
-        app:layout_constraintEnd_toStartOf="@+id/decrementCount"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/indexTxt"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0" />
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="@dimen/basic_item_padding"
+            android:text=""
+            android:textAppearance="@style/secondaryTextStyle"
+            android:textSize="@dimen/desc_text_size"
+            tools:text="1" />
 
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/decrementCount"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/speciesNameTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="@dimen/padding_10"
+            android:layout_marginBottom="@dimen/basic_item_padding"
+            android:text=""
+            android:textAppearance="@style/basicTextStyle"
+            android:textSize="@dimen/desc_text_size"
+            android:textStyle="bold"
+            tools:text="Species Name" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_button"
-        android:layout_marginHorizontal="@dimen/basic_item_padding"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        app:icon="@drawable/baseline_horizontal_rule_24"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp"
-        android:textAppearance="@style/basicButtonStyle"
-        app:layout_constraintTop_toBottomOf="@+id/season_name_edit_text"
-        app:layout_constraintStart_toEndOf="@+id/count_edit_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="@dimen/basic_item_padding"
+            android:text="Count:"
+            android:textAppearance="@style/secondaryTextStyle"
+            android:textSize="@dimen/desc_text_size"/>
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/countTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="@dimen/padding_10"
+            android:layout_marginBottom="@dimen/basic_item_padding"
+            android:text=""
+            android:textAppearance="@style/secondaryTextStyle"
+            android:textSize="@dimen/desc_text_size"
+            android:textStyle="bold"
+            tools:text="5" />
+
+        <ImageView
+            android:layout_weight="1"
+            android:visibility="invisible"
+            android:id="@+id/imageView"
+            android:src="@drawable/baseline_image_24"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+
+        <ImageView
+            android:layout_weight="0"
+            android:id="@+id/editBtn"
+            android:src="@drawable/baseline_edit_24"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:tint="@color/colorPrimary" />
+
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/editBtn"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="@dimen/basic_item_padding"-->
+<!--            android:insetLeft="0dp"-->
+<!--            android:insetTop="0dp"-->
+<!--            android:insetRight="0dp"-->
+<!--            android:insetBottom="0dp"-->
+<!--            android:height="50dp"-->
+<!--            android:width="50dp"-->
+<!--            app:icon="@drawable/baseline_edit_24"-->
+<!--            app:iconGravity="textStart"-->
+<!--            app:iconPadding="0dp"-->
+<!--            android:textAppearance="@style/basicButtonStyle" />-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="@dimen/basic_item_padding"
+            android:text="Comment:"
+            android:textAppearance="@style/secondaryTextStyle"
+            android:textSize="@dimen/desc_text_size"/>
+
+        <TextView
+            android:id="@+id/commentTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="@dimen/padding_10"
+            android:layout_marginBottom="@dimen/basic_item_padding"
+            android:text=""
+            android:textAppearance="@style/secondaryTextStyle"
+            android:textSize="@dimen/desc_text_size"
+            android:textStyle="bold"
+            tools:text="asd asd as d" />
+    </LinearLayout>
 
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK
 import com.google.android.material.timepicker.TimeFormat
+import com.michaelflisar.lumberjack.L
 import com.terracon.survey.R
 import com.terracon.survey.databinding.BioDiversityFormMainActivityBinding
 import com.terracon.survey.model.Project
@@ -46,13 +48,15 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
         setupUi()
+        setupObservers()
         setupLocationService()
     }
 
-    private fun setupLocationService(){
+    private fun setupLocationService() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLocation()
     }
+
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager =
             getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -75,6 +79,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         }
         return false
     }
+
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             this,
@@ -85,6 +90,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
             permissionId
         )
     }
+
     @SuppressLint("MissingSuperCall")
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -103,8 +109,9 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
                 mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-                     location = task.result
+                    location = task.result
                     if (location != null) {
+                        L.d { "Location Complete ${location.latitude} -- ${location.longitude}" }
 //                        val geocoder = Geocoder(this, Locale.getDefault())
 //                        val list: List<Address> =
 //                            geocoder.getFromLocation(location.latitude, location.longitude, 1)!!
@@ -131,7 +138,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         if (supportActionBar != null) {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowHomeEnabled(true)
-            supportActionBar?.title = project.projectName
+            supportActionBar?.title = project.name
         }
 
         binding.dateEditText.editText?.setOnClickListener {
@@ -141,9 +148,10 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
             showTimePickerDialog()
         }
         binding.gpsEditText.editText?.setOnClickListener {
-           // getLocation()
-            if(location != null){
-                val url = "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}"
+            // getLocation()
+            if (location != null) {
+                val url =
+                    "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
             }
@@ -153,8 +161,105 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
             getLocation()
         }
 
+        binding.radioBtngrp.setOnCheckedChangeListener { radioGroup, i ->
+            when (i) {
+                R.id.circularRadioBtn -> {
+                    binding.radiusEditText.visibility = View.VISIBLE
+                    binding.lengthEditText.visibility = View.GONE
+                    binding.widthEditText.visibility = View.GONE
+                }
+
+                R.id.rectangularRadioBtn -> {
+                    binding.radiusEditText.visibility = View.GONE
+                    binding.lengthEditText.visibility = View.VISIBLE
+                    binding.widthEditText.visibility = View.VISIBLE
+                }
+            }
+        }
+
         binding.saveBtn.setOnClickListener {
-            bioDiversityFormMainViewModel.navigateToFloraFaunaActivity(this,project)
+            try {
+                L.d { binding.seasonNameAutoCompleteTextView.text.toString() }
+                if (binding.seasonNameAutoCompleteTextView.text.isNullOrBlank()) {
+                    Toast.makeText(this, "Please select Season Name", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                if (binding.weatherConditionNameAutoCompleteTextView.text.isNullOrBlank()) {
+                    Toast.makeText(this, "Please select Weather Condition", Toast.LENGTH_LONG)
+                        .show()
+                    return@setOnClickListener
+                }
+                if (binding.habitatAutoCompleteTextView.text.isNullOrBlank()) {
+                    Toast.makeText(this, "Please select Habitat", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                if (binding.plotCodeEditText.editText?.text.isNullOrBlank()) {
+                    Toast.makeText(this, "Please enter Plot Code", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                if (binding.villageAutoCompleteTextView.text.isNullOrBlank()) {
+                    Toast.makeText(this, "Please select Village", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+
+                if (binding.plotTypeEditText.editText?.text.isNullOrBlank()) {
+                    Toast.makeText(this, "Please enter Plot Type", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                if (binding.circularRadioBtn.isChecked) {
+                    if (binding.radiusEditText.editText?.text.isNullOrBlank()) {
+                        Toast.makeText(this, "Please enter Plot Radius", Toast.LENGTH_LONG).show()
+                        return@setOnClickListener
+                    }
+                } else {
+                    if (binding.lengthEditText.editText?.text.isNullOrBlank()) {
+                        Toast.makeText(this, "Please enter Plot Length", Toast.LENGTH_LONG).show()
+                        return@setOnClickListener
+                    }
+                    if (binding.widthEditText.editText?.text.isNullOrBlank()) {
+                        Toast.makeText(this, "Please enter Plot Width", Toast.LENGTH_LONG).show()
+                        return@setOnClickListener
+                    }
+                }
+
+                bioDiversityFormMainViewModel.bioPoint.project_id = project.id
+                bioDiversityFormMainViewModel.bioPoint.date =
+                    binding.dateEditText.editText?.text.toString()
+                bioDiversityFormMainViewModel.bioPoint.time =
+                    binding.timeEditText.editText?.text.toString()
+                bioDiversityFormMainViewModel.bioPoint.gps_latitude = location.latitude.toString()
+                bioDiversityFormMainViewModel.bioPoint.gps_longitude = location.longitude.toString()
+                bioDiversityFormMainViewModel.bioPoint.season_name =
+                    binding.seasonNameAutoCompleteTextView.text.toString()
+                bioDiversityFormMainViewModel.bioPoint.weather_condition =
+                    binding.weatherConditionNameAutoCompleteTextView.text.toString()
+                bioDiversityFormMainViewModel.bioPoint.habitat =
+                    binding.habitatAutoCompleteTextView.text.toString()
+
+                bioDiversityFormMainViewModel.bioPoint.village =
+                    binding.villageAutoCompleteTextView.text.toString()
+                bioDiversityFormMainViewModel.bioPoint.plot_dimension_type =
+                    if (binding.circularRadioBtn.isChecked) "circular" else "rectangular"
+
+
+                bioDiversityFormMainViewModel.bioPoint.plot_type =
+                    binding.plotTypeEditText.editText?.text.toString()
+                bioDiversityFormMainViewModel.bioPoint.radius =
+                    binding.radiusEditText.editText?.text.toString()
+                bioDiversityFormMainViewModel.bioPoint.width =
+                    binding.widthEditText.editText?.text.toString()
+                bioDiversityFormMainViewModel.bioPoint.length =
+                    binding.lengthEditText.editText?.text.toString()
+                bioDiversityFormMainViewModel.bioPoint.code =
+                    binding.plotCodeEditText.editText?.text.toString()
+
+               // bioDiversityFormMainViewModel.navigateToFloraFaunaActivity(this,project)
+                bioDiversityFormMainViewModel.savePointData(this, project)
+            } catch (e: Exception) {
+                L.d { "submit btn error--${e.toString()}" }
+                Toast.makeText(this, "Error--${e.toString()}", Toast.LENGTH_LONG).show()
+            }
+
         }
 
         //set pre filled values
@@ -162,14 +267,53 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         binding.dateEditText.editText?.setText(DateUtils.getTodayDateOrTime("dd MMM yyyy"))
         binding.timeEditText.editText?.setText(DateUtils.getTodayDateOrTime("hh:mm a"))
 
-        binding.seasonNameAutoCompleteTextView.setAdapter(ArrayAdapter(this, R.layout.dropdown_item, resources.getStringArray(R.array.season_names)))
+        binding.villageAutoCompleteTextView.setAdapter(
+            ArrayAdapter(
+                this,
+                R.layout.dropdown_item,
+                resources.getStringArray(R.array.season_names)
+            )
+        )
 
-        binding.weatherConditionNameAutoCompleteTextView.setAdapter(ArrayAdapter(this, R.layout.dropdown_item, resources.getStringArray(R.array.weather_condition_names)))
 
-        binding.habitatAutoCompleteTextView.setAdapter(ArrayAdapter(this, R.layout.dropdown_item, resources.getStringArray(R.array.habitat_names)))
+        binding.seasonNameAutoCompleteTextView.setAdapter(
+            ArrayAdapter(
+                this,
+                R.layout.dropdown_item,
+                resources.getStringArray(R.array.season_names)
+            )
+        )
+
+        binding.weatherConditionNameAutoCompleteTextView.setAdapter(
+            ArrayAdapter(
+                this,
+                R.layout.dropdown_item,
+                resources.getStringArray(R.array.weather_condition_names)
+            )
+        )
+
+        binding.habitatAutoCompleteTextView.setAdapter(
+            ArrayAdapter(
+                this,
+                R.layout.dropdown_item,
+                resources.getStringArray(R.array.habitat_names)
+            )
+        )
 
     }
 
+    private fun setupObservers() {
+
+        bioDiversityFormMainViewModel.isLoading.observe(this) { isLoading ->
+            if (isLoading) {
+                binding.progressView.root.visibility = View.VISIBLE
+                binding.saveBtn.visibility = View.INVISIBLE
+            } else {
+                binding.progressView.root.visibility = View.GONE
+                binding.saveBtn.visibility = View.VISIBLE
+            }
+        }
+    }
 
 
     private fun showDatePickerDialog() {
@@ -183,6 +327,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
             binding.dateEditText.editText?.setText(datePicker.headerText)
         }
     }
+
     private fun showTimePickerDialog() {
         val timePicker =
             MaterialTimePicker.Builder()
@@ -202,10 +347,12 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
             binding.timeEditText.editText?.setText(simpleDateFormat.format(cal.time))
         }
     }
+
     override fun onSupportNavigateUp(): Boolean {
         this.finish()
         return true
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true

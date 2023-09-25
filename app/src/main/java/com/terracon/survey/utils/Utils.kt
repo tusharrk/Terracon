@@ -31,9 +31,13 @@ object AppUtils {
         }catch (e:Exception){
             null
         }
-
     }
 
+     fun getApiHeaderMap(): Map<String, String> {
+        val headerMap = mutableMapOf<String, String>()
+        headerMap["token"] = GlobalData.userData.token
+        return headerMap
+    }
     fun spannableStringWithColor(view: TextView, start:Int, end:Int, s: String, color:Int, isUnderLine: Boolean = true) {
 //        val wordtoSpan: Spannable =
 //            SpannableString(s)

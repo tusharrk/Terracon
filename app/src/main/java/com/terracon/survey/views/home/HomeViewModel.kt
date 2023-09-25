@@ -1,10 +1,13 @@
 package com.terracon.survey.views.home
 
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.GsonBuilder
+import com.michaelflisar.lumberjack.L
 import com.terracon.survey.data.ProjectRepository
 import com.terracon.survey.model.ErrorState
 import com.terracon.survey.model.Project
@@ -35,6 +38,8 @@ class HomeViewModel(
 
     init {
         fetchProjects("asd")
+        getAllFloraData()
+        getAllFaunaData()
     }
 
     fun fetchProjects(userId: String) {
@@ -47,11 +52,13 @@ class HomeViewModel(
                         Result.Status.SUCCESS -> {
                             _isLoading.value = false
                             _errorState.value = null
-                            if (it.data?.isNotEmpty() == true) {
+                            if (it.data?.status == "success" && it.data.data.project.isNotEmpty()) {
+                                Log.d("TAG_X", it.data.toString())
                                 _projectsList.value =
-                                    it.data.sortedBy { projects -> projects.projectName }
+                                    it.data.data.project.sortedBy { projects -> projects.name }
                             } else {
                                 _errorState.value = ErrorState.NoData
+                                //_errorState.value = ErrorState.NoData
                             }
                         }
 
@@ -68,8 +75,52 @@ class HomeViewModel(
                         else -> _errorState.value = ErrorState.NoData
                     }
                 }
+        }
+    }
 
+    private fun getAllFloraData() {
+        viewModelScope.launch {
+            projectRepository.getFloraData(UserApiRequestDTO(id = 0))
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            L.d { "flora success" }
+                            if (it.data?.status == "success" && it.data.data.data.isNotEmpty()) {
+                                Log.d("TAG_X", it.data.toString())
+                            }
+                        }
+                        Result.Status.LOADING -> {
+                            L.d { "flora loading" }
+                        }
+                        Result.Status.ERROR -> {
+                            L.d { "flora error" }
+                        }
+                        else -> {}
+                    }
+                }
+        }
+    }
 
+    private fun getAllFaunaData() {
+        viewModelScope.launch {
+            projectRepository.getFaunaData(UserApiRequestDTO(id = 0))
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            L.d { "fauna success" }
+                            if (it.data?.status == "success" && it.data.data.data.isNotEmpty()) {
+                                Log.d("TAG_X", it.data.toString())
+                            }
+                        }
+                        Result.Status.LOADING -> {
+                            L.d { "fauna loading" }
+                        }
+                        Result.Status.ERROR -> {
+                            L.d { "fauna error" }
+                        }
+                        else -> {}
+                    }
+                }
         }
     }
 
