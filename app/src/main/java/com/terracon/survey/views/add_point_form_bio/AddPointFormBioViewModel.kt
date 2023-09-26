@@ -175,8 +175,8 @@ class AddPointFormBioViewModel(
     }
 
     fun savePointData(activity: AddPointFormBioActivity){
-//        fileUpload(activity)
-//        return
+        fileUpload(activity)
+        return
         _isLoading.value = true
         viewModelScope.launch {
             pointDataRepository.saveBioPointDetailsInLocalDB(PointDTO(pointBio.id.toString(),type,subType),pointBioDetails)
@@ -239,14 +239,11 @@ class AddPointFormBioViewModel(
     fun fileUpload(activity: AddPointFormBioActivity) {
         val requestBody = HashMap<String, RequestBody>()
         requestBody["fileName"] =
-            "testing11112121.jpeg".toRequestBody("text/plain".toMediaTypeOrNull())
+            "testing11112121122.jpeg".toRequestBody("text/plain".toMediaTypeOrNull())
         val file: File? =  FileHelper.getFile(activity, Uri.parse(imageUrl))
 
         if (file != null) {
-
-
         // val f: File = activity.getFile(activity, imageUrl)
-
         val fileBody: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
         val imagePart: MultipartBody.Part =
             MultipartBody.Part.createFormData("fileToUpload", file.name, fileBody)

@@ -59,4 +59,17 @@ interface PointDataDao {
 
     @Query("DELETE FROM Species WHERE bio_diversity_survey_data_points_id = :id")
     fun deleteSpecies(id: String)
+
+
+    @Transaction
+    @Query("UPDATE BioPointDetails SET bio_diversity_survey_points_id =:bioPointId Where bio_diversity_survey_points_id = :id")
+    fun updateBioPointIdInPointDetails(bioPointId: Int,id: Int)
+
+    //species
+    @Query("SELECT * FROM Species Where bio_diversity_survey_data_points_id in(:idList)")
+    fun getSpeciesListById(idList: List<Int>): List<Species>
+
+    @Transaction
+    @Query("SELECT dbId FROM BioPointDetails Where bio_diversity_survey_points_id = :id")
+    fun getBioPointDetailsById(id: String): List<Int>
 }

@@ -2,6 +2,7 @@ package com.terracon.survey.data
 
 
 import android.graphics.Point
+import android.widget.GridLayout.Spec
 import com.michaelflisar.lumberjack.L
 import com.terracon.survey.data.local.PointDataDao
 import com.terracon.survey.data.local.ProjectDao
@@ -43,9 +44,15 @@ class PointDataRepository(
             if (result.status == Result.Status.SUCCESS) {
                 if (isUpdateLocal) {
                     result.data?.let {
+                        var tempId = payload.dbId
                         payload.id = it.data.bio_diversity_survey_point_details.id
                         payload.isSynced = true
                         pointDataDao.insertBioPoint(bioPoint = payload)
+                        if (tempId != null && payload.id != null) {
+                            pointDataDao.updateBioPointIdInPointDetails(payload.id!!, tempId)
+                        }
+
+
                     }
                 }
             }
@@ -144,7 +151,10 @@ class PointDataRepository(
         }.flowOn(Dispatchers.IO)
     }
 
-    suspend fun saveBioPointDetailsInLocalDB(pointDTO: PointDTO,bioPointDetails: BioPointDetails): Flow<Result<String>> {
+    suspend fun saveBioPointDetailsInLocalDB(
+        pointDTO: PointDTO,
+        bioPointDetails: BioPointDetails
+    ): Flow<Result<String>> {
         return flow {
             emit(Result.loading())
 
@@ -154,13 +164,13 @@ class PointDataRepository(
                 pointDTO.sub_type
             )
 
-            if(count.isNotEmpty()){
+            if (count.isNotEmpty()) {
                 pointDataDao.deleteSpecies(count[0].dbId.toString())
                 bioPointDetails.species.forEach {
                     it.bio_diversity_survey_data_points_id = count[0].dbId?.toInt()
                 }
                 pointDataDao.insertBioPointDetailsSpeciesList(bioPointDetails.species)
-            }else{
+            } else {
                 val result = pointDataDao.insertBioPointDetails(bioPointDetails).let { id ->
                     bioPointDetails.species.forEach {
                         it.bio_diversity_survey_data_points_id = id.toInt()
@@ -183,7 +193,7 @@ class PointDataRepository(
                 pointDTO.type,
                 pointDTO.sub_type
             )
-            if(pointDetails != null){
+            if (pointDetails != null) {
                 pointDetails.species = pointDataDao.getSpeciesById(pointDetails.dbId.toString())
             }
 
@@ -194,6 +204,21 @@ class PointDataRepository(
                     status = "success"
                 )
             emit(Result.success(bioPointDetailsResponse))
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getImageListToUpload(pointDTO: PointDTO): Flow<Result<List<Species>>?> {
+        return flow {
+            emit(Result.loading())
+            val pointDetails: List<Int> = pointDataDao.getBioPointDetailsById(
+                pointDTO.bio_diversity_survey_points_id
+            )
+            val result = pointDataDao.getSpeciesListById(pointDetails).let {
+                Result.success(
+                    it
+                )
+            }
+            emit(result)
         }.flowOn(Dispatchers.IO)
     }
 

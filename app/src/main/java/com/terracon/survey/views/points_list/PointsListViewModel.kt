@@ -44,7 +44,8 @@ class PointsListViewModel(
     }
 
     fun syncDataFromLocalToServer(activity: PointsListActivity,bioPoint: BioPoint){
-        PointDataUtils.savePointDataToServerFromDB(viewModelScope,pointRepository,activity,bioPoint)
+      ///  PointDataUtils.savePointDataToServerFromDB(viewModelScope,pointRepository,activity,bioPoint)
+        PointDataUtils.getImageListToUpload(viewModelScope,pointRepository,activity,bioPoint)
 
     }
 

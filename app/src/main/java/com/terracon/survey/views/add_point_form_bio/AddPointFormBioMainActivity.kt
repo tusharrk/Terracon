@@ -70,7 +70,8 @@ class AddPointFormBioActivity : AppCompatActivity(),
                 binding.commentEditText.editText?.setText(item.comment)
                 binding.uploadImage.text = item.images
 
-                addPointFormBioViewModel.imageUrl = if( item.images.isNullOrEmpty()) "" else item.images!!
+                addPointFormBioViewModel.imageUrl =
+                    if (item.images.isNullOrEmpty()) "" else item.images!!
 
                 //addPointFormBioViewModel.updateCountValue(item, index)
                 // listAdapter.notifyItemChanged(index)
@@ -98,8 +99,8 @@ class AddPointFormBioActivity : AppCompatActivity(),
         addPointFormBioViewModel.speciesBioList.observe(this) { data ->
             listAdapter.submitList(data)
         }
-        addPointFormBioViewModel.floraFaunaSpeciesList.observe(this){data ->
-            if(!data.isNullOrEmpty()){
+        addPointFormBioViewModel.floraFaunaSpeciesList.observe(this) { data ->
+            if (!data.isNullOrEmpty()) {
                 binding.speciesNameAutoCompleteTextView.setAdapter(
                     ArrayAdapter(
                         this, R.layout.dropdown_item, data
@@ -118,7 +119,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
             }
         }
 
-        addPointFormBioViewModel.isLoadingFullScreen.observe(this){ isLoading ->
+        addPointFormBioViewModel.isLoadingFullScreen.observe(this) { isLoading ->
             if (isLoading) {
                 binding.progressViewFull.root.visibility = View.VISIBLE
                 binding.mainLayout.visibility = View.INVISIBLE
@@ -140,7 +141,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
                         addPointFormBioViewModel.getSpeciesList()
                     })
                 // showError(errorMessage.toString())
-            }else{
+            } else {
                 binding.errorView.root.visibility = View.GONE
                 binding.mainLayout.visibility = View.VISIBLE
             }
@@ -202,7 +203,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
             binding.countEditText.editText?.setText("0")
             binding.commentEditText.editText?.setText("")
             binding.uploadImage.text = resources.getString(R.string.capture_upload_image)
-            addPointFormBioViewModel.imageUrl = ""
+            //addPointFormBioViewModel.imageUrl = ""
             addPointFormBioViewModel.isEditIndex = null
             addPointFormBioViewModel.isEdit = false
         }
@@ -274,6 +275,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
 
     private fun openFilePicker() {
         imagePicker.open(PickerType.CAMERA)
+//        imagePicker.allowCropping(true).compressImage(true, 50).open(PickerType.CAMERA)
 
         // val pickerOptionBottomSheet = SSPickerOptionsBottomSheet.newInstance()
         // pickerOptionBottomSheet.show(supportFragmentManager,"tag")
@@ -321,7 +323,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
             ///Glide.with(this).load(uri).into(binding.imageView);
 
 //            val fileHelper = FileHelper()
-             // binding.uploadImage.text = file?.absolutePath
+            // binding.uploadImage.text = file?.absolutePath
         }
         //RealPathUtil.getRealPath(this,uri)?.let { Log.d("TAG_FILEE__", it) }
     }
@@ -334,3 +336,6 @@ class AddPointFormBioActivity : AppCompatActivity(),
         return true
     }
 }
+
+//content://com.terracon.survey.com.app.imagepickerlibrary.provider/external_files/Android/data/com.terracon.survey/files/Pictures/JPEG_20230926_170012_5514495750614150298.jpg
+//file:///storage/emulated/0/Android/data/com.terracon.survey/files/Pictures/JPEG_20230926_170735_1845284174450346692.jpg
