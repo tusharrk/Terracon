@@ -38,11 +38,10 @@ class AddPointFormBioAdapter internal constructor(
             binding.indexTxt.text = (position+1).toString()
             binding.commentTxt.text = item.comment
 
-            if(item.images.isNotBlank()){
-                binding.imageView.visibility = View.VISIBLE
-            }else{
+            if(item.images.isNullOrBlank()){
                 binding.imageView.visibility = View.GONE
-
+            }else{
+                binding.imageView.visibility = View.VISIBLE
             }
 
             binding.editBtn.setOnClickListener {

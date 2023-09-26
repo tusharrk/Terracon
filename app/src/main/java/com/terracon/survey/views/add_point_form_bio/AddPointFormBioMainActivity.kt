@@ -20,6 +20,7 @@ import com.app.imagepickerlibrary.listener.ImagePickerResultListener
 import com.app.imagepickerlibrary.model.ImageProvider
 import com.app.imagepickerlibrary.model.PickerType
 import com.app.imagepickerlibrary.ui.bottomsheet.SSPickerOptionsBottomSheet
+import com.bumptech.glide.Glide
 import com.michaelflisar.lumberjack.L
 import com.terracon.survey.R
 import com.terracon.survey.databinding.AddPointFormBioActivityBinding
@@ -28,6 +29,7 @@ import com.terracon.survey.model.Project
 import com.terracon.survey.model.Species
 import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.ErrorUtils
+import com.terracon.survey.utils.FileHelper
 import com.terracon.survey.utils.FileUtils.getFileFromUri
 import com.terracon.survey.utils.RealPathUtil
 import io.ak1.pix.helpers.PixBus
@@ -67,7 +69,8 @@ class AddPointFormBioActivity : AppCompatActivity(),
                 binding.countEditText.editText?.setText(item.count)
                 binding.commentEditText.editText?.setText(item.comment)
                 binding.uploadImage.text = item.images
-                addPointFormBioViewModel.imageUrl = item.images
+
+                addPointFormBioViewModel.imageUrl = if( item.images.isNullOrEmpty()) "" else item.images!!
 
                 //addPointFormBioViewModel.updateCountValue(item, index)
                 // listAdapter.notifyItemChanged(index)
@@ -315,9 +318,10 @@ class AddPointFormBioActivity : AppCompatActivity(),
             Log.d("TAG_X_FILE", "File path: ${uri}")
             binding.uploadImage.text = uri.toString()
             addPointFormBioViewModel.imageUrl = uri.toString()
+            ///Glide.with(this).load(uri).into(binding.imageView);
 
-
-            //  binding.uploadImage.text = RealPathUtil.getRealPath(this,uri)
+//            val fileHelper = FileHelper()
+             // binding.uploadImage.text = file?.absolutePath
         }
         //RealPathUtil.getRealPath(this,uri)?.let { Log.d("TAG_FILEE__", it) }
     }

@@ -267,13 +267,16 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         binding.dateEditText.editText?.setText(DateUtils.getTodayDateOrTime("dd MMM yyyy"))
         binding.timeEditText.editText?.setText(DateUtils.getTodayDateOrTime("hh:mm a"))
 
-        binding.villageAutoCompleteTextView.setAdapter(
-            ArrayAdapter(
-                this,
-                R.layout.dropdown_item,
-                resources.getStringArray(R.array.season_names)
+        if(project.villages.isNotBlank()){
+            binding.villageAutoCompleteTextView.setAdapter(
+                ArrayAdapter(
+                    this,
+                    R.layout.dropdown_item,
+                    project.villages.split(",")
+                )
             )
-        )
+        }
+
 
 
         binding.seasonNameAutoCompleteTextView.setAdapter(

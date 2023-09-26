@@ -12,23 +12,57 @@
     android:padding="@dimen/basic_page_padding">
 
     <TextView
-        android:id="@+id/projectNameText"
+        android:id="@+id/pointCodeTxt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:textColor="@color/textColor"
         android:textSize="18sp"
         android:textStyle="bold"
-        tools:text="Project Mame" />
+        tools:text="Point Name" />
 
-    <TextView
-        android:id="@+id/projectDescText"
+    <LinearLayout
+        android:layout_marginTop="@dimen/basic_item_padding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/basic_item_padding"
-        android:singleLine="true"
-        android:textColor="@color/secondaryTextColor"
-        android:textSize="16sp"
-        tools:text="Project Desc" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_weight="1"
+            android:id="@+id/dateTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="16sp"
+            tools:text="date" />
+
+        <TextView
+            android:gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/timeTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_marginStart="@dimen/padding_10"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="16sp"
+            tools:text="time" />
+
+
+        <TextView
+            android:gravity="end"
+            android:layout_weight="1"
+            android:id="@+id/habitatTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_marginStart="@dimen/padding_10"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="16sp"
+            tools:text="habitat" />
+
+    </LinearLayout>
+
 
 </LinearLayout>

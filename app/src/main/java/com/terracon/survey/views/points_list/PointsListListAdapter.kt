@@ -19,9 +19,12 @@ class PointsListAdapter internal constructor(private val onClickListener: OnClic
     class ViewHolder(private val binding: ListItemPointBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(viewModel: PointsListViewModel, item: BioPoint, onClickListener: OnClickListener) {
-            binding.projectNameText.text = item.code
-            binding.projectDescText.text = item.village
-           // AppUtils.imageWithGLide(binding.userProfileImage,item.projectUrl)
+            binding.pointCodeTxt.text = item.code
+            binding.dateTxt.text = item.date
+            binding.timeTxt.text = item.time
+            binding.habitatTxt.text = item.habitat
+
+            // AppUtils.imageWithGLide(binding.userProfileImage,item.projectUrl)
             binding.projectCard.setOnClickListener {
                 onClickListener.onClick(item)
             }

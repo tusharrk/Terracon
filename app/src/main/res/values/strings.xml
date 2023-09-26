@@ -70,6 +70,7 @@
     <string name="project_area">"Project Area: %s"</string>
     <string name="plot_code">Plot Code</string>
     <string name="village">Village</string>
+    <string name="new_point">New Point</string>
 
     <string-array name="season_names">
         <item>Spring</item>

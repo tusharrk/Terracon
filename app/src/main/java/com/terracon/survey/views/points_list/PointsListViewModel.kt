@@ -14,6 +14,7 @@ import com.terracon.survey.model.ErrorState
 import com.terracon.survey.model.Project
 import com.terracon.survey.model.Result
 import com.terracon.survey.model.UserApiRequestDTO
+import com.terracon.survey.utils.PointDataUtils
 import kotlinx.coroutines.launch
 
 
@@ -39,6 +40,12 @@ class PointsListViewModel(
 
     init {
        // fetchPoints("asd")
+
+    }
+
+    fun syncDataFromLocalToServer(activity: PointsListActivity,bioPoint: BioPoint){
+        PointDataUtils.savePointDataToServerFromDB(viewModelScope,pointRepository,activity,bioPoint)
+
     }
 
     fun fetchPoints() {

@@ -40,6 +40,7 @@ class HomeViewModel(
         fetchProjects("asd")
         getAllFloraData()
         getAllFaunaData()
+
     }
 
     fun fetchProjects(userId: String) {

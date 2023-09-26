@@ -32,7 +32,7 @@ var bioPoint: BioPoint = BioPoint()
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-fun navigateToFloraFaunaActivity(activity: BioDiversityFormMainActivity, project: Project){
+private fun navigateToFloraFaunaActivity(activity: BioDiversityFormMainActivity, project: Project){
     val intent = Intent(activity, FloraFaunaActivity::class.java)
     intent.putExtra("projectData", project as Serializable)
     intent.putExtra("pointData", bioPoint as Serializable)
@@ -43,28 +43,28 @@ fun navigateToFloraFaunaActivity(activity: BioDiversityFormMainActivity, project
     fun savePointData(activity: BioDiversityFormMainActivity,project: Project){
             _isLoading.value = true
             viewModelScope.launch {
-                pointDataRepository.submitPoint(bioPoint)
+                pointDataRepository.saveBioPointInLocalDB(bioPoint)
                     .collect {
                         when (it?.status) {
                             Result.Status.SUCCESS -> {
                                 _isLoading.value = false
-                                if (it.data?.status == "success") {
+                                if (it.data != null) {
+                                   // var data = it.data as BioPoint
                                     Log.d("TAG_X", it.data.toString())
                                     activity.runOnUiThread {
-                                        val msg = it.data.message
                                         Toast.makeText(
                                             activity,
-                                            msg,
+                                            "Data Saved Successfully",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
-                                    bioPoint = it.data.data.bio_diversity_survey_point_details
+                                    bioPoint.id = it.data.toInt()
                                     navigateToFloraFaunaActivity(activity,project)
                                 } else {
                                     activity.runOnUiThread {
                                         Toast.makeText(
                                             activity,
-                                            it.data?.message,
+                                            "error",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
@@ -99,7 +99,6 @@ fun navigateToFloraFaunaActivity(activity: BioDiversityFormMainActivity, project
                         }
                     }
             }
-
     }
 
 

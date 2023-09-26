@@ -1,8 +1,7 @@
 package com.terracon.survey.views.add_point_form_bio
 
-import android.content.Intent
+import android.net.Uri
 import android.util.Log
-import android.widget.GridLayout.Spec
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,17 +10,21 @@ import androidx.lifecycle.viewModelScope
 import com.terracon.survey.R
 import com.terracon.survey.data.PointDataRepository
 import com.terracon.survey.data.ProjectRepository
-import com.terracon.survey.data.UserRepository
 import com.terracon.survey.model.BioPoint
 import com.terracon.survey.model.BioPointDetails
 import com.terracon.survey.model.ErrorState
+import com.terracon.survey.model.PointDTO
 import com.terracon.survey.model.Project
 import com.terracon.survey.model.Result
 import com.terracon.survey.model.Species
-import com.terracon.survey.model.UserApiRequestDTO
-import com.terracon.survey.views.bio_diversity_form_main.BioDiversityFormMainActivity
-import com.terracon.survey.views.flora_fauna.FloraFaunaActivity
+import com.terracon.survey.utils.FileHelper
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 
 class AddPointFormBioViewModel(
@@ -53,7 +56,7 @@ class AddPointFormBioViewModel(
 
     var isEdit = false
     var isEditIndex: Int? = null
-    var imageUrl:String = ""
+    var imageUrl: String = ""
 
     init {
        // getSpeciesNamesList()
@@ -73,6 +76,7 @@ class AddPointFormBioViewModel(
                             _errorState.value = null
                             if (it.data != null) {
                                 _floraFaunaSpeciesList.value = it.data
+                                getPointDetailsData()
                             }
                             else {
                                 _errorState.value = ErrorState.NoData
@@ -90,6 +94,47 @@ class AddPointFormBioViewModel(
                         }
 
                         else -> _errorState.value = ErrorState.NoData
+                    }
+                }
+        }
+    }
+
+    private fun getPointDetailsData(){
+        _isLoadingFullScreen.value = true
+        //_errorState.value = null
+        viewModelScope.launch {
+            pointDataRepository.getPointDetailsFromLocal(PointDTO(pointBio.id.toString(),type,subType))
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            _isLoadingFullScreen.value = false
+                            _errorState.value = null
+                            if (it.data?.status == "success") {
+                                Log.d("TAG_X", it.data.toString())
+                                if(it.data.data.bio_diversity_survey_data_points != null){
+                                    _speciesBioList.value = ArrayList(it.data.data.bio_diversity_survey_data_points.species)
+                                }
+                            } else {
+
+                               // _errorState.value = ErrorState.NoData
+                            }
+                        }
+
+                        Result.Status.LOADING -> {
+                            _isLoadingFullScreen.value = true
+                            //_errorState.value = null
+                        }
+
+                        Result.Status.ERROR -> {
+                            _isLoadingFullScreen.value = false
+                            //_errorState.value = ErrorState.ServerError
+
+
+                        }
+
+                        else -> {
+                            // _errorState.value = ErrorState.NoData
+                        }
                     }
                 }
         }
@@ -130,9 +175,84 @@ class AddPointFormBioViewModel(
     }
 
     fun savePointData(activity: AddPointFormBioActivity){
+//        fileUpload(activity)
+//        return
         _isLoading.value = true
         viewModelScope.launch {
-            pointDataRepository.submitPointDetails(pointBioDetails)
+            pointDataRepository.saveBioPointDetailsInLocalDB(PointDTO(pointBio.id.toString(),type,subType),pointBioDetails)
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            _isLoading.value = false
+                            if (it.data != null) {
+                                Log.d("TAG_X", it.data.toString())
+                                activity.runOnUiThread {
+                                    //val msg = it.data.message
+                                    Toast.makeText(
+                                        activity,
+                                        "success",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    activity.finish()
+                                }
+                            } else {
+                                activity.runOnUiThread {
+                                    Toast.makeText(
+                                        activity,
+                                        "error",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                //_errorState.value = ErrorState.NoData
+                            }
+                        }
+
+                        Result.Status.LOADING -> {
+                            _isLoading.value = true
+                        }
+
+                        Result.Status.ERROR -> {
+                            activity.runOnUiThread {
+                                val errorMsg =
+                                    if (it.error != null) it.error.message else activity.resources.getString(
+                                        R.string.server_error_desc
+                                    )
+                                Toast.makeText(
+                                    activity,
+                                    errorMsg,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+
+                            _isLoading.value = false
+                        }
+
+                        else -> {
+                            // _errorState.value = ErrorState.NoData
+                        }
+                    }
+                }
+        }
+    }
+
+    fun fileUpload(activity: AddPointFormBioActivity) {
+        val requestBody = HashMap<String, RequestBody>()
+        requestBody["fileName"] =
+            "testing11112121.jpeg".toRequestBody("text/plain".toMediaTypeOrNull())
+        val file: File? =  FileHelper.getFile(activity, Uri.parse(imageUrl))
+
+        if (file != null) {
+
+
+        // val f: File = activity.getFile(activity, imageUrl)
+
+        val fileBody: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        val imagePart: MultipartBody.Part =
+            MultipartBody.Part.createFormData("fileToUpload", file.name, fileBody)
+
+        viewModelScope.launch {
+            pointDataRepository.fileUpload(requestBody, imagePart)
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {
@@ -176,8 +296,6 @@ class AddPointFormBioViewModel(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
-
-
                             _isLoading.value = false
                         }
 
@@ -188,6 +306,16 @@ class AddPointFormBioViewModel(
                 }
         }
     }
+    }
 
 
 }
+
+
+
+
+
+
+
+
+

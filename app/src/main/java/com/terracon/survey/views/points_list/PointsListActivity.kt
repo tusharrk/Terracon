@@ -11,10 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.terracon.survey.R
 import com.terracon.survey.databinding.HomeActivityBinding
+import com.terracon.survey.databinding.PointsListActivityBinding
 import com.terracon.survey.model.Project
 import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.ErrorUtils
 import com.terracon.survey.utils.GlobalData
+import com.terracon.survey.views.bio_diversity_form_main.BioDiversityFormMainActivity
+import com.terracon.survey.views.flora_fauna.FloraFaunaActivity
 import com.terracon.survey.views.home.HomeViewModel
 import com.terracon.survey.views.home.ProjectsListAdapter
 import com.terracon.survey.views.project_details.ProjectDetailsActivity
@@ -26,11 +29,11 @@ class PointsListActivity : AppCompatActivity() {
 
     private val pointsListViewModel by viewModel<PointsListViewModel>()
 
-    private lateinit var binding: HomeActivityBinding
+    private lateinit var binding: PointsListActivityBinding
     private lateinit var listAdapter: PointsListAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = HomeActivityBinding.inflate(layoutInflater)
+        binding = PointsListActivityBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
         setupListAdapter()
@@ -39,9 +42,12 @@ class PointsListActivity : AppCompatActivity() {
     }
 
     private fun setupListAdapter() {
-        listAdapter = PointsListAdapter(PointsListAdapter.OnClickListener { project ->
-            val intent = Intent(this, ProjectDetailsActivity::class.java)
-            intent.putExtra("projectData", project as Serializable)
+        listAdapter = PointsListAdapter(PointsListAdapter.OnClickListener { bioPoint ->
+//            pointsListViewModel.syncDataFromLocalToServer(this,bioPoint)
+//            return@OnClickListener
+            val intent = Intent(this, FloraFaunaActivity::class.java)
+            intent.putExtra("pointData", bioPoint as Serializable)
+            intent.putExtra("projectData", pointsListViewModel.project as Serializable)
             this.startActivity(intent)
 //            try {
 //                val index = homeViewModel.projectsList.value?.indexOf(project)
@@ -50,8 +56,8 @@ class PointsListActivity : AppCompatActivity() {
 //                Log.d("TAG_X", "error update read--$e")
 //            }
         }, pointsListViewModel)
-        binding.projectsRecyclerView.adapter = listAdapter
-        binding.projectsRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        binding.pointsRecyclerView.adapter = listAdapter
+        binding.pointsRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
     }
 
@@ -63,17 +69,17 @@ class PointsListActivity : AppCompatActivity() {
         pointsListViewModel.isLoading.observe(this) { isLoading ->
             if (isLoading) {
                 binding.progressView.root.visibility = View.VISIBLE
-                binding.projectsRecyclerView.visibility = View.INVISIBLE
+                binding.pointsRecyclerView.visibility = View.INVISIBLE
             } else {
                 binding.progressView.root.visibility = View.GONE
-                binding.projectsRecyclerView.visibility = View.VISIBLE
+                binding.pointsRecyclerView.visibility = View.VISIBLE
             }
         }
 
         pointsListViewModel.errorState.observe(this) { errorMessage ->
             if (errorMessage != null) {
                 binding.errorView.root.visibility = View.VISIBLE
-                binding.projectsRecyclerView.visibility = View.INVISIBLE
+                binding.pointsRecyclerView.visibility = View.INVISIBLE
                 ErrorUtils.setErrorView(
                     errorMessage = errorMessage,
                     errorBinding = binding.errorView,
@@ -85,7 +91,7 @@ class PointsListActivity : AppCompatActivity() {
                 // showError(errorMessage.toString())
             }else{
                 binding.errorView.root.visibility = View.GONE
-                binding.projectsRecyclerView.visibility = View.VISIBLE
+                binding.pointsRecyclerView.visibility = View.VISIBLE
             }
         }
     }
@@ -97,9 +103,9 @@ class PointsListActivity : AppCompatActivity() {
         setSupportActionBar(binding.mainToolbar.root)
         // add back arrow to toolbar
         if(supportActionBar != null){
-           // supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            //supportActionBar?.setDisplayShowHomeEnabled(true)
-            supportActionBar?.title = "Welcome, ${GlobalData.userData.name}"
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowHomeEnabled(true)
+            supportActionBar?.title = pointsListViewModel.project.name
         }
 
         binding.pullToRefresh.setOnRefreshListener {
@@ -107,8 +113,20 @@ class PointsListActivity : AppCompatActivity() {
             binding.pullToRefresh.isRefreshing = false
         }
 
+        binding.newChatFab.setOnClickListener {
+            val intent = Intent(this, BioDiversityFormMainActivity::class.java)
+            intent.putExtra("projectData", pointsListViewModel.project as Serializable)
+            this.startActivity(intent)
+
+        }
+
         pointsListViewModel.fetchPoints()
 
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        this.finish()
+        return true
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

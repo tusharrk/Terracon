@@ -17,6 +17,7 @@ data class Project(
     val name: String = "",
     val total_study_area_in_sq_km: String = "",
     val type: String = "",
+    val villages:String = "",
     val updated_at: String = "",
     val updated_by: Int = 0
 ): Serializable{

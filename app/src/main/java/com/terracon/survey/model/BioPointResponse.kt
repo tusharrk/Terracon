@@ -7,7 +7,8 @@ import java.io.Serializable
 
 @Entity
 data class BioPoint(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    var dbId:Int? = null,
     var id: Int? = null,
     var code: String = "",
     var created_at: String = "",
@@ -26,7 +27,8 @@ data class BioPoint(
     var updated_at: String = "",
     var village: String = "",
     var weather_condition: String = "",
-    var width: String = ""
+    var width: String = "",
+    var isSynced:Boolean = false
 ):Serializable{}
 
 data class BioPointResponse(

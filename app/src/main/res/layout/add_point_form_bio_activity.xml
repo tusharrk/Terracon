@@ -145,6 +145,7 @@
                     app:strokeWidth="1dp" />
 
 
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/comment_edit_text"
                     style="@style/textInputEditTextStyle"
