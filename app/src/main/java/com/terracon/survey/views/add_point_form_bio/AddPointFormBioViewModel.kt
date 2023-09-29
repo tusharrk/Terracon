@@ -103,7 +103,7 @@ class AddPointFormBioViewModel(
         _isLoadingFullScreen.value = true
         //_errorState.value = null
         viewModelScope.launch {
-            pointDataRepository.getPointDetailsFromLocal(PointDTO(pointBio.id.toString(),type,subType))
+            pointDataRepository.getPointDetailsFromLocal(PointDTO(pointBio.dbId.toString(),type,subType))
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {
@@ -175,11 +175,9 @@ class AddPointFormBioViewModel(
     }
 
     fun savePointData(activity: AddPointFormBioActivity){
-        fileUpload(activity)
-        return
         _isLoading.value = true
         viewModelScope.launch {
-            pointDataRepository.saveBioPointDetailsInLocalDB(PointDTO(pointBio.id.toString(),type,subType),pointBioDetails)
+            pointDataRepository.saveBioPointDetailsInLocalDB(PointDTO(pointBio.dbId.toString(),type,subType),pointBioDetails)
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {
@@ -214,7 +212,7 @@ class AddPointFormBioViewModel(
                         Result.Status.ERROR -> {
                             activity.runOnUiThread {
                                 val errorMsg =
-                                    if (it.error != null) it.error.message else activity.resources.getString(
+                                    if (it.error?.message != null) it.error.message else activity.resources.getString(
                                         R.string.server_error_desc
                                     )
                                 Toast.makeText(
@@ -236,74 +234,74 @@ class AddPointFormBioViewModel(
         }
     }
 
-    fun fileUpload(activity: AddPointFormBioActivity) {
-        val requestBody = HashMap<String, RequestBody>()
-        requestBody["fileName"] =
-            "testing11112121122.jpeg".toRequestBody("text/plain".toMediaTypeOrNull())
-        val file: File? =  FileHelper.getFile(activity, Uri.parse(imageUrl))
-
-        if (file != null) {
-        // val f: File = activity.getFile(activity, imageUrl)
-        val fileBody: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
-        val imagePart: MultipartBody.Part =
-            MultipartBody.Part.createFormData("fileToUpload", file.name, fileBody)
-
-        viewModelScope.launch {
-            pointDataRepository.fileUpload(requestBody, imagePart)
-                .collect {
-                    when (it?.status) {
-                        Result.Status.SUCCESS -> {
-                            _isLoading.value = false
-                            if (it.data?.status == "success") {
-                                Log.d("TAG_X", it.data.toString())
-                                activity.runOnUiThread {
-                                    val msg = it.data.message
-                                    Toast.makeText(
-                                        activity,
-                                        msg,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    activity.finish()
-                                }
-                            } else {
-                                activity.runOnUiThread {
-                                    Toast.makeText(
-                                        activity,
-                                        it.data?.message,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                //_errorState.value = ErrorState.NoData
-                            }
-                        }
-
-                        Result.Status.LOADING -> {
-                            _isLoading.value = true
-                        }
-
-                        Result.Status.ERROR -> {
-                            activity.runOnUiThread {
-                                val errorMsg =
-                                    if (it.error != null) it.error.message else activity.resources.getString(
-                                        R.string.server_error_desc
-                                    )
-                                Toast.makeText(
-                                    activity,
-                                    errorMsg,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                            _isLoading.value = false
-                        }
-
-                        else -> {
-                            // _errorState.value = ErrorState.NoData
-                        }
-                    }
-                }
-        }
-    }
-    }
+//    fun fileUpload(activity: AddPointFormBioActivity) {
+//        val requestBody = HashMap<String, RequestBody>()
+//        requestBody["fileName"] =
+//            "testing11112121122.jpeg".toRequestBody("text/plain".toMediaTypeOrNull())
+//        val file: File? =  FileHelper.getFile(activity, Uri.parse(imageUrl))
+//
+//        if (file != null) {
+//        // val f: File = activity.getFile(activity, imageUrl)
+//        val fileBody: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+//        val imagePart: MultipartBody.Part =
+//            MultipartBody.Part.createFormData("fileToUpload", file.name, fileBody)
+//
+//        viewModelScope.launch {
+//            pointDataRepository.fileUpload(requestBody, imagePart)
+//                .collect {
+//                    when (it?.status) {
+//                        Result.Status.SUCCESS -> {
+//                            _isLoading.value = false
+//                            if (it.data?.status == "success") {
+//                                Log.d("TAG_X", it.data.toString())
+//                                activity.runOnUiThread {
+//                                    val msg = it.data.message
+//                                    Toast.makeText(
+//                                        activity,
+//                                        msg,
+//                                        Toast.LENGTH_SHORT
+//                                    ).show()
+//                                    activity.finish()
+//                                }
+//                            } else {
+//                                activity.runOnUiThread {
+//                                    Toast.makeText(
+//                                        activity,
+//                                        it.data?.message,
+//                                        Toast.LENGTH_SHORT
+//                                    ).show()
+//                                }
+//                                //_errorState.value = ErrorState.NoData
+//                            }
+//                        }
+//
+//                        Result.Status.LOADING -> {
+//                            _isLoading.value = true
+//                        }
+//
+//                        Result.Status.ERROR -> {
+//                            activity.runOnUiThread {
+//                                val errorMsg =
+//                                    if (it.error?.message != null) it.error.message else activity.resources.getString(
+//                                        R.string.server_error_desc
+//                                    )
+//                                Toast.makeText(
+//                                    activity,
+//                                    errorMsg,
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//                            }
+//                            _isLoading.value = false
+//                        }
+//
+//                        else -> {
+//                            // _errorState.value = ErrorState.NoData
+//                        }
+//                    }
+//                }
+//        }
+//    }
+//    }
 
 
 }

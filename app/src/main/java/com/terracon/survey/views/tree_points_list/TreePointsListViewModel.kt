@@ -1,4 +1,4 @@
-package com.terracon.survey.views.points_list
+package com.terracon.survey.views.tree_points_list
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -7,23 +7,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.GsonBuilder
 import com.terracon.survey.data.PointDataRepository
-import com.terracon.survey.data.ProjectRepository
+import com.terracon.survey.data.TreeAssessmentRepository
 import com.terracon.survey.model.BioPoint
-import com.terracon.survey.model.BioPointDetails
 import com.terracon.survey.model.ErrorState
 import com.terracon.survey.model.Project
 import com.terracon.survey.model.Result
-import com.terracon.survey.model.UserApiRequestDTO
+import com.terracon.survey.model.TreeAssessmentPoint
 import com.terracon.survey.utils.PointDataUtils
+import com.terracon.survey.utils.TreePointDataUtils
+import com.terracon.survey.views.points_list.PointsListActivity
 import kotlinx.coroutines.launch
 
 
-class PointsListViewModel(
-    private val pointRepository: PointDataRepository,
+class TreePointsListViewModel(
+    private val treeAssessmentRepository: TreeAssessmentRepository,
 ) : ViewModel() {
 
-    private val _pointsList = MutableLiveData<List<BioPoint>?>()
-    val pointsList: MutableLiveData<List<BioPoint>?> = _pointsList
+    private val _pointsList = MutableLiveData<List<TreeAssessmentPoint>?>()
+    val pointsList: MutableLiveData<List<TreeAssessmentPoint>?> = _pointsList
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -34,7 +35,6 @@ class PointsListViewModel(
 
     private var gson = GsonBuilder().setLenient().serializeNulls().create()
 
-    //val user: User? = AppUtils.getUserData()
 
     lateinit var project:Project
 
@@ -43,17 +43,16 @@ class PointsListViewModel(
 
     }
 
-    fun syncDataFromLocalToServer(activity: PointsListActivity,bioPoint: BioPoint){
+    fun syncDataFromLocalToServer(activity: TreePointsListActivity, treePoint: TreeAssessmentPoint){
       ///  PointDataUtils.savePointDataToServerFromDB(viewModelScope,pointRepository,activity,bioPoint)
-        PointDataUtils.savePointDataToServerFromDB(viewModelScope,pointRepository,activity,bioPoint)
-
+        TreePointDataUtils.savePointDataToServerFromDB(viewModelScope,treeAssessmentRepository,activity,treePoint)
     }
 
     fun fetchPoints() {
         _isLoading.value = true
         _errorState.value = null
         viewModelScope.launch {
-            pointRepository.getPointList(project.id.toString())
+            treeAssessmentRepository.getPointList(project.id.toString())
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {

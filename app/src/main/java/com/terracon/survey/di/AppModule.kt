@@ -8,16 +8,20 @@ import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.terracon.survey.data.PointDataRepository
 import com.terracon.survey.data.ProjectRepository
+import com.terracon.survey.data.TreeAssessmentRepository
 import com.terracon.survey.data.UserRepository
 import com.terracon.survey.data.local.AppDatabase
 import com.terracon.survey.data.local.PointDataDao
 import com.terracon.survey.data.local.ProjectDao
+import com.terracon.survey.data.local.TreeAssessmentDao
 import com.terracon.survey.data.local.UserDao
 import com.terracon.survey.data.remote.PointDataRemoteDataSource
 import com.terracon.survey.data.remote.ProjectRemoteDataSource
+import com.terracon.survey.data.remote.TreeAssessmentRemoteDataSource
 import com.terracon.survey.data.remote.UserRemoteDataSource
 import com.terracon.survey.network.services.PointDataService
 import com.terracon.survey.network.services.ProjectService
+import com.terracon.survey.network.services.TreeAssessmentService
 import com.terracon.survey.network.services.UserService
 import com.terracon.survey.utils.Config
 import com.terracon.survey.views.add_point_form_bio.AddPointFormBioViewModel
@@ -32,6 +36,7 @@ import com.terracon.survey.views.register.RegisterViewModel
 import com.terracon.survey.views.splash.SplashViewModel
 import com.terracon.survey.views.tree_assessment_details_form.TreeAssessmentDetailsFormViewModel
 import com.terracon.survey.views.tree_assessment_form.TreeAssessmentFormViewModel
+import com.terracon.survey.views.tree_points_list.TreePointsListViewModel
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidApplication
@@ -39,6 +44,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 
 val viewModelModule = module {
     viewModel { HomeViewModel(get()) }
@@ -49,10 +55,12 @@ val viewModelModule = module {
     viewModel { ProjectDetailsViewModel(get()) }
     viewModel { BioDiversityFormMainViewModel(get()) }
     viewModel { FloraFaunaViewModel(get()) }
-    viewModel { AddPointFormBioViewModel(get(),get()) }
+    viewModel { AddPointFormBioViewModel(get(), get()) }
     viewModel { TreeAssessmentFormViewModel(get()) }
-    viewModel { TreeAssessmentDetailsFormViewModel(get()) }
+    viewModel { TreeAssessmentDetailsFormViewModel(get(), get()) }
     viewModel { PointsListViewModel(get()) }
+    viewModel { TreePointsListViewModel(get()) }
+
 }
 
 
@@ -69,9 +77,14 @@ val serviceModule = module {
         return retrofit.create(PointDataService::class.java)
     }
 
+    fun provideTreeDataService(retrofit: Retrofit): TreeAssessmentService {
+        return retrofit.create(TreeAssessmentService::class.java)
+    }
+
     single { provideUserService(get()) }
     single { provideProjectService(get()) }
     single { providePointDataService(get()) }
+    single { provideTreeDataService(get()) }
 
 }
 
@@ -94,9 +107,18 @@ val dataSourceModule = module {
         return PointDataRemoteDataSource(pointDataService, retrofit)
     }
 
+    fun provideTreeDataSource(
+        treeAssessmentService: TreeAssessmentService,
+        retrofit: Retrofit
+    ): TreeAssessmentRemoteDataSource {
+        return TreeAssessmentRemoteDataSource(treeAssessmentService, retrofit)
+    }
+
     single { provideUserDataSource(get(), get()) }
     single { provideProjectDataSource(get(), get()) }
     single { providePointDataSource(get(), get()) }
+    single { provideTreeDataSource(get(), get()) }
+
 
 }
 
@@ -157,10 +179,15 @@ val databaseModule = module {
         return database.pointDataDao
     }
 
+    fun provideTreeDataDao(database: AppDatabase): TreeAssessmentDao {
+        return database.treeAssessmentDao
+    }
+
     single { provideDatabase(androidApplication()) }
     single { provideUserDao(get()) }
     single { provideProjectDao(get()) }
     single { providePointDataDao(get()) }
+    single { provideTreeDataDao(get()) }
 
 }
 
@@ -183,8 +210,15 @@ val repositoryModule = module {
         return PointDataRepository(dataSource, dao)
     }
 
+    fun provideTreeRepository(
+        dataSource: TreeAssessmentRemoteDataSource,
+        dao: TreeAssessmentDao
+    ): TreeAssessmentRepository {
+        return TreeAssessmentRepository(dataSource, dao)
+    }
+
     single { provideUserRepository(get(), get()) }
     single { provideProjectRepository(get(), get()) }
     single { providePointDataRepository(get(), get()) }
-
+    single { provideTreeRepository(get(), get()) }
 }

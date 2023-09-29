@@ -23,6 +23,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK
 import com.google.android.material.timepicker.TimeFormat
+import com.michaelflisar.lumberjack.L
 import com.terracon.survey.R
 import com.terracon.survey.databinding.TreeAssessmentFormActivityBinding
 import com.terracon.survey.model.Project
@@ -48,12 +49,14 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
         setContentView(view)
         setupUi()
         setupLocationService()
+        setupObservers()
     }
 
-    private fun setupLocationService(){
+    private fun setupLocationService() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLocation()
     }
+
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager =
             getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -76,6 +79,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
         }
         return false
     }
+
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             this,
@@ -86,6 +90,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
             permissionId
         )
     }
+
     @SuppressLint("MissingSuperCall")
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -104,7 +109,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
                 mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-                     location = task.result
+                    location = task.result
                     if (location != null) {
 //                        val geocoder = Geocoder(this, Locale.getDefault())
 //                        val list: List<Address> =
@@ -142,9 +147,10 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
             showTimePickerDialog()
         }
         binding.gpsEditText.editText?.setOnClickListener {
-           // getLocation()
-            if(location != null){
-                val url = "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}"
+            // getLocation()
+            if (location != null) {
+                val url =
+                    "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
             }
@@ -154,16 +160,19 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
             getLocation()
         }
 
-        binding.saveBtn.setOnClickListener {
-            treeAssessmentFormViewModel.navigateToDetails(this,project)
-        }
-
         //set pre filled values
 
         binding.dateEditText.editText?.setText(DateUtils.getTodayDateOrTime("dd MMM yyyy"))
         binding.timeEditText.editText?.setText(DateUtils.getTodayDateOrTime("hh:mm a"))
 
-        binding.habitatAutoCompleteTextView.setAdapter(ArrayAdapter(this, R.layout.dropdown_item, resources.getStringArray(R.array.habitat_names)))
+        binding.habitatAutoCompleteTextView.setAdapter(
+            ArrayAdapter(
+                this,
+                R.layout.dropdown_item,
+                resources.getStringArray(R.array.habitat_names)
+            )
+        )
+
 
         binding.radioBtngrp.setOnCheckedChangeListener { radioGroup, i ->
             when (i) {
@@ -172,6 +181,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
                     binding.lengthEditText.visibility = View.GONE
                     binding.widthEditText.visibility = View.GONE
                 }
+
                 R.id.rectangularRadioBtn -> {
                     binding.radiusEditText.visibility = View.GONE
                     binding.lengthEditText.visibility = View.VISIBLE
@@ -179,8 +189,93 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.saveBtn.setOnClickListener {
+            try {
+
+                if (binding.plotCodeEditText.editText?.text.isNullOrBlank()) {
+                    Toast.makeText(this, "Please enter Plot Code", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+
+                if (binding.landmarkEditText.editText?.text.isNullOrBlank()) {
+                    Toast.makeText(this, "Please enter Landmark", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+
+
+                if (binding.plotTypeEditText.editText?.text.isNullOrBlank()) {
+                    Toast.makeText(this, "Please enter Plot Type", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+
+                if (binding.habitatAutoCompleteTextView.text.isNullOrBlank()) {
+                    Toast.makeText(this, "Please select Habitat", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+
+                if (binding.circularRadioBtn.isChecked) {
+                    if (binding.radiusEditText.editText?.text.isNullOrBlank()) {
+                        Toast.makeText(this, "Please enter Plot Radius", Toast.LENGTH_LONG).show()
+                        return@setOnClickListener
+                    }
+                } else {
+                    if (binding.lengthEditText.editText?.text.isNullOrBlank()) {
+                        Toast.makeText(this, "Please enter Plot Length", Toast.LENGTH_LONG).show()
+                        return@setOnClickListener
+                    }
+                    if (binding.widthEditText.editText?.text.isNullOrBlank()) {
+                        Toast.makeText(this, "Please enter Plot Width", Toast.LENGTH_LONG).show()
+                        return@setOnClickListener
+                    }
+                }
+
+                treeAssessmentFormViewModel.treePoint.project_id = project.id
+                treeAssessmentFormViewModel.treePoint.date =
+                    binding.dateEditText.editText?.text.toString()
+                treeAssessmentFormViewModel.treePoint.time =
+                    binding.timeEditText.editText?.text.toString()
+                treeAssessmentFormViewModel.treePoint.gps_latitude = location.latitude.toString()
+                treeAssessmentFormViewModel.treePoint.gps_longitude = location.longitude.toString()
+                treeAssessmentFormViewModel.treePoint.habitat =
+                    binding.habitatAutoCompleteTextView.text.toString()
+                treeAssessmentFormViewModel.treePoint.plot_dimension_type =
+                    if (binding.circularRadioBtn.isChecked) "circular" else "rectangular"
+
+                treeAssessmentFormViewModel.treePoint.plot_type =
+                    binding.plotTypeEditText.editText?.text.toString()
+                treeAssessmentFormViewModel.treePoint.radius =
+                    binding.radiusEditText.editText?.text.toString()
+                treeAssessmentFormViewModel.treePoint.width =
+                    binding.widthEditText.editText?.text.toString()
+                treeAssessmentFormViewModel.treePoint.length =
+                    binding.lengthEditText.editText?.text.toString()
+                treeAssessmentFormViewModel.treePoint.code =
+                    binding.plotCodeEditText.editText?.text.toString()
+
+
+                treeAssessmentFormViewModel.savePointData(this, project)
+
+               // treeAssessmentFormViewModel.navigateToDetails(this, project)
+            } catch (e: Exception) {
+                L.d { "submit btn error--${e.toString()}" }
+                Toast.makeText(this, "Error--${e.toString()}", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
+    private fun setupObservers() {
+
+        treeAssessmentFormViewModel.isLoading.observe(this) { isLoading ->
+            if (isLoading) {
+                binding.progressView.root.visibility = View.VISIBLE
+                binding.saveBtn.visibility = View.INVISIBLE
+            } else {
+                binding.progressView.root.visibility = View.GONE
+                binding.saveBtn.visibility = View.VISIBLE
+            }
+        }
+    }
 
 
     private fun showDatePickerDialog() {
@@ -194,6 +289,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
             binding.dateEditText.editText?.setText(datePicker.headerText)
         }
     }
+
     private fun showTimePickerDialog() {
         val timePicker =
             MaterialTimePicker.Builder()
@@ -213,10 +309,12 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
             binding.timeEditText.editText?.setText(simpleDateFormat.format(cal.time))
         }
     }
+
     override fun onSupportNavigateUp(): Boolean {
         this.finish()
         return true
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true

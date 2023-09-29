@@ -34,7 +34,7 @@ object ErrorUtils {
             ErrorState.NoData -> {
                 errorBinding.errorImageView.setImageResource(R.drawable.baseline_inbox_24)
                 errorBinding.errorTitle.text = when (pageName) {
-                    "projects" -> context.getString(
+                    "projects1" -> context.getString(
                         R.string.no_projects_error_title
                     )
 //                    "user" -> context.getString(
@@ -48,7 +48,7 @@ object ErrorUtils {
                     )
                 }
                 errorBinding.errorDesc.text = when (pageName) {
-                    "projects" -> context.getString(
+                    "projects1" -> context.getString(
                         R.string.no_projects_error_desc
                     )
 //                    "user" -> context.getString(

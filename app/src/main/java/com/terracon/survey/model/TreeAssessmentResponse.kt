@@ -4,40 +4,37 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
-
 @Entity
-data class BioPoint(
+data class TreeAssessmentPoint(
     @PrimaryKey(autoGenerate = true)
     var dbId:Int? = null,
-    var id: Int? = null,
     var code: String = "",
-    var created_at: String = "",
     var date: String = "",
     var gps_latitude: String = "",
     var gps_longitude: String = "",
     var habitat: String = "",
-    var length: String? = null,
+    var id: Int? = null,
+    var length: String = "",
     var plot_area: String = "",
     var plot_dimension_type: String = "",
     var plot_type: String = "",
     var project_id: Int = 0,
-    var radius: String? = null,
+    var radius: String = "",
     var season_name: String = "",
     var time: String = "",
-    var updated_at: String = "",
     var village: String = "",
     var weather_condition: String = "",
-    var width: String? = null,
-    var isSynced:Boolean = false
+    var width: String = "",
+    var isSynced: Boolean = false
 ):Serializable{}
 
-data class BioPointResponse(
-    val data: BioPointData,
+data class TreeAssessmentResponse(
+    val data: TreeAssessmentPointData,
     val message: String,
     val status: String
 ) : Serializable {}
 
-data class BioPointData(
-    val list: List<BioPoint> = listOf(),
-    val bio_diversity_survey_point_details: BioPoint
+data class TreeAssessmentPointData(
+    val list: List<TreeAssessmentPoint> = listOf(),
+    val tree_assessment_survey_points: TreeAssessmentPoint
 )

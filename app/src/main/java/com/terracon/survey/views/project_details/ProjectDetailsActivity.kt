@@ -9,11 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.terracon.survey.R
 import com.terracon.survey.databinding.ProjectDetailsActivityBinding
 import com.terracon.survey.model.Project
-import com.terracon.survey.model.ProjectTypeEnums
 import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.views.bio_diversity_form_main.BioDiversityFormMainActivity
 import com.terracon.survey.views.points_list.PointsListActivity
 import com.terracon.survey.views.tree_assessment_form.TreeAssessmentFormActivity
+import com.terracon.survey.views.tree_points_list.TreePointsListActivity
+import com.terracon.survey.views.tree_points_list.TreePointsListAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.Serializable
 
@@ -52,7 +53,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
             this.startActivity(intent)
         }
         binding.startSurveyTreeBtn.setOnClickListener {
-            val intent = Intent(this, TreeAssessmentFormActivity::class.java)
+            val intent = Intent(this, TreePointsListActivity::class.java)
             intent.putExtra("projectData", project as Serializable)
             this.startActivity(intent)
         }

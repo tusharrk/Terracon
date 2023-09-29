@@ -64,5 +64,14 @@
 
     </LinearLayout>
 
+    <Button
+        android:layout_gravity="center"
+        android:id="@+id/syncBtn"
+        app:icon="@drawable/baseline_cloud_sync_24"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+        android:text="@string/sync_data_with_server"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 
 </LinearLayout>

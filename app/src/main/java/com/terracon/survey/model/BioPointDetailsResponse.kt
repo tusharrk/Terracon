@@ -38,7 +38,8 @@ data class Species(
     var comment: String? = null,
     var count: String = "",
     var images: String? = null,
-    var name: String = ""
+    var name: String = "",
+    var isSynced: Boolean = false
 )
 
 data class BioPointDetailsWithSpecies(

@@ -33,6 +33,11 @@ interface PointDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertBioPoint(bioPoint: BioPoint):Long
 
+    @Transaction
+    @Query("UPDATE BioPoint SET isSynced =:isSynced Where id = :bioPointId")
+    fun updatePointSyncStatus(bioPointId: Int,isSynced: Boolean) : Int
+
+
     @Query("SELECT * FROM BioPoint Where project_id = :projectId")
     fun getBioPointByProjectId(projectId: String): List<BioPoint>
 
@@ -47,6 +52,10 @@ interface PointDataDao {
     @Transaction
     @Query("SELECT * FROM BioPointDetails Where bio_diversity_survey_points_id = :id and type =:type and sub_type =:subType Limit 1")
     fun getBioPointDetailsById(id: String, type: String, subType: String): BioPointDetails
+
+    @Transaction
+    @Query("SELECT * FROM BioPointDetails Where bio_diversity_survey_points_id = :id ")
+    fun getAllBioPointDetailsById(id: Int): List<BioPointDetails>
 
     @Transaction
     @Query("SELECT * FROM Species Where bio_diversity_survey_data_points_id = :id")
@@ -65,11 +74,20 @@ interface PointDataDao {
     @Query("UPDATE BioPointDetails SET bio_diversity_survey_points_id =:bioPointId Where bio_diversity_survey_points_id = :id")
     fun updateBioPointIdInPointDetails(bioPointId: Int,id: Int)
 
+    @Transaction
+    @Query("UPDATE BioPointDetails SET isSynced =:isSynced Where dbId = :id")
+    fun updateBioPointDetailsSyncStatus(isSynced: Boolean,id: Int)
+
+
     //species
-    @Query("SELECT * FROM Species Where bio_diversity_survey_data_points_id in(:idList)")
+    @Query("SELECT * FROM Species Where bio_diversity_survey_data_points_id in(:idList) and isSynced = 0")
     fun getSpeciesListById(idList: List<Int>): List<Species>
 
     @Transaction
-    @Query("SELECT dbId FROM BioPointDetails Where bio_diversity_survey_points_id = :id")
+    @Query("SELECT dbId FROM BioPointDetails Where bio_diversity_survey_points_id = :id and isSynced = 0")
     fun getBioPointDetailsById(id: String): List<Int>
+
+    @Transaction
+    @Query("UPDATE Species SET images =:imageUrl, isSynced =:isSynced Where dbId =:dbId ")
+    fun updateSpeciesImageUrl(imageUrl: String,isSynced:Boolean,dbId:Int)
 }

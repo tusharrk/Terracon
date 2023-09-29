@@ -46,7 +46,7 @@ class PointDataRepository(
                     result.data?.let {
                         var tempId = payload.dbId
                         payload.id = it.data.bio_diversity_survey_point_details.id
-                        payload.isSynced = true
+                        payload.isSynced = false
                         pointDataDao.insertBioPoint(bioPoint = payload)
                         if (tempId != null && payload.id != null) {
                             pointDataDao.updateBioPointIdInPointDetails(payload.id!!, tempId)
@@ -68,6 +68,7 @@ class PointDataRepository(
             val result = pointDataRemoteDataSource.submitPointDetails(payload)
             //Cache to database if response is successful
             if (result.status == Result.Status.SUCCESS) {
+                payload.dbId?.let { pointDataDao.updateBioPointDetailsSyncStatus(true, it) }
 //                result.data?.let { it ->
 //                    projectDao.deleteAll(it)
 //                    userDao.insertAll(it)
@@ -111,10 +112,6 @@ class PointDataRepository(
 
             //Cache to database if response is successful
             if (result.status == Result.Status.SUCCESS) {
-//                result.data?.let { it ->
-//                    projectDao.deleteAll(it)
-//                    userDao.insertAll(it)
-//                }
             }
             emit(result)
         }.flowOn(Dispatchers.IO)
@@ -122,14 +119,26 @@ class PointDataRepository(
 
     suspend fun fileUpload(
         data: HashMap<String, RequestBody>,
-        image: MultipartBody.Part
+        image: MultipartBody.Part,
+        species: Species
     ): Flow<Result<FileUploadResponseDTO>?> {
         return flow {
             //   emit(fetchUsersCached())
             emit(Result.loading())
             val result = pointDataRemoteDataSource.fileUpload(data, image)
+
+
             //Cache to database if response is successful
             if (result.status == Result.Status.SUCCESS) {
+                result.data?.let { it1 ->
+                    species.dbId?.let { it2 ->
+                        pointDataDao.updateSpeciesImageUrl(
+                            it1.fileUrl,
+                            true,
+                            it2
+                        )
+                    }
+                }
 //                result.data?.let { it ->
 //                    projectDao.deleteAll(it)
 //                    userDao.insertAll(it)
@@ -151,6 +160,17 @@ class PointDataRepository(
         }.flowOn(Dispatchers.IO)
     }
 
+    suspend fun updateBioPointSyncStatusInLocalDB(bioPoint: BioPoint): Flow<Result<Int>?> {
+        return flow {
+            emit(Result.loading())
+           var result  = bioPoint.id?.let {
+               return@let pointDataDao.updatePointSyncStatus(it,true).let {
+                    Result.success(it)
+                }
+            }
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
     suspend fun saveBioPointDetailsInLocalDB(
         pointDTO: PointDTO,
         bioPointDetails: BioPointDetails
@@ -204,6 +224,27 @@ class PointDataRepository(
                     status = "success"
                 )
             emit(Result.success(bioPointDetailsResponse))
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getAllPointDetailsFromLocal(bioId: Int): Flow<Result<List<BioPointDetails>>> {
+        return flow {
+            emit(Result.loading())
+
+            val pointDetails: List<BioPointDetails> = pointDataDao.getAllBioPointDetailsById(bioId)
+            if (pointDetails.isNotEmpty()) {
+                pointDetails.forEach {
+                    it.species = pointDataDao.getSpeciesById(it.dbId.toString())
+                }
+            }
+
+//            val bioPointDetailsResponse: BioPointDetailsResponse =
+//                BioPointDetailsResponse(
+//                    data = BioPointDetailsData(pointDetails),
+//                    message = "success",
+//                    status = "success"
+//                )
+            emit(Result.success(pointDetails))
         }.flowOn(Dispatchers.IO)
     }
 

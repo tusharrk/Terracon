@@ -20,9 +20,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/terracon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/terracon"
         android:supportsRtl="true"
         android:theme="@style/Theme.Terracon"
         tools:targetApi="31">
@@ -77,6 +77,11 @@
         <activity
             android:name=".views.add_point_form_bio.FragmentSample"
             android:theme="@style/Theme.Terracon" />
+
+        <activity
+            android:name=".views.points_list.PointsListActivity"
+            android:theme="@style/Theme.Terracon" />
+
         <activity
             android:name=".views.tree_assessment_form.TreeAssessmentFormActivity"
             android:theme="@style/Theme.Terracon" />
@@ -85,7 +90,7 @@
             android:theme="@style/Theme.Terracon" />
 
         <activity
-            android:name=".views.points_list.PointsListActivity"
+            android:name=".views.tree_points_list.TreePointsListActivity"
             android:theme="@style/Theme.Terracon" />
 
         <activity

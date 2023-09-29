@@ -68,7 +68,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
                 binding.speciesNameEditText.editText?.setText(item.name)
                 binding.countEditText.editText?.setText(item.count)
                 binding.commentEditText.editText?.setText(item.comment)
-                binding.uploadImage.text = item.images
+                binding.uploadImage.text =  if (item.images.isNullOrEmpty()) getString(R.string.capture_upload_image) else item.images!!
 
                 addPointFormBioViewModel.imageUrl =
                     if (item.images.isNullOrEmpty()) "" else item.images!!
@@ -203,7 +203,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
             binding.countEditText.editText?.setText("0")
             binding.commentEditText.editText?.setText("")
             binding.uploadImage.text = resources.getString(R.string.capture_upload_image)
-            //addPointFormBioViewModel.imageUrl = ""
+            addPointFormBioViewModel.imageUrl = ""
             addPointFormBioViewModel.isEditIndex = null
             addPointFormBioViewModel.isEdit = false
         }
@@ -267,7 +267,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
         addPointFormBioViewModel.pointBioDetails.type = addPointFormBioViewModel.type
         addPointFormBioViewModel.pointBioDetails.sub_type = addPointFormBioViewModel.subType
         addPointFormBioViewModel.pointBioDetails.bio_diversity_survey_points_id =
-            addPointFormBioViewModel.pointBio.id
+            addPointFormBioViewModel.pointBio.dbId
         addPointFormBioViewModel.pointBioDetails.species = addPointFormBioViewModel.getSpeciesList()
         L.d { "data--${addPointFormBioViewModel.pointBio}" }
         addPointFormBioViewModel.savePointData(this)

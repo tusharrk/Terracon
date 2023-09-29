@@ -95,7 +95,7 @@ class ProjectRepository(
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getList(type:String,subType:String):Result<List<String>>{
+    private fun getList(type:String, subType:String):Result<List<String>>{
         var list = listOf<String>()
         if(type=="Fauna"){
             list = projectDao.getFaunaList(subType)

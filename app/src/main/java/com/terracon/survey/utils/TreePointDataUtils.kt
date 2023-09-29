@@ -7,13 +7,15 @@ import android.util.Log
 import android.widget.Toast
 import com.michaelflisar.lumberjack.L
 import com.terracon.survey.R
-import com.terracon.survey.data.PointDataRepository
-import com.terracon.survey.model.BioPoint
+import com.terracon.survey.data.TreeAssessmentRepository
+import com.terracon.survey.model.TreeAssessmentPoint
 import com.terracon.survey.model.BioPointDetails
 import com.terracon.survey.model.PointDTO
 import com.terracon.survey.model.Result
 import com.terracon.survey.model.Species
+import com.terracon.survey.model.TreeAssessmentSpecies
 import com.terracon.survey.views.points_list.PointsListActivity
+import com.terracon.survey.views.tree_points_list.TreePointsListActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,14 +28,123 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
-object PointDataUtils {
+object TreePointDataUtils {
+    fun savePointDataToServerFromDB(
+        viewModelScope: CoroutineScope,
+        treeAssessmentRepository: TreeAssessmentRepository,
+        activity: Activity,
+        treeAssessmentPoint: TreeAssessmentPoint
+    ) {
+        L.d { "save point started" }
+        viewModelScope.launch {
+            treeAssessmentRepository.submitTreePoint(treeAssessmentPoint, isUpdateLocal = true)
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            try {
+                                if (it.data != null) {
+                                    Log.d("TAG_X", it.data.toString())
+                                    L.d { "save point success--${it.data.toString()}" }
+
+                                    getImageListToUpload(
+                                        viewModelScope,
+                                        treeAssessmentRepository,
+                                        activity,
+                                        it.data.data.tree_assessment_survey_points
+                                    )
+                                    //showToast(activity, "Data Saved Successfully")
+                                } else {
+                                    showToast(activity, "error")
+                                }
+                            } catch (e: Exception) {
+                                showToast(activity, e.toString())
+                            }
+                        }
+
+                        Result.Status.LOADING -> {}
+                        Result.Status.ERROR -> {
+                            val errorMsg =
+                                if (it.error?.message != null) it.error.message else activity.resources.getString(
+                                    R.string.server_error_desc
+                                )
+                            showToast(activity, errorMsg)
+                        }
+
+                        else -> {}
+                    }
+                }
+        }
+    }
+
+    private fun getImageListToUpload(
+        viewModelScope: CoroutineScope,
+        treeAssessmentRepository: TreeAssessmentRepository,
+        activity: Activity,
+        treeAssessmentPoint: TreeAssessmentPoint
+    ) = runBlocking {
+        L.d { "inside getImageListToUpload" }
+
+        viewModelScope.launch {
+            treeAssessmentRepository.getImageListToUpload(treeAssessmentPoint)
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            if (it.data != null) {
+                                Log.d("TAG_X", it.data.toString())
+                                L.d { " getImageListToUpload success---${it.data.toString()}" }
+
+                                if (it.data != null) {
+                                    withContext(Dispatchers.Default) {
+                                        uploadImagesAndUpdateDB(
+                                            viewModelScope,
+                                            treeAssessmentRepository,
+                                            activity,
+                                            treeAssessmentPoint,
+                                            it.data as MutableList<TreeAssessmentSpecies>
+                                        )
+                                    }
+                                }
+//                                it.data.forEach { species ->
+//                                    if(species.images!="" && species.images?.contains("https") == false){
+//                                        L.d {"url-- ${species.images.toString()}" }
+//                                        withContext(Dispatchers.Default) {
+//                                            uploadImagesAndUpdateDB(
+//                                                viewModelScope,
+//                                                treeAssessmentRepository,
+//                                                activity,
+//                                                species
+//                                            )
+//                                        }
+//
+//                                    }
+//                                }
+                                //showToast(activity, "Data Saved Successfully")
+                            } else {
+                                showToast(activity, "error")
+                            }
+                        }
+
+                        Result.Status.LOADING -> {}
+                        Result.Status.ERROR -> {
+                            val errorMsg =
+                                if (it.error?.message != null) it.error.message else activity.resources.getString(
+                                    R.string.server_error_desc
+                                )
+                            showToast(activity, errorMsg)
+                        }
+
+                        else -> {}
+                    }
+                }
+        }
+    }
 
     private suspend fun uploadImagesAndUpdateDB(
         viewModelScope: CoroutineScope,
-        pointDataRepository: PointDataRepository,
+        treeAssessmentRepository: TreeAssessmentRepository,
         activity: Activity,
-        bioPoint: BioPoint,
-        speciesList: MutableList<Species>
+        treeAssessmentPoint: TreeAssessmentPoint,
+        speciesList: MutableList<TreeAssessmentSpecies>
     ) {
         L.d { "inside uploadImagesAndUpdateDB" }
 
@@ -58,7 +169,7 @@ object PointDataUtils {
                         MultipartBody.Part.createFormData("fileToUpload", file.name, fileBody)
 
                     viewModelScope.launch {
-                        pointDataRepository.fileUpload(requestBody, imagePart, species)
+                        treeAssessmentRepository.fileUpload(requestBody, imagePart, species)
                             .collect {
                                 when (it?.status) {
                                     Result.Status.SUCCESS -> {
@@ -71,13 +182,13 @@ object PointDataUtils {
                                                 val msg = it.data.message
                                                 showToast(activity, msg)
                                             }
-                                            var speciesListNew: MutableList<Species> = speciesList
+                                            var speciesListNew: MutableList<TreeAssessmentSpecies> = speciesList
                                             speciesListNew.removeAt(index)
                                             uploadImagesAndUpdateDB(
                                                 viewModelScope,
-                                                pointDataRepository,
+                                                treeAssessmentRepository,
                                                 activity,
-                                                bioPoint,
+                                                treeAssessmentPoint,
                                                 speciesListNew
                                             )
 
@@ -113,9 +224,9 @@ object PointDataUtils {
 
                 getPointDetailsFromLocal(
                     viewModelScope,
-                    pointDataRepository,
+                    treeAssessmentRepository,
                     activity,
-                    bioPoint
+                    treeAssessmentPoint
                 )
             }
         } catch (e: Exception) {
@@ -124,64 +235,19 @@ object PointDataUtils {
         }
     }
 
-    fun savePointDataToServerFromDB(
-        viewModelScope: CoroutineScope,
-        pointDataRepository: PointDataRepository,
-        activity: Activity,
-        bioPoint: BioPoint
-    ) {
-        L.d { "save point started" }
-        viewModelScope.launch {
-            pointDataRepository.submitPoint(bioPoint, isUpdateLocal = true)
-                .collect {
-                    when (it?.status) {
-                        Result.Status.SUCCESS -> {
-                            try {
-                                if (it.data != null) {
-                                    Log.d("TAG_X", it.data.toString())
-                                    L.d { "save point success--${it.data.toString()}" }
 
-                                    getImageListToUpload(
-                                        viewModelScope,
-                                        pointDataRepository,
-                                        activity,
-                                        it.data.data.bio_diversity_survey_point_details
-                                    )
-                                    //showToast(activity, "Data Saved Successfully")
-                                } else {
-                                    showToast(activity, "error")
-                                }
-                            } catch (e: Exception) {
-                                showToast(activity, e.toString())
-                            }
-                        }
-
-                        Result.Status.LOADING -> {}
-                        Result.Status.ERROR -> {
-                            val errorMsg =
-                                if (it.error?.message != null) it.error.message else activity.resources.getString(
-                                    R.string.server_error_desc
-                                )
-                            showToast(activity, errorMsg)
-                        }
-
-                        else -> {}
-                    }
-                }
-        }
-    }
 
     private fun getPointDetailsFromLocal(
         viewModelScope: CoroutineScope,
-        pointDataRepository: PointDataRepository,
+        treeAssessmentRepository: TreeAssessmentRepository,
         activity: Activity,
-        bioPoint: BioPoint
+        treeAssessmentPoint: TreeAssessmentPoint
     ) {
         L.d { " inside  getPointDetailsFromLocal" }
 
         viewModelScope.launch {
-            if (bioPoint.id != null) {
-                pointDataRepository.getAllPointDetailsFromLocal(bioPoint.id!!)
+            if (treeAssessmentPoint.id != null) {
+                treeAssessmentRepository.getAllSpeciesFromLocal(treeAssessmentPoint.id!!)
                     .collect {
                         when (it.status) {
                             Result.Status.SUCCESS -> {
@@ -190,11 +256,11 @@ object PointDataUtils {
                                         Log.d("TAG_X", it.data.toString())
                                         L.d { "getPointDetailsFromLocal success--${it.data.toString()}" }
 
-                                        savePointDetailsToServerFromDB(
+                                        saveSpeciesToServerFromDB(
                                             viewModelScope,
-                                            pointDataRepository,
+                                            treeAssessmentRepository,
                                             activity,
-                                            bioPoint,
+                                            treeAssessmentPoint,
                                             it.data
                                         )
                                         //showToast(activity, "Data Saved Successfully")
@@ -226,12 +292,12 @@ object PointDataUtils {
     }
 
     @SuppressLint("SuspiciousIndentation")
-   private fun savePointDetailsToServerFromDB(
+    fun saveSpeciesToServerFromDB(
         viewModelScope: CoroutineScope,
-        pointDataRepository: PointDataRepository,
+        treeAssessmentRepository: TreeAssessmentRepository,
         activity: Activity,
-        bioPoint: BioPoint,
-        list: List<BioPointDetails>
+        treeAssessmentPoint: TreeAssessmentPoint,
+        list: List<TreeAssessmentSpecies>
     ) {
         L.d { "inside savePointDetailsToServerFromDB size--${list.size}" }
 
@@ -246,7 +312,7 @@ object PointDataUtils {
                 var bioDetailsItem = list[index]
                 bioDetailsItem.id = null
                 viewModelScope.launch {
-                    pointDataRepository.submitPointDetails(bioDetailsItem)
+                    treeAssessmentRepository.submitTreeSpecies(bioDetailsItem)
                         .collect {
                             when (it?.status) {
                                 Result.Status.SUCCESS -> {
@@ -254,14 +320,14 @@ object PointDataUtils {
                                         if (it.data != null) {
                                             Log.d("TAG_X", it.data.toString())
                                             L.d { " savePointDetailsToServerFromDB success--${it.data.toString()}" }
-                                            var listNew: MutableList<BioPointDetails> =
+                                            var listNew: MutableList<TreeAssessmentSpecies> =
                                                 list.toMutableList()
                                             listNew.removeAt(index)
-                                            savePointDetailsToServerFromDB(
+                                            saveSpeciesToServerFromDB(
                                                 viewModelScope,
-                                                pointDataRepository,
+                                                treeAssessmentRepository,
                                                 activity,
-                                                bioPoint,
+                                                treeAssessmentPoint,
                                                 listNew
                                             )
                                             // showToast(activity, "Data Saved Successfully")
@@ -288,7 +354,7 @@ object PointDataUtils {
                 }
 
             } else {
-                updateBioPointInLocal(viewModelScope, pointDataRepository, activity, bioPoint)
+                updateBioPointInLocal(viewModelScope, treeAssessmentRepository, activity, treeAssessmentPoint)
 
             }
         } catch (e: Exception) {
@@ -297,80 +363,19 @@ object PointDataUtils {
         }
     }
 
-    private fun getImageListToUpload(
-        viewModelScope: CoroutineScope,
-        pointDataRepository: PointDataRepository,
-        activity: Activity,
-        bioPoint: BioPoint
-    ) = runBlocking {
-        L.d { "inside getImageListToUpload" }
 
-        viewModelScope.launch {
-            pointDataRepository.getImageListToUpload(PointDTO(bio_diversity_survey_points_id = bioPoint.id.toString()))
-                .collect {
-                    when (it?.status) {
-                        Result.Status.SUCCESS -> {
-                            if (it.data != null) {
-                                Log.d("TAG_X", it.data.toString())
-                                L.d { " getImageListToUpload success---${it.data.toString()}" }
-
-                                if (it.data != null) {
-                                    withContext(Dispatchers.Default) {
-                                        uploadImagesAndUpdateDB(
-                                            viewModelScope,
-                                            pointDataRepository,
-                                            activity,
-                                            bioPoint,
-                                            it.data as MutableList<Species>
-                                        )
-                                    }
-                                }
-//                                it.data.forEach { species ->
-//                                    if(species.images!="" && species.images?.contains("https") == false){
-//                                        L.d {"url-- ${species.images.toString()}" }
-//                                        withContext(Dispatchers.Default) {
-//                                            uploadImagesAndUpdateDB(
-//                                                viewModelScope,
-//                                                pointDataRepository,
-//                                                activity,
-//                                                species
-//                                            )
-//                                        }
-//
-//                                    }
-//                                }
-                                //showToast(activity, "Data Saved Successfully")
-                            } else {
-                                showToast(activity, "error")
-                            }
-                        }
-
-                        Result.Status.LOADING -> {}
-                        Result.Status.ERROR -> {
-                            val errorMsg =
-                                if (it.error?.message != null) it.error.message else activity.resources.getString(
-                                    R.string.server_error_desc
-                                )
-                            showToast(activity, errorMsg)
-                        }
-
-                        else -> {}
-                    }
-                }
-        }
-    }
 
     private fun updateBioPointInLocal(
         viewModelScope: CoroutineScope,
-        pointDataRepository: PointDataRepository,
+        treeAssessmentRepository: TreeAssessmentRepository,
         activity: Activity,
-        bioPoint: BioPoint
+        treeAssessmentPoint: TreeAssessmentPoint
     ) {
         L.d { "save point started" }
-        L.d { "bio--${bioPoint}" }
-        bioPoint.isSynced = true
+        L.d { "bio--${treeAssessmentPoint}" }
+        treeAssessmentPoint.isSynced = true
         viewModelScope.launch {
-            pointDataRepository.updateBioPointSyncStatusInLocalDB(bioPoint)
+            treeAssessmentRepository.updateBioPointSyncStatusInLocalDB(treeAssessmentPoint)
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {
@@ -380,7 +385,7 @@ object PointDataUtils {
                                     L.d { "save point success--${it.data.toString()}" }
 
                                     showToast(activity, "Point Synced With server")
-                                    (activity as PointsListActivity).refreshList()
+                                    (activity as TreePointsListActivity).refreshList()
                                     //showToast(activity, "Data Saved Successfully")
                                 } else {
                                     showToast(activity, "error")
@@ -405,13 +410,13 @@ object PointDataUtils {
         }
     }
 
-    private fun getBioPointList(
+    fun getBioPointList(
         viewModelScope: CoroutineScope,
-        pointDataRepository: PointDataRepository,
+        treeAssessmentRepository: TreeAssessmentRepository,
         activity: Activity
     ) {
         viewModelScope.launch {
-            pointDataRepository.getPointList("3")
+            treeAssessmentRepository.getPointList("3")
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {

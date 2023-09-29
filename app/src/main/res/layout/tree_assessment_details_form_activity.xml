@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
     android:orientation="vertical">
 
     <include
@@ -12,148 +13,236 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/parentLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/mainLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/basic_page_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="@dimen/padding_10"
+                android:background="@drawable/border"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_10">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/serial_number_edit_text"
+                    style="@style/textInputEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:hint="@string/serial_number">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/species_edit_text"
+                    style="@style/textInputDropDownStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:hint="@string/species_name">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/speciesNameAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/girth_edit_text"
+                    android:layout_weight="1"
+                    style="@style/textInputEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:hint="@string/girth_at_gbh">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/height_edit_text"
+                    android:layout_weight="1"
+                    style="@style/textInputEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:layout_marginStart="@dimen/padding_10"
+                    android:hint="@string/approx_height">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/diameter_edit_text"
+                    style="@style/textInputEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:hint="@string/canopy_diameter">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/uploadImage"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:insetLeft="@dimen/padding_10"
+                    android:insetTop="@dimen/padding_10"
+                    android:insetRight="@dimen/padding_10"
+                    android:insetBottom="@dimen/padding_10"
+                    android:paddingVertical="@dimen/padding_10"
+                    android:text="@string/capture_upload_image"
+                    android:textAppearance="@style/basicButtonStyle"
+                    app:cornerRadius="5dp"
+                    app:icon="@drawable/baseline_file_upload_24"
+                    app:strokeColor="@color/textColor"
+                    app:strokeWidth="1dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/comments_edit_text"
+                    style="@style/textInputEditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_10"
+                    android:hint="@string/comment">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addItemBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/padding_10"
+                    android:layout_marginTop="@dimen/basic_item_padding_big"
+                    android:background="@drawable/rounded_button"
+                    android:insetLeft="@dimen/padding_30"
+                    android:insetRight="@dimen/padding_30"
+                    android:text="@string/add_new_item"
+                    android:textAppearance="@style/basicButtonStyle"
+                    app:icon="@drawable/baseline_add_24" />
+
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="@dimen/basic_item_padding"
+                android:text="@string/species_list"
+                android:textAppearance="@style/secondaryTextStyle" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/projectsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_40">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_button"
+                    android:insetLeft="@dimen/padding_30"
+                    android:insetRight="@dimen/padding_30"
+                    android:text="@string/submit"
+                    android:textAppearance="@style/basicButtonStyle" />
+
+                <include
+                    android:id="@+id/progressView"
+                    layout="@layout/progress_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/progressViewFull"
+        layout="@layout/progress_view"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="@dimen/basic_page_padding">
+        android:visibility="visible"
+        app:layout_anchor="@+id/parentLayout"
+        app:layout_anchorGravity="center" />
 
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/serial_number_edit_text"
-            style="@style/textInputEditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/serial_number">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/species_edit_text"
-            style="@style/textInputDropDownStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/species_name">
-
-            <AutoCompleteTextView
-                android:id="@+id/speciesNameAutoCompleteTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/girth_edit_text"
-            style="@style/textInputEditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/girth_at_gbh">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:inputType="number"
-                />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/height_edit_text"
-            style="@style/textInputEditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/approx_height">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:inputType="number"
-                />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/diameter_edit_text"
-            style="@style/textInputEditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/canopy_diameter">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:inputType="number"
-                />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/uploadImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:insetLeft="@dimen/padding_10"
-            android:insetRight="@dimen/padding_10"
-            android:insetBottom="@dimen/padding_10"
-            android:insetTop="@dimen/padding_10"
-            android:layout_marginTop="@dimen/padding_10"
-            android:paddingVertical="@dimen/padding_10"
-            android:text="@string/capture_upload_image"
-            app:icon="@drawable/baseline_file_upload_24"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
-            app:cornerRadius="5dp"
-            app:strokeColor="@color/textColor"
-            app:strokeWidth="1dp"
-            android:textAppearance="@style/basicButtonStyle" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/comments_edit_text"
-            style="@style/textInputEditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/comment">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/saveBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/padding_40"
-            android:background="@drawable/rounded_button"
-            android:insetLeft="@dimen/padding_30"
-            android:insetRight="@dimen/padding_30"
-            android:text="@string/submit"
-            android:textAppearance="@style/basicButtonStyle" />
-
-
-    </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    <include
+        android:id="@+id/errorView"
+        layout="@layout/error_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_anchor="@+id/parentLayout"
+        app:layout_anchorGravity="center" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

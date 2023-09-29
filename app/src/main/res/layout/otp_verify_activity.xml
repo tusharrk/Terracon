@@ -13,7 +13,7 @@
         android:layout_width="@dimen/splash_icon_size"
         android:layout_height="@dimen/splash_icon_size"
         android:layout_marginTop="@dimen/padding_70"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/terracon" />
 
     <TextView
         android:layout_width="wrap_content"

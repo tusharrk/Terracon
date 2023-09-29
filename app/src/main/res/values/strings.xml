@@ -26,7 +26,7 @@
     <string name="no_projects_error_desc">Looks like there are no ongoing projects here.</string>
 
     <string name="no_data_error_title">No Data Found</string>
-    <string name="no_data_error_desc">no Data Found Here.</string>
+    <string name="no_data_error_desc">No Data Found Here.</string>
 
     <string name="retry">Retry</string>
     <string name="start">Start</string>
@@ -71,6 +71,7 @@
     <string name="plot_code">Plot Code</string>
     <string name="village">Village</string>
     <string name="new_point">New Point</string>
+    <string name="sync_data_with_server">Sync Data With Server</string>
 
     <string-array name="season_names">
         <item>Spring</item>

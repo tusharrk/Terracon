@@ -36,8 +36,8 @@ private fun navigateToFloraFaunaActivity(activity: BioDiversityFormMainActivity,
     val intent = Intent(activity, FloraFaunaActivity::class.java)
     intent.putExtra("projectData", project as Serializable)
     intent.putExtra("pointData", bioPoint as Serializable)
-
     activity.startActivity(intent)
+    activity.finish()
 }
 
     fun savePointData(activity: BioDiversityFormMainActivity,project: Project){
@@ -59,6 +59,7 @@ private fun navigateToFloraFaunaActivity(activity: BioDiversityFormMainActivity,
                                         ).show()
                                     }
                                     bioPoint.id = it.data.toInt()
+                                    bioPoint.dbId = it.data.toInt()
                                     navigateToFloraFaunaActivity(activity,project)
                                 } else {
                                     activity.runOnUiThread {
@@ -79,7 +80,7 @@ private fun navigateToFloraFaunaActivity(activity: BioDiversityFormMainActivity,
                             Result.Status.ERROR -> {
                                 activity.runOnUiThread {
                                     val errorMsg =
-                                        if (it.error != null) it.error.message else activity.resources.getString(
+                                        if (it.error?.message != null) it.error.message else activity.resources.getString(
                                             R.string.server_error_desc
                                         )
                                     Toast.makeText(

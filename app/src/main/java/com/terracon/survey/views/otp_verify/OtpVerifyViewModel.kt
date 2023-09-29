@@ -69,7 +69,7 @@ class OtpVerifyViewModel(
                         Result.Status.ERROR -> {
                             activity.runOnUiThread {
                                 val errorMsg =
-                                    if (it.error != null) it.error.message else activity.resources.getString(
+                                    if (it.error?.message != null) it.error.message else activity.resources.getString(
                                         R.string.server_error_desc
                                     )
                                 Toast.makeText(
@@ -119,7 +119,7 @@ class OtpVerifyViewModel(
                         Result.Status.ERROR -> {
                             activity.runOnUiThread {
                                 val errorMsg =
-                                    if (it.error != null) it.error.message else activity.resources.getString(
+                                    if (it.error?.message != null) it.error.message else activity.resources.getString(
                                         R.string.server_error_desc
                                     )
                                 Toast.makeText(

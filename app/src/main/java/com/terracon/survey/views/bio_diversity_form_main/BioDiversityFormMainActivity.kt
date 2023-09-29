@@ -229,6 +229,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
                     binding.timeEditText.editText?.text.toString()
                 bioDiversityFormMainViewModel.bioPoint.gps_latitude = location.latitude.toString()
                 bioDiversityFormMainViewModel.bioPoint.gps_longitude = location.longitude.toString()
+
                 bioDiversityFormMainViewModel.bioPoint.season_name =
                     binding.seasonNameAutoCompleteTextView.text.toString()
                 bioDiversityFormMainViewModel.bioPoint.weather_condition =

@@ -85,20 +85,37 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/point_number_edit_text"
+                android:id="@+id/plot_code_edit_text"
                 style="@style/textInputEditTextStyle"
+                android:layout_marginTop="@dimen/padding_10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_10"
-                android:hint="@string/point_number"
+                android:hint="@string/plot_code"
                 app:startIconDrawable="@drawable/baseline_123_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="none"
                     android:text="" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/point_number_edit_text"-->
+<!--                style="@style/textInputEditTextStyle"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="@dimen/padding_10"-->
+<!--                android:hint="@string/point_number"-->
+<!--                app:startIconDrawable="@drawable/baseline_123_24">-->
+
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="" />-->
+
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/landmark_edit_text"
@@ -129,6 +146,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/habitat_edit_text"
+                style="@style/textInputDropDownStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_10"
+                android:hint="@string/habitat"
+                app:startIconDrawable="@drawable/baseline_forest_24">
+
+                <AutoCompleteTextView
+                    android:id="@+id/habitatAutoCompleteTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -223,33 +258,32 @@
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/habitat_edit_text"
-                style="@style/textInputDropDownStyle"
+
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_10"
-                android:hint="@string/habitat"
-                app:startIconDrawable="@drawable/baseline_forest_24">
+                android:layout_marginTop="@dimen/padding_40">
 
-                <AutoCompleteTextView
-                    android:id="@+id/habitatAutoCompleteTextView"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveBtn"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_button"
+                    android:insetLeft="@dimen/padding_30"
+                    android:insetRight="@dimen/padding_30"
+                    android:text="@string/save_next"
+                    android:textAppearance="@style/basicButtonStyle" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <include
+                    android:id="@+id/progressView"
+                    layout="@layout/progress_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+            </FrameLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/saveBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/padding_40"
-                android:background="@drawable/rounded_button"
-                android:insetLeft="@dimen/padding_30"
-                android:insetRight="@dimen/padding_30"
-                android:text="@string/save_next"
-                android:textAppearance="@style/basicButtonStyle" />
+
 
 
         </LinearLayout>
