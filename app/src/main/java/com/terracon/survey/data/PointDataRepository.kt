@@ -55,6 +55,8 @@ class PointDataRepository(
 
                     }
                 }
+                result.data?.data?.bio_diversity_survey_point_details?.dbId = payload.dbId
+
             }
             emit(result)
         }.flowOn(Dispatchers.IO)
@@ -187,13 +189,13 @@ class PointDataRepository(
             if (count.isNotEmpty()) {
                 pointDataDao.deleteSpecies(count[0].dbId.toString())
                 bioPointDetails.species.forEach {
-                    it.bio_diversity_survey_data_points_id = count[0].dbId?.toInt()
+                    it.tempId = count[0].dbId?.toInt()
                 }
                 pointDataDao.insertBioPointDetailsSpeciesList(bioPointDetails.species)
             } else {
                 val result = pointDataDao.insertBioPointDetails(bioPointDetails).let { id ->
                     bioPointDetails.species.forEach {
-                        it.bio_diversity_survey_data_points_id = id.toInt()
+                        it.tempId = id.toInt()
                     }
                     pointDataDao.insertBioPointDetailsSpeciesList(bioPointDetails.species)
                 }

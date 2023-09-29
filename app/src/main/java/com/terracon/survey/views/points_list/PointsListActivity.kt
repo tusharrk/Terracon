@@ -164,6 +164,10 @@ class PointsListActivity : AppCompatActivity() {
         Log.d("TAG_WW", msg)
     }
 
+    override fun onResume() {
+        pointsListViewModel.fetchPoints()
+        super.onResume()
+    }
     override fun onRestart() {
         // homeViewModel.fetchUserss(ChatApp.userProfileDTO.sapId)
         super.onRestart()

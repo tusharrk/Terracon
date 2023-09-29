@@ -50,28 +50,28 @@ interface PointDataDao {
     fun insertBioPointDetailsSpeciesList(species: List<Species>)
 
     @Transaction
-    @Query("SELECT * FROM BioPointDetails Where bio_diversity_survey_points_id = :id and type =:type and sub_type =:subType Limit 1")
+    @Query("SELECT * FROM BioPointDetails Where tempId = :id and type =:type and sub_type =:subType Limit 1")
     fun getBioPointDetailsById(id: String, type: String, subType: String): BioPointDetails
 
     @Transaction
-    @Query("SELECT * FROM BioPointDetails Where bio_diversity_survey_points_id = :id ")
+    @Query("SELECT * FROM BioPointDetails Where tempId = :id ")
     fun getAllBioPointDetailsById(id: Int): List<BioPointDetails>
 
     @Transaction
-    @Query("SELECT * FROM Species Where bio_diversity_survey_data_points_id = :id")
+    @Query("SELECT * FROM Species Where tempId = :id")
     fun getSpeciesById(id: String): List<Species>
 
     @Transaction
-    @Query("SELECT * FROM BioPointDetails Where bio_diversity_survey_points_id = :id and type =:type and sub_type =:subType")
+    @Query("SELECT * FROM BioPointDetails Where tempId = :id and type =:type and sub_type =:subType")
     fun getCountBioPointDetailsByIdTypeSubType(id: String, type: String, subType: String): List<BioPointDetails>
 
 
-    @Query("DELETE FROM Species WHERE bio_diversity_survey_data_points_id = :id")
+    @Query("DELETE FROM Species WHERE tempId = :id")
     fun deleteSpecies(id: String)
 
 
     @Transaction
-    @Query("UPDATE BioPointDetails SET bio_diversity_survey_points_id =:bioPointId Where bio_diversity_survey_points_id = :id")
+    @Query("UPDATE BioPointDetails SET bio_diversity_survey_points_id =:bioPointId Where tempId = :id")
     fun updateBioPointIdInPointDetails(bioPointId: Int,id: Int)
 
     @Transaction
@@ -80,11 +80,11 @@ interface PointDataDao {
 
 
     //species
-    @Query("SELECT * FROM Species Where bio_diversity_survey_data_points_id in(:idList) and isSynced = 0")
+    @Query("SELECT * FROM Species Where tempId in(:idList) and isSynced = 0")
     fun getSpeciesListById(idList: List<Int>): List<Species>
 
     @Transaction
-    @Query("SELECT dbId FROM BioPointDetails Where bio_diversity_survey_points_id = :id and isSynced = 0")
+    @Query("SELECT dbId FROM BioPointDetails Where tempId = :id and isSynced = 0")
     fun getBioPointDetailsById(id: String): List<Int>
 
     @Transaction

@@ -139,7 +139,7 @@ class TreeAssessmentDetailsFormViewModel(
 
     fun addItemToList(treeSpecies: TreeAssessmentSpecies){
         treePoint.dbId?.let {
-            treeSpecies.tree_assessment_survey_points_id = it
+            treeSpecies.tempId = it
 
             if (_speciesList.value.isNullOrEmpty()){
                 val tempList = arrayListOf<TreeAssessmentSpecies>(treeSpecies)

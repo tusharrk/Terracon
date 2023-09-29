@@ -242,6 +242,8 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
                 treeAssessmentFormViewModel.treePoint.plot_dimension_type =
                     if (binding.circularRadioBtn.isChecked) "circular" else "rectangular"
 
+                treeAssessmentFormViewModel.treePoint.landmark =
+                    binding.landmarkEditText.editText?.text.toString()
                 treeAssessmentFormViewModel.treePoint.plot_type =
                     binding.plotTypeEditText.editText?.text.toString()
                 treeAssessmentFormViewModel.treePoint.radius =
@@ -256,7 +258,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
 
                 treeAssessmentFormViewModel.savePointData(this, project)
 
-               // treeAssessmentFormViewModel.navigateToDetails(this, project)
+                // treeAssessmentFormViewModel.navigateToDetails(this, project)
             } catch (e: Exception) {
                 L.d { "submit btn error--${e.toString()}" }
                 Toast.makeText(this, "Error--${e.toString()}", Toast.LENGTH_LONG).show()

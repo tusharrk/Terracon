@@ -11,6 +11,7 @@ data class BioPointDetails(
     @PrimaryKey(autoGenerate = true)
     var dbId:Int? = null,
     var bio_diversity_survey_points_id: Int? = null,
+    var tempId:Int? = null,
     var id: Int? = null,
     @Ignore
     var species: List<Species> = listOf(),
@@ -34,6 +35,7 @@ data class Species(
     @PrimaryKey(autoGenerate = true)
     var dbId:Int? = null,
     var id: Int? = null,
+    var tempId:Int? = null,
     var bio_diversity_survey_data_points_id: Int? = null,
     var comment: String? = null,
     var count: String = "",

@@ -266,7 +266,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
     private fun setupPointDataPayload() {
         addPointFormBioViewModel.pointBioDetails.type = addPointFormBioViewModel.type
         addPointFormBioViewModel.pointBioDetails.sub_type = addPointFormBioViewModel.subType
-        addPointFormBioViewModel.pointBioDetails.bio_diversity_survey_points_id =
+        addPointFormBioViewModel.pointBioDetails.tempId =
             addPointFormBioViewModel.pointBio.dbId
         addPointFormBioViewModel.pointBioDetails.species = addPointFormBioViewModel.getSpeciesList()
         L.d { "data--${addPointFormBioViewModel.pointBio}" }

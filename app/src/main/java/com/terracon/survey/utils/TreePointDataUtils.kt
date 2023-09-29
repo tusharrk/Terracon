@@ -247,7 +247,7 @@ object TreePointDataUtils {
 
         viewModelScope.launch {
             if (treeAssessmentPoint.id != null) {
-                treeAssessmentRepository.getAllSpeciesFromLocal(treeAssessmentPoint.id!!)
+                treeAssessmentRepository.getAllSpeciesFromLocal(treeAssessmentPoint.dbId!!)
                     .collect {
                         when (it.status) {
                             Result.Status.SUCCESS -> {
@@ -311,6 +311,9 @@ object TreePointDataUtils {
 
                 var bioDetailsItem = list[index]
                 bioDetailsItem.id = null
+                treeAssessmentPoint.id?.let {
+                    bioDetailsItem.tree_assessment_survey_points_id = it
+                }
                 viewModelScope.launch {
                     treeAssessmentRepository.submitTreeSpecies(bioDetailsItem)
                         .collect {

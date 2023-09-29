@@ -39,14 +39,14 @@ interface TreeAssessmentDao {
 
 
     @Transaction
-    @Query("SELECT * FROM TreeAssessmentSpecies Where tree_assessment_survey_points_id = :id and isSynced = 0")
+    @Query("SELECT * FROM TreeAssessmentSpecies Where tempId = :id")
     fun getSpeciesById(id: String): List<TreeAssessmentSpecies>
 
-    @Query("SELECT * FROM TreeAssessmentSpecies Where tree_assessment_survey_points_id =:id and isSynced = 0")
+    @Query("SELECT * FROM TreeAssessmentSpecies Where tempId =:id and isSynced = 0")
     fun getSpeciesListById(id: String): List<TreeAssessmentSpecies>
 
 
-    @Query("DELETE FROM TreeAssessmentSpecies WHERE tree_assessment_survey_points_id = :id")
+    @Query("DELETE FROM TreeAssessmentSpecies WHERE tempId = :id")
     fun deleteSpecies(id: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -57,7 +57,7 @@ interface TreeAssessmentDao {
     fun updateSpeciesPointDetailsSyncStatus(isSynced: Boolean,id: Int)
 
     @Transaction
-    @Query("UPDATE TreeAssessmentSpecies SET tree_assessment_survey_points_id =:pointId Where tree_assessment_survey_points_id = :id")
+    @Query("UPDATE TreeAssessmentSpecies SET tree_assessment_survey_points_id =:pointId Where tempId = :id")
     fun updatePointIdInPointDetails(pointId: Int,id: Int)
 
     @Transaction

@@ -61,6 +61,7 @@ class TreeAssessmentRepository(
                         }
                     }
                 }
+                result.data?.data?.tree_assessment_survey_points?.dbId = payload.dbId
             }
             emit(result)
         }.flowOn(Dispatchers.IO)
@@ -129,9 +130,9 @@ class TreeAssessmentRepository(
 
             if (treeAssessmentPoint.dbId != null) {
                 treeAssessmentDao.deleteSpecies(treeAssessmentPoint.dbId.toString())
-                speciesList.forEach {
-                    it.tree_assessment_survey_points_id = treeAssessmentPoint.dbId!!
-                }
+//                speciesList.forEach {
+//                    it.tree_assessment_survey_points_id = treeAssessmentPoint.dbId!!
+//                }
                 treeAssessmentDao.insertTreePointSpeciesList(speciesList)
             }
 
@@ -203,7 +204,7 @@ class TreeAssessmentRepository(
     suspend fun getImageListToUpload(treeAssessmentPoint: TreeAssessmentPoint): Flow<Result<List<TreeAssessmentSpecies>>?> {
         return flow {
 
-            val result = treeAssessmentDao.getSpeciesListById(treeAssessmentPoint.id.toString()).let {
+            val result = treeAssessmentDao.getSpeciesListById(treeAssessmentPoint.dbId.toString()).let {
                 Result.success(
                     it
                 )

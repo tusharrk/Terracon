@@ -28,6 +28,116 @@ import java.io.File
 
 object PointDataUtils {
 
+    fun savePointDataToServerFromDB(
+        viewModelScope: CoroutineScope,
+        pointDataRepository: PointDataRepository,
+        activity: Activity,
+        bioPoint: BioPoint
+    ) {
+        L.d { "save point started" }
+        viewModelScope.launch {
+            pointDataRepository.submitPoint(bioPoint, isUpdateLocal = true)
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            try {
+                                if (it.data != null) {
+                                    Log.d("TAG_X", it.data.toString())
+                                    L.d { "save point success--${it.data.toString()}" }
+
+                                    getImageListToUpload(
+                                        viewModelScope,
+                                        pointDataRepository,
+                                        activity,
+                                        it.data.data.bio_diversity_survey_point_details
+                                    )
+                                    //showToast(activity, "Data Saved Successfully")
+                                } else {
+                                    showToast(activity, "error")
+                                }
+                            } catch (e: Exception) {
+                                showToast(activity, e.toString())
+                            }
+                        }
+
+                        Result.Status.LOADING -> {}
+                        Result.Status.ERROR -> {
+                            val errorMsg =
+                                if (it.error?.message != null) it.error.message else activity.resources.getString(
+                                    R.string.server_error_desc
+                                )
+                            showToast(activity, errorMsg)
+                        }
+
+                        else -> {}
+                    }
+                }
+        }
+    }
+
+    private fun getImageListToUpload(
+        viewModelScope: CoroutineScope,
+        pointDataRepository: PointDataRepository,
+        activity: Activity,
+        bioPoint: BioPoint
+    ) = runBlocking {
+        L.d { "inside getImageListToUpload" }
+
+        viewModelScope.launch {
+            pointDataRepository.getImageListToUpload(PointDTO(bio_diversity_survey_points_id = bioPoint.dbId.toString()))
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            if (it.data != null) {
+                                Log.d("TAG_X", it.data.toString())
+                                L.d { " getImageListToUpload success---${it.data.toString()}" }
+
+                                if (it.data != null) {
+                                    withContext(Dispatchers.Default) {
+                                        uploadImagesAndUpdateDB(
+                                            viewModelScope,
+                                            pointDataRepository,
+                                            activity,
+                                            bioPoint,
+                                            it.data as MutableList<Species>
+                                        )
+                                    }
+                                }
+//                                it.data.forEach { species ->
+//                                    if(species.images!="" && species.images?.contains("https") == false){
+//                                        L.d {"url-- ${species.images.toString()}" }
+//                                        withContext(Dispatchers.Default) {
+//                                            uploadImagesAndUpdateDB(
+//                                                viewModelScope,
+//                                                pointDataRepository,
+//                                                activity,
+//                                                species
+//                                            )
+//                                        }
+//
+//                                    }
+//                                }
+                                //showToast(activity, "Data Saved Successfully")
+                            } else {
+                                showToast(activity, "error")
+                            }
+                        }
+
+                        Result.Status.LOADING -> {}
+                        Result.Status.ERROR -> {
+                            val errorMsg =
+                                if (it.error?.message != null) it.error.message else activity.resources.getString(
+                                    R.string.server_error_desc
+                                )
+                            showToast(activity, errorMsg)
+                        }
+
+                        else -> {}
+                    }
+                }
+        }
+    }
+
     private suspend fun uploadImagesAndUpdateDB(
         viewModelScope: CoroutineScope,
         pointDataRepository: PointDataRepository,
@@ -124,52 +234,6 @@ object PointDataUtils {
         }
     }
 
-    fun savePointDataToServerFromDB(
-        viewModelScope: CoroutineScope,
-        pointDataRepository: PointDataRepository,
-        activity: Activity,
-        bioPoint: BioPoint
-    ) {
-        L.d { "save point started" }
-        viewModelScope.launch {
-            pointDataRepository.submitPoint(bioPoint, isUpdateLocal = true)
-                .collect {
-                    when (it?.status) {
-                        Result.Status.SUCCESS -> {
-                            try {
-                                if (it.data != null) {
-                                    Log.d("TAG_X", it.data.toString())
-                                    L.d { "save point success--${it.data.toString()}" }
-
-                                    getImageListToUpload(
-                                        viewModelScope,
-                                        pointDataRepository,
-                                        activity,
-                                        it.data.data.bio_diversity_survey_point_details
-                                    )
-                                    //showToast(activity, "Data Saved Successfully")
-                                } else {
-                                    showToast(activity, "error")
-                                }
-                            } catch (e: Exception) {
-                                showToast(activity, e.toString())
-                            }
-                        }
-
-                        Result.Status.LOADING -> {}
-                        Result.Status.ERROR -> {
-                            val errorMsg =
-                                if (it.error?.message != null) it.error.message else activity.resources.getString(
-                                    R.string.server_error_desc
-                                )
-                            showToast(activity, errorMsg)
-                        }
-
-                        else -> {}
-                    }
-                }
-        }
-    }
 
     private fun getPointDetailsFromLocal(
         viewModelScope: CoroutineScope,
@@ -180,8 +244,8 @@ object PointDataUtils {
         L.d { " inside  getPointDetailsFromLocal" }
 
         viewModelScope.launch {
-            if (bioPoint.id != null) {
-                pointDataRepository.getAllPointDetailsFromLocal(bioPoint.id!!)
+            if (bioPoint.dbId != null) {
+                pointDataRepository.getAllPointDetailsFromLocal(bioPoint.dbId!!)
                     .collect {
                         when (it.status) {
                             Result.Status.SUCCESS -> {
@@ -226,7 +290,7 @@ object PointDataUtils {
     }
 
     @SuppressLint("SuspiciousIndentation")
-   private fun savePointDetailsToServerFromDB(
+    private fun savePointDetailsToServerFromDB(
         viewModelScope: CoroutineScope,
         pointDataRepository: PointDataRepository,
         activity: Activity,
@@ -297,68 +361,6 @@ object PointDataUtils {
         }
     }
 
-    private fun getImageListToUpload(
-        viewModelScope: CoroutineScope,
-        pointDataRepository: PointDataRepository,
-        activity: Activity,
-        bioPoint: BioPoint
-    ) = runBlocking {
-        L.d { "inside getImageListToUpload" }
-
-        viewModelScope.launch {
-            pointDataRepository.getImageListToUpload(PointDTO(bio_diversity_survey_points_id = bioPoint.id.toString()))
-                .collect {
-                    when (it?.status) {
-                        Result.Status.SUCCESS -> {
-                            if (it.data != null) {
-                                Log.d("TAG_X", it.data.toString())
-                                L.d { " getImageListToUpload success---${it.data.toString()}" }
-
-                                if (it.data != null) {
-                                    withContext(Dispatchers.Default) {
-                                        uploadImagesAndUpdateDB(
-                                            viewModelScope,
-                                            pointDataRepository,
-                                            activity,
-                                            bioPoint,
-                                            it.data as MutableList<Species>
-                                        )
-                                    }
-                                }
-//                                it.data.forEach { species ->
-//                                    if(species.images!="" && species.images?.contains("https") == false){
-//                                        L.d {"url-- ${species.images.toString()}" }
-//                                        withContext(Dispatchers.Default) {
-//                                            uploadImagesAndUpdateDB(
-//                                                viewModelScope,
-//                                                pointDataRepository,
-//                                                activity,
-//                                                species
-//                                            )
-//                                        }
-//
-//                                    }
-//                                }
-                                //showToast(activity, "Data Saved Successfully")
-                            } else {
-                                showToast(activity, "error")
-                            }
-                        }
-
-                        Result.Status.LOADING -> {}
-                        Result.Status.ERROR -> {
-                            val errorMsg =
-                                if (it.error?.message != null) it.error.message else activity.resources.getString(
-                                    R.string.server_error_desc
-                                )
-                            showToast(activity, errorMsg)
-                        }
-
-                        else -> {}
-                    }
-                }
-        }
-    }
 
     private fun updateBioPointInLocal(
         viewModelScope: CoroutineScope,

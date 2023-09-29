@@ -25,6 +25,7 @@ data class TreeAssessmentPoint(
     var village: String = "",
     var weather_condition: String = "",
     var width: String = "",
+    var landmark: String? = null,
     var isSynced: Boolean = false
 ):Serializable{}
 

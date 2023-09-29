@@ -148,7 +148,10 @@ class TreePointsListActivity : AppCompatActivity() {
     fun logToast(msg: String) {
         Log.d("TAG_WW", msg)
     }
-
+    override fun onResume() {
+        treePointsListViewModel.fetchPoints()
+        super.onResume()
+    }
     override fun onRestart() {
        // homeViewModel.fetchUserss(ChatApp.userProfileDTO.sapId)
         super.onRestart()

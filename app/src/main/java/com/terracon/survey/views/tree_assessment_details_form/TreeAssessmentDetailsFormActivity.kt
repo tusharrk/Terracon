@@ -201,9 +201,9 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(), SSPickerOptionsBo
             var species = TreeAssessmentSpecies(
                 name = binding.speciesEditText.editText?.text.toString(),
                 serial_number = binding.serialNumberEditText.editText?.text.toString(),
-                girth = Integer.parseInt(binding.girthEditText.editText?.text.toString()),
-                height = Integer.parseInt(binding.heightEditText.editText?.text.toString()),
-                canopy_diameter = Integer.parseInt(binding.diameterEditText.editText?.text.toString()),
+                girth = binding.girthEditText.editText?.text.toString(),
+                height = binding.heightEditText.editText?.text.toString(),
+                canopy_diameter = binding.diameterEditText.editText?.text.toString(),
                 images = treeAssessmentFormMainViewModel.imageUrl,
                 comment = binding.commentsEditText.editText?.text.toString()
 
