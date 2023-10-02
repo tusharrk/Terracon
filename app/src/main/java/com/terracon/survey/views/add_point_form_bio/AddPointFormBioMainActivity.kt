@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.app.imagepickerlibrary.ImagePicker
@@ -21,6 +22,7 @@ import com.app.imagepickerlibrary.model.ImageProvider
 import com.app.imagepickerlibrary.model.PickerType
 import com.app.imagepickerlibrary.ui.bottomsheet.SSPickerOptionsBottomSheet
 import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.michaelflisar.lumberjack.L
 import com.terracon.survey.R
 import com.terracon.survey.databinding.AddPointFormBioActivityBinding
@@ -59,19 +61,25 @@ class AddPointFormBioActivity : AppCompatActivity(),
     }
 
     private fun setupListAdapter() {
-        listAdapter = AddPointFormBioAdapter(AddPointFormBioAdapter.OnClickListener { item ->
+        listAdapter = AddPointFormBioAdapter(AddPointFormBioAdapter.OnClickListener { item,action ->
             val index = addPointFormBioViewModel.speciesBioList.value?.indexOf(item)
             if (index != null) {
-                addPointFormBioViewModel.isEdit = true
-                addPointFormBioViewModel.isEditIndex = index
+                if(action == "edit"){
+                    addPointFormBioViewModel.isEdit = true
+                    addPointFormBioViewModel.isEditIndex = index
 
-                binding.speciesNameEditText.editText?.setText(item.name)
-                binding.countEditText.editText?.setText(item.count)
-                binding.commentEditText.editText?.setText(item.comment)
-                binding.uploadImage.text =  if (item.images.isNullOrEmpty()) getString(R.string.capture_upload_image) else item.images!!
+                    binding.speciesNameEditText.editText?.setText(item.name)
+                    binding.countEditText.editText?.setText(item.count)
+                    binding.commentEditText.editText?.setText(item.comment)
+                    binding.uploadImage.text =
+                        if (item.images.isNullOrEmpty()) getString(R.string.capture_upload_image) else item.images!!
 
-                addPointFormBioViewModel.imageUrl =
-                    if (item.images.isNullOrEmpty()) "" else item.images!!
+                    addPointFormBioViewModel.imageUrl =
+                        if (item.images.isNullOrEmpty()) "" else item.images!!
+                }else{
+                    deleteItem(item,index)
+                }
+
 
                 //addPointFormBioViewModel.updateCountValue(item, index)
                 // listAdapter.notifyItemChanged(index)
@@ -258,7 +266,24 @@ class AddPointFormBioActivity : AppCompatActivity(),
                 return@setOnClickListener
             }
 
-            setupPointDataPayload()
+            MaterialAlertDialogBuilder(this)
+                .setTitle(getString(R.string.confirmation))
+                .setMessage(getString(R.string.form_submit_msg))
+                .setNeutralButton("Cancel") { dialog, which ->
+
+                }
+                .setPositiveButton("Submit") { dialog, which ->
+                    setupPointDataPayload()
+                }
+                .show()
+
+        }
+        try {
+            onBackPressedDispatcher.addCallback(this /* lifecycle owner */) {
+                // Back is pressed... Finishing the activity
+                showDiscardAlert()
+            }
+        }catch (e:Exception){
 
         }
     }
@@ -271,6 +296,21 @@ class AddPointFormBioActivity : AppCompatActivity(),
         addPointFormBioViewModel.pointBioDetails.species = addPointFormBioViewModel.getSpeciesList()
         L.d { "data--${addPointFormBioViewModel.pointBio}" }
         addPointFormBioViewModel.savePointData(this)
+    }
+
+    private fun deleteItem(item:Species,index:Int){
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Delete")
+            .setMessage("Are you sure you want to Delete this Item?")
+            .setNeutralButton("Cancel") { dialog, which ->
+                // Respond to neutral button press
+            }
+            .setPositiveButton("Delete") { dialog, which ->
+                addPointFormBioViewModel.deleteItemFromList(index,item)
+                listAdapter.notifyItemRemoved(index)
+
+            }
+            .show()
     }
 
     private fun openFilePicker() {
@@ -312,7 +352,24 @@ class AddPointFormBioActivity : AppCompatActivity(),
             AppUtils.logoutUser(this)
             return true
         }
+        if(id==android.R.id.home){
+            showDiscardAlert()
+            return true
+        }
         return super.onOptionsItemSelected(item)
+    }
+    private fun showDiscardAlert(){
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.unsaved_changes))
+            .setMessage(getString(R.string.discard_changes_msg))
+            .setNeutralButton("Cancel") { dialog, which ->
+                // Respond to neutral button press
+            }
+            .setPositiveButton("Discard") { dialog, which ->
+                finish()
+
+            }
+            .show()
     }
 
     override fun onImagePick(uri: Uri?) {

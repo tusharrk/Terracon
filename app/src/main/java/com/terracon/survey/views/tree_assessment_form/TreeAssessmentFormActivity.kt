@@ -15,11 +15,13 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK
 import com.google.android.material.timepicker.TimeFormat
@@ -41,7 +43,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
     private lateinit var binding: TreeAssessmentFormActivityBinding
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private val permissionId = 2
-    private lateinit var location: Location
+    private var location: Location? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = TreeAssessmentFormActivityBinding.inflate(layoutInflater)
@@ -114,7 +116,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
 //                        val geocoder = Geocoder(this, Locale.getDefault())
 //                        val list: List<Address> =
 //                            geocoder.getFromLocation(location.latitude, location.longitude, 1)!!
-                        binding.gpsEditText.editText?.setText("${location.latitude} , ${location.longitude}")
+                        binding.gpsEditText.editText?.setText("${location?.latitude} , ${location?.longitude}")
                     }
                 }
             } else {
@@ -150,7 +152,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
             // getLocation()
             if (location != null) {
                 val url =
-                    "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}"
+                    "https://www.google.com/maps/search/?api=1&query=${location?.latitude},${location?.longitude}"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
             }
@@ -230,39 +232,66 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
                     }
                 }
 
-                treeAssessmentFormViewModel.treePoint.project_id = project.id
-                treeAssessmentFormViewModel.treePoint.date =
-                    binding.dateEditText.editText?.text.toString()
-                treeAssessmentFormViewModel.treePoint.time =
-                    binding.timeEditText.editText?.text.toString()
-                treeAssessmentFormViewModel.treePoint.gps_latitude = location.latitude.toString()
-                treeAssessmentFormViewModel.treePoint.gps_longitude = location.longitude.toString()
-                treeAssessmentFormViewModel.treePoint.habitat =
-                    binding.habitatAutoCompleteTextView.text.toString()
-                treeAssessmentFormViewModel.treePoint.plot_dimension_type =
-                    if (binding.circularRadioBtn.isChecked) "circular" else "rectangular"
+                if (location == null) {
+                    Toast.makeText(this, "Please refresh location", Toast.LENGTH_LONG)
+                        .show()
+                    return@setOnClickListener
+                }
 
-                treeAssessmentFormViewModel.treePoint.landmark =
-                    binding.landmarkEditText.editText?.text.toString()
-                treeAssessmentFormViewModel.treePoint.plot_type =
-                    binding.plotTypeEditText.editText?.text.toString()
-                treeAssessmentFormViewModel.treePoint.radius =
-                    binding.radiusEditText.editText?.text.toString()
-                treeAssessmentFormViewModel.treePoint.width =
-                    binding.widthEditText.editText?.text.toString()
-                treeAssessmentFormViewModel.treePoint.length =
-                    binding.lengthEditText.editText?.text.toString()
-                treeAssessmentFormViewModel.treePoint.code =
-                    binding.plotCodeEditText.editText?.text.toString()
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.confirmation))
+                    .setMessage(getString(R.string.form_submit_msg))
+                    .setNeutralButton("Cancel") { dialog, which ->
+
+                    }
+                    .setPositiveButton("Submit") { dialog, which ->
+
+                        treeAssessmentFormViewModel.treePoint.project_id = project.id
+                        treeAssessmentFormViewModel.treePoint.date =
+                            binding.dateEditText.editText?.text.toString()
+                        treeAssessmentFormViewModel.treePoint.time =
+                            binding.timeEditText.editText?.text.toString()
+                        treeAssessmentFormViewModel.treePoint.gps_latitude =
+                            location?.latitude.toString()
+                        treeAssessmentFormViewModel.treePoint.gps_longitude =
+                            location?.longitude.toString()
+                        treeAssessmentFormViewModel.treePoint.habitat =
+                            binding.habitatAutoCompleteTextView.text.toString()
+                        treeAssessmentFormViewModel.treePoint.plot_dimension_type =
+                            if (binding.circularRadioBtn.isChecked) "circular" else "rectangular"
+
+                        treeAssessmentFormViewModel.treePoint.landmark =
+                            binding.landmarkEditText.editText?.text.toString()
+                        treeAssessmentFormViewModel.treePoint.plot_type =
+                            binding.plotTypeEditText.editText?.text.toString()
+                        treeAssessmentFormViewModel.treePoint.radius =
+                            binding.radiusEditText.editText?.text.toString()
+                        treeAssessmentFormViewModel.treePoint.width =
+                            binding.widthEditText.editText?.text.toString()
+                        treeAssessmentFormViewModel.treePoint.length =
+                            binding.lengthEditText.editText?.text.toString()
+                        treeAssessmentFormViewModel.treePoint.code =
+                            binding.plotCodeEditText.editText?.text.toString()
 
 
-                treeAssessmentFormViewModel.savePointData(this, project)
+                        treeAssessmentFormViewModel.savePointData(this, project)
 
-                // treeAssessmentFormViewModel.navigateToDetails(this, project)
+                        // treeAssessmentFormViewModel.navigateToDetails(this, project)
+
+                    }
+                    .show()
             } catch (e: Exception) {
                 L.d { "submit btn error--${e.toString()}" }
                 Toast.makeText(this, "Error--${e.toString()}", Toast.LENGTH_LONG).show()
             }
+        }
+        try {
+            onBackPressedDispatcher.addCallback(this /* lifecycle owner */) {
+                // Back is pressed... Finishing the activity
+                showDiscardAlert()
+            }
+        } catch (e: Exception) {
+
         }
     }
 
@@ -328,6 +357,24 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
             AppUtils.logoutUser(this)
             return true
         }
+        if (id == android.R.id.home) {
+            showDiscardAlert()
+            return true
+        }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showDiscardAlert() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.unsaved_changes))
+            .setMessage(getString(R.string.discard_changes_msg))
+            .setNeutralButton("Cancel") { dialog, which ->
+                // Respond to neutral button press
+            }
+            .setPositiveButton("Discard") { dialog, which ->
+                finish()
+
+            }
+            .show()
     }
 }

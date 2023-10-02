@@ -9,6 +9,7 @@ import com.terracon.survey.model.Flora
 import com.terracon.survey.model.FloraFaunaCategoryResponse
 import com.terracon.survey.model.FloraMasterResponse
 import com.terracon.survey.model.Project
+import com.terracon.survey.model.ProjectData
 import com.terracon.survey.model.ProjectResponse
 import com.terracon.survey.model.Result
 import com.terracon.survey.model.UserApiRequestDTO
@@ -30,14 +31,29 @@ class ProjectRepository(
             val result = projectRemoteDataSource.getAllProjects(payload)
             //Cache to database if response is successful
             if (result.status == Result.Status.SUCCESS) {
-//                result.data?.let { it ->
-//                    projectDao.deleteAll(it)
-//                    userDao.insertAll(it)
-//                }
+                result.data?.let { it ->
+                    projectDao.deleteAllData()
+                    projectDao.insertAll(it.data.project)
+                }
             }
-            emit(result)
+            projectDao.getAll()?.let {
+               var data = ProjectResponse(
+                    data =
+                    ProjectData(
+                        project = it
+                    ),
+                    status = "success",
+                    message = "data fetched"
+                )
+                emit( Result.success(data))
+            } ?: emit(Result.success(ProjectResponse(
+                data = ProjectData(project = listOf<Project>()),status = "success",
+                message = "data fetched"
+            )))
+
         }.flowOn(Dispatchers.IO)
     }
+
 
     suspend fun getFloraData(payload: UserApiRequestDTO): Flow<Result<FloraMasterResponse>?> {
         return flow {
@@ -79,7 +95,7 @@ class ProjectRepository(
         }.flowOn(Dispatchers.IO)
     }
 
-    private fun getBothCategories(): Result<FloraFaunaCategoryResponse>{
+    private fun getBothCategories(): Result<FloraFaunaCategoryResponse> {
         val categories = FloraFaunaCategoryResponse(
             floraCategoryList = projectDao.getFloraCategories(),
             faunaCategoryList = projectDao.getFaunaCategories()
@@ -87,19 +103,22 @@ class ProjectRepository(
         return Result.success(categories)
     }
 
-    suspend fun getFloraFaunaSpeciesListBasedOnType(type:String,subType:String): Flow<Result<List<String>>?> {
+    suspend fun getFloraFaunaSpeciesListBasedOnType(
+        type: String,
+        subType: String
+    ): Flow<Result<List<String>>?> {
         return flow {
             emit(Result.loading())
-            val result = getList(type,subType)
+            val result = getList(type, subType)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
 
-    private fun getList(type:String, subType:String):Result<List<String>>{
+    private fun getList(type: String, subType: String): Result<List<String>> {
         var list = listOf<String>()
-        if(type=="Fauna"){
+        if (type == "Fauna") {
             list = projectDao.getFaunaList(subType)
-        }else{
+        } else {
             list = projectDao.getFloraList(subType)
         }
         return Result.success(list)
@@ -113,7 +132,6 @@ class ProjectRepository(
 //            emit(result)
 //        }.flowOn(Dispatchers.IO)
 //    }
-
 
 
     suspend fun getFaunaCategoriesLocal(): Flow<Result<List<String>>?> {

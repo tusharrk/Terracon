@@ -11,13 +11,13 @@ data class Project(
     val client_name: String = "",
     val created_at: String = "",
     val created_by: Int = 0,
-    val description:String = "",
-    val location_of_survey: String = "",
-    val map_kml: String = "",
+    val description:String? = null,
+    val location_of_survey: String? = null,
+    val map_kml: String? = null,
     val name: String = "",
-    val total_study_area_in_sq_km: String = "",
+    val total_study_area_in_sq_km: String? = null,
     val type: String = "",
-    val villages:String = "",
+    val villages:String? = null,
     val updated_at: String = "",
     val updated_by: Int = 0
 ): Serializable{

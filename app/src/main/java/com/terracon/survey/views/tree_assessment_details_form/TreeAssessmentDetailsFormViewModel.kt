@@ -160,6 +160,12 @@ class TreeAssessmentDetailsFormViewModel(
         _speciesList.value?.get(index)?.images = species.images
     }
 
+    fun deleteItemFromList(index: Int,item:TreeAssessmentSpecies) {
+        val tempList = _speciesList.value
+        tempList?.removeAt(index)
+        _speciesList.value = tempList
+    }
+
     fun getSpeciesList():ArrayList<TreeAssessmentSpecies>{
         val list: ArrayList<TreeAssessmentSpecies> = arrayListOf<TreeAssessmentSpecies>()
         if(_speciesList.value!=null){

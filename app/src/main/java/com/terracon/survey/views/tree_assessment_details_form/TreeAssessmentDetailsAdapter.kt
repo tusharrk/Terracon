@@ -47,8 +47,14 @@ class TreeAssessmentDetailsAdapter internal constructor(
             }
 
             binding.editBtn.setOnClickListener {
-                onClickListener.onClick(item)
+                onClickListener.onClick(item,"edit")
             }
+
+            binding.deleteBtn.setOnClickListener {
+                onClickListener.onClick(item,"delete")
+
+            }
+
 
 
 
@@ -97,8 +103,8 @@ class TreeAssessmentDetailsAdapter internal constructor(
         return ViewHolder(binding)
     }
 
-    class OnClickListener(val clickListener: (projects: TreeAssessmentSpecies) -> Unit) {
-        fun onClick(projects: TreeAssessmentSpecies) = clickListener(projects)
+    class OnClickListener(val clickListener: (projects: TreeAssessmentSpecies,action:String) -> Unit) {
+        fun onClick(projects: TreeAssessmentSpecies, action:String) = clickListener(projects,action)
     }
 }
 

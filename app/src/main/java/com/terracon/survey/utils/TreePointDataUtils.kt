@@ -5,6 +5,7 @@ import android.app.Activity
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.michaelflisar.lumberjack.L
 import com.terracon.survey.R
 import com.terracon.survey.data.TreeAssessmentRepository
@@ -54,7 +55,10 @@ object TreePointDataUtils {
                                     )
                                     //showToast(activity, "Data Saved Successfully")
                                 } else {
-                                    showToast(activity, "error")
+                                   showToast(
+                                        activity,
+                                        "Some data failed to Sync, Please try again"
+                                    )
                                 }
                             } catch (e: Exception) {
                                 showToast(activity, e.toString())
@@ -63,11 +67,7 @@ object TreePointDataUtils {
 
                         Result.Status.LOADING -> {}
                         Result.Status.ERROR -> {
-                            val errorMsg =
-                                if (it.error?.message != null) it.error.message else activity.resources.getString(
-                                    R.string.server_error_desc
-                                )
-                            showToast(activity, errorMsg)
+                            showToast(activity, it.error?.message)
                         }
 
                         else -> {}
@@ -120,17 +120,16 @@ object TreePointDataUtils {
 //                                }
                                 //showToast(activity, "Data Saved Successfully")
                             } else {
-                                showToast(activity, "error")
+                                showToast(
+                                    activity,
+                                    "Some data failed to Sync, Please try again"
+                                )
                             }
                         }
 
                         Result.Status.LOADING -> {}
                         Result.Status.ERROR -> {
-                            val errorMsg =
-                                if (it.error?.message != null) it.error.message else activity.resources.getString(
-                                    R.string.server_error_desc
-                                )
-                            showToast(activity, errorMsg)
+                            showToast(activity, it.error?.message)
                         }
 
                         else -> {}
@@ -205,11 +204,7 @@ object TreePointDataUtils {
                                     Result.Status.ERROR -> {
                                         L.d { "upload error--${it.toString()}" }
 
-                                        val errorMsg =
-                                            if (it.error?.message != null) it.error.message else activity.resources.getString(
-                                                R.string.server_error_desc
-                                            )
-                                        showToast(activity, errorMsg)
+                                        showToast(activity, it.error?.message)
                                     }
 
                                     else -> {
@@ -265,8 +260,10 @@ object TreePointDataUtils {
                                         )
                                         //showToast(activity, "Data Saved Successfully")
                                     } else {
-                                        showToast(activity, "error")
-                                    }
+                                        showToast(
+                                            activity,
+                                            "Some data failed to Sync, Please try again"
+                                        )                                    }
                                 } catch (e: Exception) {
                                     showToast(activity, e.toString())
                                 }
@@ -275,11 +272,7 @@ object TreePointDataUtils {
 
                             Result.Status.LOADING -> {}
                             Result.Status.ERROR -> {
-                                val errorMsg =
-                                    if (it.error?.message != null) it.error.message else activity.resources.getString(
-                                        R.string.server_error_desc
-                                    )
-                                showToast(activity, errorMsg)
+                                showToast(activity, it.error?.message)
                             }
 
                             else -> {}
@@ -335,7 +328,10 @@ object TreePointDataUtils {
                                             )
                                             // showToast(activity, "Data Saved Successfully")
                                         } else {
-                                            showToast(activity, "error")
+                                            showToast(
+                                                activity,
+                                                "Some data failed to Sync, Please try again"
+                                            )
                                         }
                                     } catch (e: Exception) {
                                         showToast(activity, e.toString())
@@ -344,11 +340,7 @@ object TreePointDataUtils {
 
                                 Result.Status.LOADING -> {}
                                 Result.Status.ERROR -> {
-                                    val errorMsg =
-                                        if (it.error?.message != null) it.error.message else activity.resources.getString(
-                                            R.string.server_error_desc
-                                        )
-                                    showToast(activity, errorMsg)
+                                    showToast(activity, it.error?.message)
                                 }
 
                                 else -> {}
@@ -391,8 +383,10 @@ object TreePointDataUtils {
                                     (activity as TreePointsListActivity).refreshList()
                                     //showToast(activity, "Data Saved Successfully")
                                 } else {
-                                    showToast(activity, "error")
-                                }
+                                    showToast(
+                                        activity,
+                                        "Some data failed to Sync, Please try again"
+                                    )                                }
                             } catch (e: Exception) {
                                 showToast(activity, e.toString())
                             }
@@ -400,11 +394,7 @@ object TreePointDataUtils {
 
                         Result.Status.LOADING -> {}
                         Result.Status.ERROR -> {
-                            val errorMsg =
-                                if (it.error?.message != null) it.error.message else activity.resources.getString(
-                                    R.string.server_error_desc
-                                )
-                            showToast(activity, errorMsg)
+                            showToast(activity, it.error?.message)
                         }
 
                         else -> {}
@@ -450,15 +440,25 @@ object TreePointDataUtils {
 
     private fun showToast(activity: Activity, msg: String?) {
         try {
+            var message = msg ?: "Some data failed to Sync, Please try again"
+
             activity.runOnUiThread {
-                Toast.makeText(
-                    activity,
-                    msg,
-                    Toast.LENGTH_SHORT
-                ).show()
+                MaterialAlertDialogBuilder(activity)
+                    .setTitle("Status")
+                    .setMessage(message)
+                    .setPositiveButton("Ok") { dialog, which ->
+                    }
+                    .show()
             }
         } catch (e: Exception) {
             L.d { "error---${e.toString()}" }
+            activity.runOnUiThread {
+                Toast.makeText(
+                    activity,
+                    e.toString(),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
 
     }

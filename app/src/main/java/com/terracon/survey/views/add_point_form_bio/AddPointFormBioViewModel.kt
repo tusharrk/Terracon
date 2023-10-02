@@ -150,6 +150,11 @@ class AddPointFormBioViewModel(
             _speciesBioList.value = tempList
         }
     }
+    fun deleteItemFromList(index: Int,item:Species) {
+        val tempList = _speciesBioList.value
+        tempList?.removeAt(index)
+        _speciesBioList.value = tempList
+    }
     fun insertBlankItemInSpeciesList() {
         val tempList = _speciesBioList.value
         tempList?.add(Species(id = 0, name = "", count = "0"))

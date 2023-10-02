@@ -24,6 +24,9 @@ interface ProjectDao {
     @Delete
     fun deleteAll(project: List<Project>)
 
+    @Query("DELETE FROM Project")
+    fun deleteAllData()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFloraData(floraList: List<Flora>)
 

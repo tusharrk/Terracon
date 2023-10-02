@@ -19,9 +19,9 @@ import com.terracon.survey.model.User
 
 @Database(
     entities = [User::class, Project::class, Flora::class, Fauna::class, BioPoint::class, BioPointDetails::class, Species::class, TreeAssessmentPoint::class, TreeAssessmentSpecies::class],
-    version = 5,
+    version = 6,
       autoMigrations = [
-        AutoMigration (from = 4, to = 5)
+        AutoMigration (from = 5, to = 6)
     ],
     exportSchema = true
 )

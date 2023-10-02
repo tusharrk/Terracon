@@ -72,6 +72,12 @@
     <string name="village">Village</string>
     <string name="new_point">New Point</string>
     <string name="sync_data_with_server">Sync Data With Server</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="form_submit_msg">Are you sure you want to submit this form?</string>
+    <string name="sync_data_msg">Syncing data will require stable internet connection. \nAre you sure you want to continue?</string>
+
+    <string name="unsaved_changes">Unsaved Changes</string>
+    <string name="discard_changes_msg">Are you sure you want to Discard these changes?</string>
 
     <string-array name="season_names">
         <item>Spring</item>

@@ -121,10 +121,18 @@
             android:layout_marginStart="@dimen/padding_10"
             android:layout_marginBottom="@dimen/basic_item_padding"
             android:text=""
+            android:layout_weight="1"
             android:textAppearance="@style/secondaryTextStyle"
             android:textSize="@dimen/desc_text_size"
             android:textStyle="bold"
             tools:text="asd asd as d" />
+        <ImageView
+            android:layout_weight="0"
+            android:id="@+id/deleteBtn"
+            android:src="@drawable/baseline_delete_24"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:tint="@color/colorPrimary" />
     </LinearLayout>
 
 

@@ -126,6 +126,7 @@ class TreePointsListActivity : AppCompatActivity() {
 
     }
 
+
     override fun onSupportNavigateUp(): Boolean {
         this.finish()
         return true

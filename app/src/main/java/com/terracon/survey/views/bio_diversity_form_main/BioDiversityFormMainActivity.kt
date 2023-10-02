@@ -15,11 +15,13 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK
 import com.google.android.material.timepicker.TimeFormat
@@ -41,7 +43,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
     private lateinit var binding: BioDiversityFormMainActivityBinding
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private val permissionId = 2
-    private lateinit var location: Location
+    private var location: Location? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = BioDiversityFormMainActivityBinding.inflate(layoutInflater)
@@ -111,11 +113,11 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
                 mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
                     location = task.result
                     if (location != null) {
-                        L.d { "Location Complete ${location.latitude} -- ${location.longitude}" }
+                        L.d { "Location Complete ${location?.latitude} -- ${location?.longitude}" }
 //                        val geocoder = Geocoder(this, Locale.getDefault())
 //                        val list: List<Address> =
 //                            geocoder.getFromLocation(location.latitude, location.longitude, 1)!!
-                        binding.gpsEditText.editText?.setText("${location.latitude} , ${location.longitude}")
+                        binding.gpsEditText.editText?.setText("${location?.latitude} , ${location?.longitude}")
                     }
                 }
             } else {
@@ -151,7 +153,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
             // getLocation()
             if (location != null) {
                 val url =
-                    "https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}"
+                    "https://www.google.com/maps/search/?api=1&query=${location?.latitude},${location?.longitude}"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
             }
@@ -179,13 +181,20 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
 
         binding.saveBtn.setOnClickListener {
             try {
+
+
                 L.d { binding.seasonNameAutoCompleteTextView.text.toString() }
                 if (binding.seasonNameAutoCompleteTextView.text.isNullOrBlank()) {
-                    Toast.makeText(this, "Please select Season Name", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Please select Season Name", Toast.LENGTH_LONG)
+                        .show()
                     return@setOnClickListener
                 }
                 if (binding.weatherConditionNameAutoCompleteTextView.text.isNullOrBlank()) {
-                    Toast.makeText(this, "Please select Weather Condition", Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        this,
+                        "Please select Weather Condition",
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                     return@setOnClickListener
                 }
@@ -208,54 +217,72 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
                 }
                 if (binding.circularRadioBtn.isChecked) {
                     if (binding.radiusEditText.editText?.text.isNullOrBlank()) {
-                        Toast.makeText(this, "Please enter Plot Radius", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Please enter Plot Radius", Toast.LENGTH_LONG)
+                            .show()
                         return@setOnClickListener
                     }
                 } else {
                     if (binding.lengthEditText.editText?.text.isNullOrBlank()) {
-                        Toast.makeText(this, "Please enter Plot Length", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Please enter Plot Length", Toast.LENGTH_LONG)
+                            .show()
                         return@setOnClickListener
                     }
                     if (binding.widthEditText.editText?.text.isNullOrBlank()) {
-                        Toast.makeText(this, "Please enter Plot Width", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Please enter Plot Width", Toast.LENGTH_LONG)
+                            .show()
                         return@setOnClickListener
                     }
                 }
+                if (location == null) {
+                    Toast.makeText(this, "Please refresh location", Toast.LENGTH_LONG)
+                        .show()
+                    return@setOnClickListener
+                }
 
-                bioDiversityFormMainViewModel.bioPoint.project_id = project.id
-                bioDiversityFormMainViewModel.bioPoint.date =
-                    binding.dateEditText.editText?.text.toString()
-                bioDiversityFormMainViewModel.bioPoint.time =
-                    binding.timeEditText.editText?.text.toString()
-                bioDiversityFormMainViewModel.bioPoint.gps_latitude = location.latitude.toString()
-                bioDiversityFormMainViewModel.bioPoint.gps_longitude = location.longitude.toString()
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.confirmation))
+                    .setMessage(getString(R.string.form_submit_msg))
+                    .setNeutralButton("Cancel") { dialog, which ->
 
-                bioDiversityFormMainViewModel.bioPoint.season_name =
-                    binding.seasonNameAutoCompleteTextView.text.toString()
-                bioDiversityFormMainViewModel.bioPoint.weather_condition =
-                    binding.weatherConditionNameAutoCompleteTextView.text.toString()
-                bioDiversityFormMainViewModel.bioPoint.habitat =
-                    binding.habitatAutoCompleteTextView.text.toString()
+                    }
+                    .setPositiveButton("Submit") { dialog, which ->
 
-                bioDiversityFormMainViewModel.bioPoint.village =
-                    binding.villageAutoCompleteTextView.text.toString()
-                bioDiversityFormMainViewModel.bioPoint.plot_dimension_type =
-                    if (binding.circularRadioBtn.isChecked) "circular" else "rectangular"
+                        bioDiversityFormMainViewModel.bioPoint.project_id = project.id
+                        bioDiversityFormMainViewModel.bioPoint.date =
+                            binding.dateEditText.editText?.text.toString()
+                        bioDiversityFormMainViewModel.bioPoint.time =
+                            binding.timeEditText.editText?.text.toString()
+                        bioDiversityFormMainViewModel.bioPoint.gps_latitude =
+                            location?.latitude.toString()
+                        bioDiversityFormMainViewModel.bioPoint.gps_longitude =
+                            location?.longitude.toString()
 
+                        bioDiversityFormMainViewModel.bioPoint.season_name =
+                            binding.seasonNameAutoCompleteTextView.text.toString()
+                        bioDiversityFormMainViewModel.bioPoint.weather_condition =
+                            binding.weatherConditionNameAutoCompleteTextView.text.toString()
+                        bioDiversityFormMainViewModel.bioPoint.habitat =
+                            binding.habitatAutoCompleteTextView.text.toString()
 
-                bioDiversityFormMainViewModel.bioPoint.plot_type =
-                    binding.plotTypeEditText.editText?.text.toString()
-                bioDiversityFormMainViewModel.bioPoint.radius =
-                    binding.radiusEditText.editText?.text.toString()
-                bioDiversityFormMainViewModel.bioPoint.width =
-                    binding.widthEditText.editText?.text.toString()
-                bioDiversityFormMainViewModel.bioPoint.length =
-                    binding.lengthEditText.editText?.text.toString()
-                bioDiversityFormMainViewModel.bioPoint.code =
-                    binding.plotCodeEditText.editText?.text.toString()
+                        bioDiversityFormMainViewModel.bioPoint.village =
+                            binding.villageAutoCompleteTextView.text.toString()
+                        bioDiversityFormMainViewModel.bioPoint.plot_dimension_type =
+                            if (binding.circularRadioBtn.isChecked) "circular" else "rectangular"
 
-               // bioDiversityFormMainViewModel.navigateToFloraFaunaActivity(this,project)
-                bioDiversityFormMainViewModel.savePointData(this, project)
+                        bioDiversityFormMainViewModel.bioPoint.plot_type =
+                            binding.plotTypeEditText.editText?.text.toString()
+                        bioDiversityFormMainViewModel.bioPoint.radius =
+                            binding.radiusEditText.editText?.text.toString()
+                        bioDiversityFormMainViewModel.bioPoint.width =
+                            binding.widthEditText.editText?.text.toString()
+                        bioDiversityFormMainViewModel.bioPoint.length =
+                            binding.lengthEditText.editText?.text.toString()
+                        bioDiversityFormMainViewModel.bioPoint.code = binding.plotCodeEditText.editText?.text.toString()
+
+                          bioDiversityFormMainViewModel.savePointData(this, project)
+
+                    }
+                    .show()
             } catch (e: Exception) {
                 L.d { "submit btn error--${e.toString()}" }
                 Toast.makeText(this, "Error--${e.toString()}", Toast.LENGTH_LONG).show()
@@ -268,7 +295,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         binding.dateEditText.editText?.setText(DateUtils.getTodayDateOrTime("dd MMM yyyy"))
         binding.timeEditText.editText?.setText(DateUtils.getTodayDateOrTime("hh:mm a"))
 
-        if(project.villages.isNotBlank()){
+        if (!project.villages.isNullOrBlank()) {
             binding.villageAutoCompleteTextView.setAdapter(
                 ArrayAdapter(
                     this,
@@ -303,6 +330,15 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
                 resources.getStringArray(R.array.habitat_names)
             )
         )
+
+        try {
+            onBackPressedDispatcher.addCallback(this /* lifecycle owner */) {
+                // Back is pressed... Finishing the activity
+               showDiscardAlert()
+            }
+        }catch (e:Exception){
+
+        }
 
     }
 
@@ -352,6 +388,20 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showDiscardAlert(){
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.unsaved_changes))
+            .setMessage(getString(R.string.discard_changes_msg))
+            .setNeutralButton("Cancel") { dialog, which ->
+                // Respond to neutral button press
+            }
+            .setPositiveButton("Discard") { dialog, which ->
+                finish()
+
+            }
+            .show()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         this.finish()
         return true
@@ -368,6 +418,11 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
             AppUtils.logoutUser(this)
             return true
         }
+        if(id==android.R.id.home){
+            showDiscardAlert()
+            return true
+        }
         return super.onOptionsItemSelected(item)
     }
+
 }

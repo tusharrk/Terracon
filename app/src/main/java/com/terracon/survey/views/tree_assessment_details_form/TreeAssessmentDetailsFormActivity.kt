@@ -16,6 +16,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.Debug.getLocation
 import androidx.core.app.ActivityCompat
@@ -30,6 +31,7 @@ import com.app.imagepickerlibrary.ui.bottomsheet.SSPickerOptionsBottomSheet
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK
 import com.google.android.material.timepicker.TimeFormat
@@ -55,7 +57,8 @@ import java.util.Calendar
 import java.util.Locale
 
 
-class TreeAssessmentDetailsFormActivity : AppCompatActivity(), SSPickerOptionsBottomSheet.ImagePickerClickListener,
+class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
+    SSPickerOptionsBottomSheet.ImagePickerClickListener,
     ImagePickerResultListener {
 
     private val treeAssessmentFormMainViewModel by viewModel<TreeAssessmentDetailsFormViewModel>()
@@ -65,6 +68,7 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(), SSPickerOptionsBo
     private val imagePicker: ImagePicker by lazy {
         registerImagePicker(this)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = TreeAssessmentDetailsFormActivityBinding.inflate(layoutInflater)
@@ -76,25 +80,32 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(), SSPickerOptionsBo
     }
 
     private fun setupListAdapter() {
-        listAdapter = TreeAssessmentDetailsAdapter(TreeAssessmentDetailsAdapter.OnClickListener { item ->
-            val index = treeAssessmentFormMainViewModel.speciesList.value?.indexOf(item)
-            if (index != null) {
-                treeAssessmentFormMainViewModel.isEdit = true
-                treeAssessmentFormMainViewModel.isEditIndex = index
+        listAdapter =
+            TreeAssessmentDetailsAdapter(TreeAssessmentDetailsAdapter.OnClickListener { item, action ->
+                val index = treeAssessmentFormMainViewModel.speciesList.value?.indexOf(item)
+                if (index != null) {
+                    if(action == "edit"){
+                        treeAssessmentFormMainViewModel.isEdit = true
+                    treeAssessmentFormMainViewModel.isEditIndex = index
 
-                binding.serialNumberEditText.editText?.setText(item.serial_number)
-                binding.speciesEditText.editText?.setText(item.name)
-                binding.girthEditText.editText?.setText(item.girth.toString())
-                binding.heightEditText.editText?.setText(item.height.toString())
-                binding.diameterEditText.editText?.setText(item.canopy_diameter.toString())
-                binding.commentsEditText.editText?.setText(item.comment)
-                binding.uploadImage.text =  if (item.images.isNullOrEmpty()) getString(R.string.capture_upload_image) else item.images!!
+                    binding.serialNumberEditText.editText?.setText(item.serial_number)
+                    binding.speciesEditText.editText?.setText(item.name)
+                    binding.girthEditText.editText?.setText(item.girth.toString())
+                    binding.heightEditText.editText?.setText(item.height.toString())
+                    binding.diameterEditText.editText?.setText(item.canopy_diameter.toString())
+                    binding.commentsEditText.editText?.setText(item.comment)
+                    binding.uploadImage.text =
+                        if (item.images.isNullOrEmpty()) getString(R.string.capture_upload_image) else item.images!!
 
 
-                treeAssessmentFormMainViewModel.imageUrl =
-                    if (item.images.isNullOrEmpty()) "" else item.images!!
-            }
-        }, treeAssessmentFormMainViewModel, this)
+                    treeAssessmentFormMainViewModel.imageUrl =
+                        if (item.images.isNullOrEmpty()) "" else item.images!!
+
+                }else{
+                    deleteItem(item,index)
+                }
+                }
+            }, treeAssessmentFormMainViewModel, this)
         binding.projectsRecyclerView.adapter = listAdapter
         binding.projectsRecyclerView.addItemDecoration(
             DividerItemDecoration(
@@ -159,12 +170,13 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(), SSPickerOptionsBo
     }
 
 
-
     @SuppressLint("ClickableViewAccessibility")
     private fun setupUi() {
 
-        treeAssessmentFormMainViewModel.project =  intent.getSerializableExtra("projectData") as Project
-        treeAssessmentFormMainViewModel.treePoint = intent.getSerializableExtra("pointData") as TreeAssessmentPoint
+        treeAssessmentFormMainViewModel.project =
+            intent.getSerializableExtra("projectData") as Project
+        treeAssessmentFormMainViewModel.treePoint =
+            intent.getSerializableExtra("pointData") as TreeAssessmentPoint
 
         treeAssessmentFormMainViewModel.getSpeciesNamesList()
 
@@ -242,13 +254,21 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(), SSPickerOptionsBo
                 Toast.makeText(this, "Please add Species", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
+            MaterialAlertDialogBuilder(this)
+                .setTitle(getString(R.string.confirmation))
+                .setMessage(getString(R.string.form_submit_msg))
+                .setNeutralButton("Cancel") { dialog, which ->
 
-            setupPointDataPayload()
+                }
+                .setPositiveButton("Submit") { dialog, which ->
+                    setupPointDataPayload()
+                }
+                .show()
         }
 
         //set pre filled values
         binding.uploadImage.setOnClickListener {
-             openFilePicker()
+            openFilePicker()
 //            startActivity(Intent(this, FragmentSample::class.java))
 //            PixBus.results {
 //                when (it.status) {
@@ -267,6 +287,14 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(), SSPickerOptionsBo
 //            }
 
         }
+        try {
+            onBackPressedDispatcher.addCallback(this /* lifecycle owner */) {
+                // Back is pressed... Finishing the activity
+                showDiscardAlert()
+            }
+        }catch (e:Exception){
+
+        }
 
 //        binding.speciesNameAutoCompleteTextView.setAdapter(
 //            ArrayAdapter(this, R.layout.dropdown_item, resources.getStringArray(
@@ -276,6 +304,20 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(), SSPickerOptionsBo
 
     }
 
+    private fun deleteItem(item:TreeAssessmentSpecies,index:Int){
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Delete")
+            .setMessage("Are you sure you want to Delete this Item?")
+            .setNeutralButton("Cancel") { dialog, which ->
+                // Respond to neutral button press
+            }
+            .setPositiveButton("Delete") { dialog, which ->
+                treeAssessmentFormMainViewModel.deleteItemFromList(index,item)
+                listAdapter.notifyItemRemoved(index)
+            }
+            .show()
+    }
+
     private fun setupPointDataPayload() {
 //        treeAssessmentFormMainViewModel.treeSpecies.bio_diversity_survey_points_id =
 //            treeAssessmentFormMainViewModel.pointBio.dbId
@@ -283,13 +325,15 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(), SSPickerOptionsBo
         L.d { "data--${treeAssessmentFormMainViewModel.treePoint}" }
         treeAssessmentFormMainViewModel.savePointData(this)
     }
-    private fun openFilePicker(){
+
+    private fun openFilePicker() {
         imagePicker.open(PickerType.CAMERA)
 
         // val pickerOptionBottomSheet = SSPickerOptionsBottomSheet.newInstance()
         // pickerOptionBottomSheet.show(supportFragmentManager,"tag")
 
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
@@ -301,15 +345,34 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(), SSPickerOptionsBo
             AppUtils.logoutUser(this)
             return true
         }
+        if(id==android.R.id.home){
+            showDiscardAlert()
+            return true
+        }
         return super.onOptionsItemSelected(item)
     }
+    private fun showDiscardAlert(){
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.unsaved_changes))
+            .setMessage(getString(R.string.discard_changes_msg))
+            .setNeutralButton("Cancel") { dialog, which ->
+                // Respond to neutral button press
+            }
+            .setPositiveButton("Discard") { dialog, which ->
+                finish()
+
+            }
+            .show()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         this.finish()
         return true
     }
+
     override fun onImagePick(uri: Uri?) {
-        if(uri != null){
-            Log.d("TAG_X_FILE", "File path: ${ uri }")
+        if (uri != null) {
+            Log.d("TAG_X_FILE", "File path: ${uri}")
             binding.uploadImage.text = uri.toString()
             treeAssessmentFormMainViewModel.imageUrl = uri.toString()
             //  binding.uploadImage.text = RealPathUtil.getRealPath(this,uri)
@@ -327,11 +390,13 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(), SSPickerOptionsBo
                 imagePicker.open(PickerType.GALLERY)
 
             }
+
             ImageProvider.CAMERA -> {
                 //Open camera
                 imagePicker.open(PickerType.CAMERA)
 
             }
+
             ImageProvider.NONE -> {}
         }
     }

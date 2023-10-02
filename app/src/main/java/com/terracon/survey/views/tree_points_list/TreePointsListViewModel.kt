@@ -1,11 +1,14 @@
 package com.terracon.survey.views.tree_points_list
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.GsonBuilder
+import com.terracon.survey.R
 import com.terracon.survey.data.PointDataRepository
 import com.terracon.survey.data.TreeAssessmentRepository
 import com.terracon.survey.model.BioPoint
@@ -13,6 +16,7 @@ import com.terracon.survey.model.ErrorState
 import com.terracon.survey.model.Project
 import com.terracon.survey.model.Result
 import com.terracon.survey.model.TreeAssessmentPoint
+import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.PointDataUtils
 import com.terracon.survey.utils.TreePointDataUtils
 import com.terracon.survey.views.points_list.PointsListActivity
@@ -45,7 +49,21 @@ class TreePointsListViewModel(
 
     fun syncDataFromLocalToServer(activity: TreePointsListActivity, treePoint: TreeAssessmentPoint){
       ///  PointDataUtils.savePointDataToServerFromDB(viewModelScope,pointRepository,activity,bioPoint)
-        TreePointDataUtils.savePointDataToServerFromDB(viewModelScope,treeAssessmentRepository,activity,treePoint)
+        if(AppUtils.isNetworkAvailable(activity)){
+            MaterialAlertDialogBuilder(activity)
+                .setTitle(activity.getString(R.string.confirmation))
+                .setMessage(activity.getString(R.string.sync_data_msg))
+                .setNeutralButton("Cancel") { dialog, which ->
+
+                }
+                .setPositiveButton("Sync") { dialog, which ->
+                    Toast.makeText(activity,"Syncing Data with server, Please wait", Toast.LENGTH_SHORT).show()
+                    TreePointDataUtils.savePointDataToServerFromDB(viewModelScope,treeAssessmentRepository,activity,treePoint)
+                }
+                .show()
+        }else{
+            Toast.makeText(activity,"Please make sure you are connected to Internet.",Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun fetchPoints() {

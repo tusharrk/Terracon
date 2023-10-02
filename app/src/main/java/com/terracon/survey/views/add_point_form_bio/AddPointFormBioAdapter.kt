@@ -45,7 +45,10 @@ class AddPointFormBioAdapter internal constructor(
             }
 
             binding.editBtn.setOnClickListener {
-                onClickListener.onClick(item)
+                onClickListener.onClick(item,"edit")
+            }
+            binding.deleteBtn.setOnClickListener {
+                onClickListener.onClick(item,"delete")
             }
 
 
@@ -95,8 +98,8 @@ class AddPointFormBioAdapter internal constructor(
         return ViewHolder(binding)
     }
 
-    class OnClickListener(val clickListener: (projects: Species) -> Unit) {
-        fun onClick(projects: Species) = clickListener(projects)
+    class OnClickListener(val clickListener: (projects: Species, action : String) -> Unit) {
+        fun onClick(projects: Species, action : String) = clickListener(projects,action)
     }
 }
 
