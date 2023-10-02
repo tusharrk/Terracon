@@ -68,15 +68,25 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.loginBtn.setOnClickListener {
-            if (binding.mobileEditText.text.toString() != "" && AppUtils.isValidMobile(binding.mobileEditText.text.toString())) {
-                loginViewModel.loginUser(binding.mobileEditText.text.toString(), this)
-            } else {
+
+            if (binding.mobileEditText.text.toString() == "" || !AppUtils.isValidMobile(binding.mobileEditText.text.toString())) {
                 Toast.makeText(
                     this,
                     getString(R.string.invalid_mobile_number_msg),
                     Toast.LENGTH_SHORT
                 ).show()
+                return@setOnClickListener
             }
+            if(binding.passwordEditText.text.toString() == ""){
+                Toast.makeText(
+                    this,
+                    getString(R.string.invalid_password_msg),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+            loginViewModel.loginUser(binding.mobileEditText.text.toString(),binding.passwordEditText.text.toString(), this)
+
         }
 
     }

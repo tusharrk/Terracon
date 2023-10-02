@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.michaelflisar.lumberjack.L
 import com.terracon.survey.R
@@ -16,8 +17,10 @@ import com.terracon.survey.model.ErrorState
 import com.terracon.survey.model.Result
 import com.terracon.survey.model.User
 import com.terracon.survey.model.UserApiRequestDTO
+import com.terracon.survey.model.UserResponse
+import com.terracon.survey.utils.GlobalData
 import com.terracon.survey.utils.Prefs
-import com.terracon.survey.views.otp_verify.OtpVerifyActivity
+import com.terracon.survey.views.home.HomeActivity
 import kotlinx.coroutines.launch
 
 
@@ -32,11 +35,11 @@ class LoginViewModel(
 
     private var gson = GsonBuilder().setLenient().serializeNulls().create()
 
-    private fun navigateToOtpVerify(mobile: String, activity: LoginActivity) {
-        val homeIntent = Intent(activity, OtpVerifyActivity::class.java)
-        homeIntent.putExtra("mobile", mobile);
-        activity.startActivity(homeIntent)
-    }
+//    private fun navigateToOtpVerify(mobile: String, activity: LoginActivity) {
+//        val homeIntent = Intent(activity, LoginActivity::class.java)
+//        homeIntent.putExtra("mobile", mobile);
+//        activity.startActivity(homeIntent)
+//    }
 
     fun checkIfUserLoggedIn(activity: LoginActivity) {
         val userId: String = Prefs["userId", ""]
@@ -49,25 +52,18 @@ class LoginViewModel(
         }
     }
 
-    fun loginUser(mobile: String, activity: LoginActivity) {
+    fun loginUser(mobile: String,password:String, activity: LoginActivity) {
         _isLoading.value = true
         viewModelScope.launch {
-            usersRepository.sendOTP(UserApiRequestDTO(mobile = mobile))
+            usersRepository.loginUser(UserApiRequestDTO(mobile = mobile,password=password))
                 .collect {
                     when (it?.status) {
                         Result.Status.SUCCESS -> {
                             _isLoading.value = false
                             if (it.data?.status == "success") {
                                 Log.d("TAG_X", it.data.toString())
-                                activity.runOnUiThread {
-                                    val msg = it.data.message
-                                    Toast.makeText(
-                                        activity,
-                                        msg,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                navigateToOtpVerify(mobile, activity)
+                                saveSuccessUserLoginData(it.data, activity)
+
                             } else {
                                 activity.runOnUiThread {
                                     Toast.makeText(
@@ -107,6 +103,35 @@ class LoginViewModel(
                     }
                 }
         }
+    }
+
+    private fun saveSuccessUserLoginData(userResponse: UserResponse, activity: LoginActivity) {
+        if (userResponse.data.user.status == "Block") {
+            Toast.makeText(
+                activity,
+                activity.getString(R.string.account_blocked_msg),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Prefs["userId"] = userResponse.data.user.id
+            Prefs["token"] = userResponse.data.user.token
+            Prefs["userData"] = Gson().toJson(userResponse.data.user)
+            GlobalData.userData = userResponse.data.user
+            activity.runOnUiThread {
+                val msg = userResponse.message
+                Toast.makeText(
+                    activity,
+                    msg,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            navigateToHome(activity)
+        }
+    }
+    private fun navigateToHome(activity: LoginActivity) {
+        val homeIntent = Intent(activity, HomeActivity::class.java)
+        activity.startActivity(homeIntent)
+        activity.finishAffinity()
     }
 
     fun showErrorAlert() {

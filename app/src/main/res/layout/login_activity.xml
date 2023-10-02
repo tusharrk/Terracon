@@ -52,6 +52,24 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/password_text_input_layout"
+        style="@style/textInputEditTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/basic_item_padding"
+        android:hint="Password"
+        app:startIconDrawable="@drawable/baseline_lock_24">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textVisiblePassword"
+            android:text="" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

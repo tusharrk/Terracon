@@ -277,9 +277,10 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
                             binding.widthEditText.editText?.text.toString()
                         bioDiversityFormMainViewModel.bioPoint.length =
                             binding.lengthEditText.editText?.text.toString()
-                        bioDiversityFormMainViewModel.bioPoint.code = binding.plotCodeEditText.editText?.text.toString()
+                        bioDiversityFormMainViewModel.bioPoint.code =
+                            binding.plotCodeEditText.editText?.text.toString()
 
-                          bioDiversityFormMainViewModel.savePointData(this, project)
+                        bioDiversityFormMainViewModel.savePointData(this, project)
 
                     }
                     .show()
@@ -334,9 +335,9 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         try {
             onBackPressedDispatcher.addCallback(this /* lifecycle owner */) {
                 // Back is pressed... Finishing the activity
-               showDiscardAlert()
+                showDiscardAlert()
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
 
@@ -388,7 +389,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showDiscardAlert(){
+    private fun showDiscardAlert() {
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.unsaved_changes))
             .setMessage(getString(R.string.discard_changes_msg))
@@ -418,7 +419,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
             AppUtils.logoutUser(this)
             return true
         }
-        if(id==android.R.id.home){
+        if (id == android.R.id.home) {
             showDiscardAlert()
             return true
         }

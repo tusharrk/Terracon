@@ -34,9 +34,8 @@ class RegisterViewModel(
 
 
     fun navigateToOtpVerify(mobile: String,activity: RegisterActivity) {
-        val homeIntent = Intent(activity, OtpVerifyActivity::class.java)
-        homeIntent.putExtra("mobile", mobile);
-        activity.startActivity(homeIntent)
+        //Toast.makeText(activity,"Successfully Registered, Please contact admin for password.",Toast.LENGTH_LONG).show()
+        activity.finish()
     }
 
 

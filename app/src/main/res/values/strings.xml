@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">TERRACON</string>
-    <string name="login_mobile_txt">Continue with Mobile Number</string>
+    <string name="login_mobile_txt">Continue with Mobile Number and Password</string>
     <string name="register_now_txt">Don\'t have an account? Register  </string>
     <string name="mobile_number">Mobile Number</string>
     <string name="login">Login</string>
@@ -62,6 +62,8 @@
     <string name="length">Length (Meter)</string>
     <string name="width">Width (Meter)</string>
     <string name="invalid_mobile_number_msg">Please Enter Valid Mobile Number</string>
+    <string name="invalid_password_msg">Please Enter Valid Password</string>
+
     <string name="invalid_name_msg">Please Enter Valid Name</string>
     <string name="invalid_otp_msg">Please Enter Valid OTP</string>
     <string name="account_blocked_msg">Your account has been Blocked</string>

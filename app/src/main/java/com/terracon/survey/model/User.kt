@@ -14,8 +14,9 @@ data class User(
     var name: String = "",
     var status: String = "",
     val token: String = "",
-    val updated_at: String = ""
-    ) : Serializable {
+    val updated_at: String = "",
+    val password: String? = null,
+) : Serializable {
 
 
 }
