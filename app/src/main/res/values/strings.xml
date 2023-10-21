@@ -80,6 +80,8 @@
 
     <string name="unsaved_changes">Unsaved Changes</string>
     <string name="discard_changes_msg">Are you sure you want to Discard these changes?</string>
+    <string name="scientific_species_name">Scientific Species Name</string>
+    <string name="common_species_name">Common Species Name</string>
 
     <string-array name="season_names">
         <item>Spring</item>

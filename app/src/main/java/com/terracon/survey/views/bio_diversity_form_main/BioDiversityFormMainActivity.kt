@@ -206,15 +206,15 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Please enter Plot Code", Toast.LENGTH_LONG).show()
                     return@setOnClickListener
                 }
-                if (binding.villageAutoCompleteTextView.text.isNullOrBlank()) {
-                    Toast.makeText(this, "Please select Village", Toast.LENGTH_LONG).show()
+                if (binding.villageEditText.editText?.text.isNullOrBlank()) {
+                    Toast.makeText(this, "Please enter Village", Toast.LENGTH_LONG).show()
                     return@setOnClickListener
                 }
-
-                if (binding.plotTypeEditText.editText?.text.isNullOrBlank()) {
-                    Toast.makeText(this, "Please enter Plot Type", Toast.LENGTH_LONG).show()
-                    return@setOnClickListener
-                }
+//
+//                if (binding.plotTypeEditText.editText?.text.isNullOrBlank()) {
+//                    Toast.makeText(this, "Please enter Plot Type", Toast.LENGTH_LONG).show()
+//                    return@setOnClickListener
+//                }
                 if (binding.circularRadioBtn.isChecked) {
                     if (binding.radiusEditText.editText?.text.isNullOrBlank()) {
                         Toast.makeText(this, "Please enter Plot Radius", Toast.LENGTH_LONG)
@@ -265,12 +265,11 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
                             binding.habitatAutoCompleteTextView.text.toString()
 
                         bioDiversityFormMainViewModel.bioPoint.village =
-                            binding.villageAutoCompleteTextView.text.toString()
+                            binding.villageEditText.editText?.text.toString()
                         bioDiversityFormMainViewModel.bioPoint.plot_dimension_type =
                             if (binding.circularRadioBtn.isChecked) "circular" else "rectangular"
 
-                        bioDiversityFormMainViewModel.bioPoint.plot_type =
-                            binding.plotTypeEditText.editText?.text.toString()
+                        bioDiversityFormMainViewModel.bioPoint.plot_type = ""
                         bioDiversityFormMainViewModel.bioPoint.radius =
                             binding.radiusEditText.editText?.text.toString()
                         bioDiversityFormMainViewModel.bioPoint.width =
@@ -296,15 +295,15 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         binding.dateEditText.editText?.setText(DateUtils.getTodayDateOrTime("dd MMM yyyy"))
         binding.timeEditText.editText?.setText(DateUtils.getTodayDateOrTime("hh:mm a"))
 
-        if (!project.villages.isNullOrBlank()) {
-            binding.villageAutoCompleteTextView.setAdapter(
-                ArrayAdapter(
-                    this,
-                    R.layout.dropdown_item,
-                    project.villages.split(",")
-                )
-            )
-        }
+//        if (!project.villages.isNullOrBlank()) {
+//            binding.villageAutoCompleteTextView.setAdapter(
+//                ArrayAdapter(
+//                    this,
+//                    R.layout.dropdown_item,
+//                    project.villages.split(",")
+//                )
+//            )
+//        }
 
 
 

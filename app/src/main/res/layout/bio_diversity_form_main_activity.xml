@@ -121,13 +121,49 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
+<!--        <com.google.android.material.textfield.TextInputLayout-->
+<!--            android:id="@+id/plot_type_edit_text"-->
+<!--            style="@style/textInputEditTextStyle"-->
+<!--            android:layout_marginTop="@dimen/padding_10"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="@string/plot_type">-->
+
+<!--            <com.google.android.material.textfield.TextInputEditText-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:inputType="none"-->
+<!--                android:text="" />-->
+
+<!--        </com.google.android.material.textfield.TextInputLayout>-->
+
+
+<!--        <com.google.android.material.textfield.TextInputLayout-->
+<!--            android:id="@+id/village_edit_text"-->
+<!--            style="@style/textInputDropDownStyle"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/padding_10"-->
+<!--            android:hint="@string/landmark"-->
+<!--            app:startIconDrawable="@drawable/baseline_location_city_24">-->
+
+<!--            <AutoCompleteTextView-->
+<!--                android:id="@+id/villageAutoCompleteTextView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_weight="1"-->
+<!--                android:inputType="none" />-->
+
+<!--        </com.google.android.material.textfield.TextInputLayout>-->
+
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/plot_type_edit_text"
+            android:id="@+id/village_edit_text"
             style="@style/textInputEditTextStyle"
             android:layout_marginTop="@dimen/padding_10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/plot_type">
+            android:hint="@string/landmark"
+            app:startIconDrawable="@drawable/baseline_landscape_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -137,24 +173,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/village_edit_text"
-            style="@style/textInputDropDownStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_10"
-            android:hint="@string/village"
-            app:startIconDrawable="@drawable/baseline_location_city_24">
-
-            <AutoCompleteTextView
-                android:id="@+id/villageAutoCompleteTextView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:inputType="none" />
-
-        </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/weather_edit_text"
             style="@style/textInputDropDownStyle"

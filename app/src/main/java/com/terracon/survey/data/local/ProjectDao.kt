@@ -8,6 +8,7 @@ import androidx.room.Query
 import com.terracon.survey.model.Fauna
 import com.terracon.survey.model.Flora
 import com.terracon.survey.model.Project
+import com.terracon.survey.model.SpeciesNameDTO
 
 @Dao
 interface ProjectDao {
@@ -39,11 +40,11 @@ interface ProjectDao {
     @Query("SELECT habit FROM Flora group by habit")
     fun getFloraCategories(): List<String>
 
-    @Query("SELECT common_name FROM Fauna Where group_name = :subType ORDER BY common_name ASC")
-    fun getFaunaList(subType:String): List<String>
+    @Query("SELECT common_name, scientific_name FROM Fauna Where group_name = :subType ORDER BY common_name ASC")
+    fun getFaunaList(subType:String): List<SpeciesNameDTO>
 
-    @Query("SELECT english_common_name FROM Flora Where habit = :subType ORDER BY english_common_name ASC")
-    fun getFloraList(subType:String): List<String>
+    @Query("SELECT english_common_name as 'common_name', scientific_names as 'scientific_name' FROM Flora Where habit = :subType ORDER BY english_common_name ASC")
+    fun getFloraList(subType:String): List<SpeciesNameDTO>
 
     @Delete
     fun deleteAllFlora(flora: List<Flora>)

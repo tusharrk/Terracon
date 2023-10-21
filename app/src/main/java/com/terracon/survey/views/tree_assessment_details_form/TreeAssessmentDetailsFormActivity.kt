@@ -32,6 +32,8 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.material.textview.MaterialTextView
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK
 import com.google.android.material.timepicker.TimeFormat
@@ -89,8 +91,12 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
                     treeAssessmentFormMainViewModel.isEditIndex = index
 
                     binding.serialNumberEditText.editText?.setText(item.serial_number)
-                    binding.speciesEditText.editText?.setText(item.name)
-                    binding.girthEditText.editText?.setText(item.girth.toString())
+
+                        binding.scientificSpeciesNameEditText.editText?.setText(item.name)
+                        binding.speciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList(item.name,true))
+
+
+                        binding.girthEditText.editText?.setText(item.girth.toString())
                     binding.heightEditText.editText?.setText(item.height.toString())
                     binding.diameterEditText.editText?.setText(item.canopy_diameter.toString())
                     binding.commentsEditText.editText?.setText(item.comment)
@@ -129,6 +135,15 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
                 )
             }
 
+        }
+        treeAssessmentFormMainViewModel.floraFaunaScientificSpeciesList.observe(this) { data ->
+            if (!data.isNullOrEmpty()) {
+                binding.scientificSpeciesNameAutoCompleteTextView.setAdapter(
+                    ArrayAdapter(
+                        this, R.layout.dropdown_item, data
+                    )
+                )
+            }
         }
         treeAssessmentFormMainViewModel.isLoading.observe(this) { isLoading ->
             if (isLoading) {
@@ -189,12 +204,58 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
             supportActionBar?.title = treeAssessmentFormMainViewModel.project.name
         }
 
+        binding.scientificSpeciesNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
+            L.d { "item select--${(view as MaterialTextView).text}" }
+            try {
+                binding.speciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList((view as MaterialTextView).text.toString(),true))
+            }catch (e:Exception){
+                L.d { "error---${e}" }
+            }
+        }
+        binding.speciesNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
+            L.d { "item select--${(view as MaterialTextView).text}" }
+            try {
+                binding.scientificSpeciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList((view as MaterialTextView).text.toString(),false))
+            }catch (e:Exception){
+                L.d { "error---${e}" }
+            }
+        }
+
+        binding.scientificSpeciesNameAutoCompleteTextView.setOnFocusChangeListener { view, isFocus ->
+            try {
+                if(!isFocus){
+                    L.d { "errorrororo---${treeAssessmentFormMainViewModel.floraFaunaScientificSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  }}"}
+                    if(treeAssessmentFormMainViewModel.floraFaunaScientificSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  } == null){
+                        binding.scientificSpeciesNameEditText.editText?.setText("Not Specified")
+                        binding.speciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList((view as MaterialAutoCompleteTextView).text.toString(),true))
+
+                    }
+                }
+            }catch (e:Exception){
+                L.d { "error--${e}" }
+            }
+        }
+
+        binding.speciesNameAutoCompleteTextView.setOnFocusChangeListener { view, isFocus ->
+            try {
+                if(!isFocus){
+                    L.d { "errorrororo---${treeAssessmentFormMainViewModel.floraFaunaSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString()) }}"}
+                    if(treeAssessmentFormMainViewModel.floraFaunaSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  } == null){
+                        binding.speciesNameEditText.editText?.setText("Not Specified")
+                        binding.scientificSpeciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList((view as MaterialAutoCompleteTextView).text.toString(),false))
+                    }
+                }
+            }catch (e:Exception){
+                L.d { "error--${e}" }
+            }
+        }
+
         binding.addItemBtn.setOnClickListener {
             if (binding.serialNumberEditText.editText?.text.isNullOrBlank()) {
                 Toast.makeText(this, "Please enter Serial Number", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            if (binding.speciesEditText.editText?.text.isNullOrBlank()) {
+            if (binding.scientificSpeciesNameEditText.editText?.text.isNullOrBlank() || binding.speciesNameEditText.editText?.text.isNullOrBlank()) {
                 Toast.makeText(this, "Please select Species", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
@@ -210,8 +271,10 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
                 Toast.makeText(this, "Please enter Canopy Diameter", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
+            binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
+            binding.speciesNameAutoCompleteTextView.clearFocus()
             var species = TreeAssessmentSpecies(
-                name = binding.speciesEditText.editText?.text.toString(),
+                name = binding.scientificSpeciesNameEditText.editText?.text.toString(),
                 serial_number = binding.serialNumberEditText.editText?.text.toString(),
                 girth = binding.girthEditText.editText?.text.toString(),
                 height = binding.heightEditText.editText?.text.toString(),
@@ -234,7 +297,8 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
 
             binding.serialNumberEditText.editText?.setText("")
 
-            binding.speciesEditText.editText?.setText("")
+            binding.scientificSpeciesNameEditText.editText?.setText("")
+            binding.speciesNameEditText.editText?.setText("")
             binding.serialNumberEditText.editText?.setText("")
             binding.serialNumberEditText.editText?.setText("")
             binding.girthEditText.editText?.setText("")
@@ -268,6 +332,8 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
 
         //set pre filled values
         binding.uploadImage.setOnClickListener {
+            binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
+            binding.speciesNameAutoCompleteTextView.clearFocus()
             openFilePicker()
 //            startActivity(Intent(this, FragmentSample::class.java))
 //            PixBus.results {

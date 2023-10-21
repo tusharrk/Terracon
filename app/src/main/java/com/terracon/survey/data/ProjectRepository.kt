@@ -12,6 +12,7 @@ import com.terracon.survey.model.Project
 import com.terracon.survey.model.ProjectData
 import com.terracon.survey.model.ProjectResponse
 import com.terracon.survey.model.Result
+import com.terracon.survey.model.SpeciesNameDTO
 import com.terracon.survey.model.UserApiRequestDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -106,7 +107,7 @@ class ProjectRepository(
     suspend fun getFloraFaunaSpeciesListBasedOnType(
         type: String,
         subType: String
-    ): Flow<Result<List<String>>?> {
+    ): Flow<Result<List<SpeciesNameDTO>>?> {
         return flow {
             emit(Result.loading())
             val result = getList(type, subType)
@@ -114,8 +115,8 @@ class ProjectRepository(
         }.flowOn(Dispatchers.IO)
     }
 
-    private fun getList(type: String, subType: String): Result<List<String>> {
-        var list = listOf<String>()
+    private fun getList(type: String, subType: String): Result<List<SpeciesNameDTO>> {
+        var list = listOf<SpeciesNameDTO>()
         if (type == "Fauna") {
             list = projectDao.getFaunaList(subType)
         } else {

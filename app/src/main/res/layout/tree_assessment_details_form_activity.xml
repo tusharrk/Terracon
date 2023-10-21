@@ -57,12 +57,33 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/species_edit_text"
+                    android:id="@+id/scientific_species_name_edit_text"
+                    style="@style/textInputDropDownStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_10"
+                    android:layout_weight="1"
+                    android:hint="@string/scientific_species_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/scientificSpeciesNameAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/species_name_edit_text"
                     style="@style/textInputDropDownStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/padding_10"
-                    android:hint="@string/species_name">
+                    android:hint="@string/common_species_name">
 
                     <AutoCompleteTextView
                         android:id="@+id/speciesNameAutoCompleteTextView"

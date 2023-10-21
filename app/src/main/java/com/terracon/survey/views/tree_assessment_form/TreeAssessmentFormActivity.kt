@@ -205,11 +205,11 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-
-                if (binding.plotTypeEditText.editText?.text.isNullOrBlank()) {
-                    Toast.makeText(this, "Please enter Plot Type", Toast.LENGTH_LONG).show()
-                    return@setOnClickListener
-                }
+//
+//                if (binding.plotTypeEditText.editText?.text.isNullOrBlank()) {
+//                    Toast.makeText(this, "Please enter Plot Type", Toast.LENGTH_LONG).show()
+//                    return@setOnClickListener
+//                }
 
                 if (binding.habitatAutoCompleteTextView.text.isNullOrBlank()) {
                     Toast.makeText(this, "Please select Habitat", Toast.LENGTH_LONG).show()
@@ -262,8 +262,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
 
                         treeAssessmentFormViewModel.treePoint.landmark =
                             binding.landmarkEditText.editText?.text.toString()
-                        treeAssessmentFormViewModel.treePoint.plot_type =
-                            binding.plotTypeEditText.editText?.text.toString()
+                        treeAssessmentFormViewModel.treePoint.plot_type = ""
                         treeAssessmentFormViewModel.treePoint.radius =
                             binding.radiusEditText.editText?.text.toString()
                         treeAssessmentFormViewModel.treePoint.width =

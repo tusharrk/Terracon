@@ -11,9 +11,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.app.imagepickerlibrary.ImagePicker
 import com.app.imagepickerlibrary.ImagePicker.Companion.registerImagePicker
@@ -23,6 +25,8 @@ import com.app.imagepickerlibrary.model.PickerType
 import com.app.imagepickerlibrary.ui.bottomsheet.SSPickerOptionsBottomSheet
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.material.textview.MaterialTextView
 import com.michaelflisar.lumberjack.L
 import com.terracon.survey.R
 import com.terracon.survey.databinding.AddPointFormBioActivityBinding
@@ -68,7 +72,9 @@ class AddPointFormBioActivity : AppCompatActivity(),
                     addPointFormBioViewModel.isEdit = true
                     addPointFormBioViewModel.isEditIndex = index
 
-                    binding.speciesNameEditText.editText?.setText(item.name)
+                    binding.scientificSpeciesNameEditText.editText?.setText(item.name)
+                    binding.speciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList(item.name,true))
+
                     binding.countEditText.editText?.setText(item.count)
                     binding.commentEditText.editText?.setText(item.comment)
                     binding.uploadImage.text =
@@ -115,7 +121,15 @@ class AddPointFormBioActivity : AppCompatActivity(),
                     )
                 )
             }
-
+        }
+        addPointFormBioViewModel.floraFaunaScientificSpeciesList.observe(this) { data ->
+            if (!data.isNullOrEmpty()) {
+                binding.scientificSpeciesNameAutoCompleteTextView.setAdapter(
+                    ArrayAdapter(
+                        this, R.layout.dropdown_item, data
+                    )
+                )
+            }
         }
         addPointFormBioViewModel.isLoading.observe(this) { isLoading ->
             if (isLoading) {
@@ -183,13 +197,62 @@ class AddPointFormBioActivity : AppCompatActivity(),
 //            )
 //        )
 
+        binding.scientificSpeciesNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
+            L.d { "item select--${(view as MaterialTextView).text}" }
+            try {
+              binding.speciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList((view as MaterialTextView).text.toString(),true))
+            }catch (e:Exception){
+                L.d { "error---${e}" }
+            }
+        }
+        binding.speciesNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
+            L.d { "item select--${(view as MaterialTextView).text}" }
+            try {
+                binding.scientificSpeciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList((view as MaterialTextView).text.toString(),false))
+            }catch (e:Exception){
+                L.d { "error---${e}" }
+            }
+        }
+
+        binding.scientificSpeciesNameAutoCompleteTextView.setOnFocusChangeListener { view, isFocus ->
+            try {
+            if(!isFocus){
+                L.d { "errorrororo---${addPointFormBioViewModel.floraFaunaScientificSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  }}"}
+            if(addPointFormBioViewModel.floraFaunaScientificSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  } == null){
+                binding.scientificSpeciesNameEditText.editText?.setText("Not Specified")
+                binding.speciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList((view as MaterialAutoCompleteTextView).text.toString(),true))
+
+            }
+            }
+            }catch (e:Exception){
+                L.d { "error--${e}" }
+            }
+        }
+
+        binding.speciesNameAutoCompleteTextView.setOnFocusChangeListener { view, isFocus ->
+            try {
+                if(!isFocus){
+                L.d { "errorrororo---${addPointFormBioViewModel.floraFaunaSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString()) }}"}
+                if(addPointFormBioViewModel.floraFaunaSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  } == null){
+                    binding.speciesNameEditText.editText?.setText("Not Specified")
+                    binding.scientificSpeciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList((view as MaterialAutoCompleteTextView).text.toString(),false))
+                }
+            }
+        }catch (e:Exception){
+            L.d { "error--${e}" }
+        }
+        }
+
+
         binding.addItemBtn.setOnClickListener {
-            if (binding.speciesNameEditText.editText?.text.isNullOrBlank()) {
+            if (binding.scientificSpeciesNameEditText.editText?.text.isNullOrBlank() || binding.speciesNameEditText.editText?.text.isNullOrBlank()) {
                 Toast.makeText(this, "Please select Species", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
+            binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
+            binding.speciesNameAutoCompleteTextView.clearFocus()
             var species = Species(
-                name = binding.speciesNameEditText.editText?.text.toString(),
+                name = binding.scientificSpeciesNameEditText.editText?.text.toString(),
                 count = binding.countEditText.editText?.text.toString(),
                 images = addPointFormBioViewModel.imageUrl,
                 comment = binding.commentEditText.editText?.text.toString()
@@ -207,6 +270,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
             }
             listAdapter.notifyDataSetChanged()
 
+            binding.scientificSpeciesNameEditText.editText?.setText("")
             binding.speciesNameEditText.editText?.setText("")
             binding.countEditText.editText?.setText("0")
             binding.commentEditText.editText?.setText("")
@@ -217,6 +281,8 @@ class AddPointFormBioActivity : AppCompatActivity(),
         }
         binding.incrementCount.setOnClickListener {
             try {
+                binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
+                binding.speciesNameAutoCompleteTextView.clearFocus()
                 var count = Integer.parseInt(binding.countEditText.editText?.text.toString())
                 count += 1
                 binding.countEditText.editText?.setText(count.toString())
@@ -226,6 +292,8 @@ class AddPointFormBioActivity : AppCompatActivity(),
         }
         binding.decrementCount.setOnClickListener {
             try {
+                binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
+                binding.speciesNameAutoCompleteTextView.clearFocus()
                 var count = Integer.parseInt(binding.countEditText.editText?.text.toString())
                 if (count > 0) {
                     count -= 1
@@ -237,6 +305,8 @@ class AddPointFormBioActivity : AppCompatActivity(),
         }
 
         binding.uploadImage.setOnClickListener {
+            binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
+            binding.speciesNameAutoCompleteTextView.clearFocus()
             openFilePicker()
 //            startActivity(Intent(this, FragmentSample::class.java))
 //            PixBus.results {

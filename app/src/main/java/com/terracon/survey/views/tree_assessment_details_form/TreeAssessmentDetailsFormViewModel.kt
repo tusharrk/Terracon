@@ -18,6 +18,7 @@ import com.terracon.survey.model.PointDTO
 import com.terracon.survey.model.Project
 import com.terracon.survey.model.Result
 import com.terracon.survey.model.Species
+import com.terracon.survey.model.SpeciesNameDTO
 import com.terracon.survey.model.TreeAssessmentPoint
 import com.terracon.survey.model.TreeAssessmentSpecies
 import com.terracon.survey.model.TreeAssessmentSpeciesData
@@ -36,6 +37,13 @@ class TreeAssessmentDetailsFormViewModel(
 
     private val _speciesList = MutableLiveData<ArrayList<TreeAssessmentSpecies>?>()
     val speciesList: MutableLiveData<ArrayList<TreeAssessmentSpecies>?> = _speciesList
+
+    private val _speciesDTOList = MutableLiveData<List<SpeciesNameDTO>?>()
+    val speciesDTOList: MutableLiveData<List<SpeciesNameDTO>?> = _speciesDTOList
+
+    private val _floraFaunaScientificSpeciesList = MutableLiveData<List<String>?>()
+    val floraFaunaScientificSpeciesList: MutableLiveData<List<String>?> = _floraFaunaScientificSpeciesList
+
 
     private val _floraFaunaSpeciesList = MutableLiveData<List<String>?>()
     val floraFaunaSpeciesList: MutableLiveData<List<String>?> = _floraFaunaSpeciesList
@@ -69,6 +77,24 @@ class TreeAssessmentDetailsFormViewModel(
         activity.startActivity(intent)
     }
 
+    fun findSpeciesNameFromList(speciesName:String,isScientific:Boolean):String{
+        var species:String = ""
+        if(isScientific){
+            speciesDTOList.value?.forEach { it ->
+                if(it.scientific_name == speciesName){
+                    species = it.common_name ?: "Not Specified"
+                }
+            }
+        }else{
+            speciesDTOList.value?.forEach { it ->
+                if(it.common_name == speciesName){
+                    species = it.scientific_name ?: "Not Specified"
+                }
+            }
+        }
+        return species.ifEmpty { "Not Specified" }
+    }
+
     fun getSpeciesNamesList() {
         _isLoadingFullScreen.value = true
         _errorState.value = null
@@ -80,7 +106,9 @@ class TreeAssessmentDetailsFormViewModel(
                             _isLoadingFullScreen.value = false
                             _errorState.value = null
                             if (it.data != null) {
-                                _floraFaunaSpeciesList.value = it.data
+                                _speciesDTOList.value = it.data
+                                processFloraFaunaList(it.data)
+                                //_floraFaunaSpeciesList.value = it.data
                                 getPointDetailsData()
                             } else {
                                 _errorState.value = ErrorState.NoData
@@ -101,6 +129,21 @@ class TreeAssessmentDetailsFormViewModel(
                     }
                 }
         }
+    }
+
+    private fun processFloraFaunaList(list:List<SpeciesNameDTO>?){
+        val scientificList = arrayListOf<String>()
+        val commonList = arrayListOf<String>()
+
+        list?.forEach { it ->
+            it.scientific_name?.let { it1 -> scientificList.add(it1) }
+            it.common_name?.let { it1 -> commonList.add(it1) }
+        }
+        scientificList.add("Not Specified")
+        commonList.add("Not Specified")
+        _floraFaunaScientificSpeciesList.value = scientificList.sorted()
+        _floraFaunaSpeciesList.value = commonList.sorted()
+
     }
 
     private fun getPointDetailsData() {

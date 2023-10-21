@@ -17,6 +17,7 @@ import com.terracon.survey.model.PointDTO
 import com.terracon.survey.model.Project
 import com.terracon.survey.model.Result
 import com.terracon.survey.model.Species
+import com.terracon.survey.model.SpeciesNameDTO
 import com.terracon.survey.utils.FileHelper
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -33,6 +34,12 @@ class AddPointFormBioViewModel(
 
     private val _speciesBioList = MutableLiveData<ArrayList<Species>?>()
     val speciesBioList: MutableLiveData<ArrayList<Species>?> = _speciesBioList
+
+    private val _speciesDTOList = MutableLiveData<List<SpeciesNameDTO>?>()
+    val speciesDTOList: MutableLiveData<List<SpeciesNameDTO>?> = _speciesDTOList
+
+    private val _floraFaunaScientificSpeciesList = MutableLiveData<List<String>?>()
+    val floraFaunaScientificSpeciesList: MutableLiveData<List<String>?> = _floraFaunaScientificSpeciesList
 
     private val _floraFaunaSpeciesList = MutableLiveData<List<String>?>()
     val floraFaunaSpeciesList: MutableLiveData<List<String>?> = _floraFaunaSpeciesList
@@ -64,6 +71,24 @@ class AddPointFormBioViewModel(
        // _speciesBioList.value = tempList
     }
 
+    fun findSpeciesNameFromList(speciesName:String,isScientific:Boolean):String{
+        var species:String = ""
+        if(isScientific){
+            speciesDTOList.value?.forEach { it ->
+                if(it.scientific_name == speciesName){
+                    species = it.common_name ?: "Not Specified"
+                }
+            }
+        }else{
+            speciesDTOList.value?.forEach { it ->
+                if(it.common_name == speciesName){
+                    species = it.scientific_name ?: "Not Specified"
+                }
+            }
+        }
+        return species.ifEmpty { "Not Specified" }
+    }
+
      fun getSpeciesNamesList(){
         _isLoadingFullScreen.value = true
         _errorState.value = null
@@ -75,7 +100,9 @@ class AddPointFormBioViewModel(
                             _isLoadingFullScreen.value = false
                             _errorState.value = null
                             if (it.data != null) {
-                                _floraFaunaSpeciesList.value = it.data
+                                _speciesDTOList.value = it.data
+                                processFloraFaunaList(it.data)
+                               // _floraFaunaSpeciesList.value = it.data
                                 getPointDetailsData()
                             }
                             else {
@@ -97,6 +124,20 @@ class AddPointFormBioViewModel(
                     }
                 }
         }
+    }
+    private fun processFloraFaunaList(list:List<SpeciesNameDTO>?){
+        val scientificList = arrayListOf<String>()
+        val commonList = arrayListOf<String>()
+
+        list?.forEach { it ->
+            it.scientific_name?.let { it1 -> scientificList.add(it1) }
+            it.common_name?.let { it1 -> commonList.add(it1) }
+        }
+        scientificList.add("Not Specified")
+        commonList.add("Not Specified")
+        _floraFaunaScientificSpeciesList.value = scientificList.sorted()
+        _floraFaunaSpeciesList.value = commonList.sorted()
+
     }
 
     private fun getPointDetailsData(){
