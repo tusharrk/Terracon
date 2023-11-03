@@ -42,7 +42,7 @@ interface TreeAssessmentDao {
     @Query("SELECT * FROM TreeAssessmentSpecies Where tempId = :id")
     fun getSpeciesById(id: String): List<TreeAssessmentSpecies>
 
-    @Query("SELECT * FROM TreeAssessmentSpecies Where tempId =:id and isSynced = 0")
+    @Query("SELECT * FROM TreeAssessmentSpecies Where tempId =:id and isImageSynced = 0")
     fun getSpeciesListById(id: String): List<TreeAssessmentSpecies>
 
 
@@ -61,7 +61,7 @@ interface TreeAssessmentDao {
     fun updatePointIdInPointDetails(pointId: Int,id: Int)
 
     @Transaction
-    @Query("UPDATE TreeAssessmentSpecies SET images =:imageUrl, isSynced =:isSynced Where dbId =:dbId ")
+    @Query("UPDATE TreeAssessmentSpecies SET images =:imageUrl, isImageSynced =:isSynced Where dbId =:dbId ")
     fun updateSpeciesImageUrl(imageUrl: String,isSynced:Boolean,dbId:Int)
 
 }

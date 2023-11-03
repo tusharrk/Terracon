@@ -79,7 +79,7 @@
                 android:background="@drawable/rounded_button"
                 android:insetLeft="@dimen/padding_30"
                 android:insetRight="@dimen/padding_30"
-                android:text="Start (Bio)"
+                android:text="Start"
                 android:textAppearance="@style/basicButtonStyle" />
 
             <com.google.android.material.button.MaterialButton
@@ -91,7 +91,7 @@
                 android:background="@drawable/rounded_button"
                 android:insetLeft="@dimen/padding_30"
                 android:insetRight="@dimen/padding_30"
-                android:text="Start (Tree)"
+                android:text="Start"
                 android:textAppearance="@style/basicButtonStyle" />
         </LinearLayout>
     </ScrollView>

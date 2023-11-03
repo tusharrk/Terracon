@@ -149,7 +149,7 @@ object TreePointDataUtils {
 
         try {
             var index = speciesList.indexOfFirst { species ->
-                (species.images != "" && species.images?.contains("https") == false && !species.isSynced)
+                (species.images != "" && species.images?.contains("https") == false && !species.isImageSynced)
             }
             if (index != -1) {
                 L.d { "inside uploadImagesAndUpdateDB index--${index}" }
@@ -177,10 +177,10 @@ object TreePointDataUtils {
                                             Log.d("TAG_X", it.data.toString())
                                             L.d { " uploadImagesAndUpdateDB success--${it.data.toString()}" }
 
-                                            activity.runOnUiThread {
-                                                val msg = it.data.message
-                                                showToast(activity, msg)
-                                            }
+//                                            activity.runOnUiThread {
+//                                                val msg = it.data.message
+//                                                showToast(activity, msg)
+//                                            }
                                             var speciesListNew: MutableList<TreeAssessmentSpecies> = speciesList
                                             speciesListNew.removeAt(index)
                                             uploadImagesAndUpdateDB(

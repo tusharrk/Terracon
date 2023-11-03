@@ -41,6 +41,8 @@ data class Species(
     var count: String = "",
     var images: String? = null,
     var name: String = "",
+    var gps_latitude:String? = "",
+    var gps_longitude:String? = "",
     var isSynced: Boolean = false
 )
 

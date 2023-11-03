@@ -50,25 +50,25 @@
                     android:layout_marginVertical="@dimen/basic_item_padding"
                     android:orientation="vertical">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/scientific_species_name_edit_text"
-                        style="@style/textInputDropDownStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/basic_item_padding"
-                        android:layout_weight="1"
-                        android:hint="@string/scientific_species_name"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+<!--                    <com.google.android.material.textfield.TextInputLayout-->
+<!--                        android:id="@+id/scientific_species_name_edit_text"-->
+<!--                        style="@style/textInputDropDownStyle"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginEnd="@dimen/basic_item_padding"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:hint="@string/scientific_species_name"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent">-->
 
-                        <AutoCompleteTextView
-                            android:id="@+id/scientificSpeciesNameAutoCompleteTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:maxLines="1" />
+<!--                        <AutoCompleteTextView-->
+<!--                            android:id="@+id/scientificSpeciesNameAutoCompleteTextView"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:maxLines="1" />-->
 
-                    </com.google.android.material.textfield.TextInputLayout>
+<!--                    </com.google.android.material.textfield.TextInputLayout>-->
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/species_name_edit_text"
@@ -77,7 +77,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/basic_item_padding"
                         android:layout_weight="1"
-                        android:hint="@string/common_species_name"
+                        android:hint="@string/species_name"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
@@ -86,9 +86,10 @@
                             android:id="@+id/speciesNameAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:maxLines="1" />
+                            android:inputType="textMultiLine" />
 
                     </com.google.android.material.textfield.TextInputLayout>
+
 
                     <LinearLayout
                         android:layout_width="match_parent"

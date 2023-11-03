@@ -43,6 +43,7 @@ import com.terracon.survey.databinding.TreeAssessmentDetailsFormActivityBinding
 import com.terracon.survey.model.BioPoint
 import com.terracon.survey.model.Project
 import com.terracon.survey.model.Species
+import com.terracon.survey.model.SpeciesNameDTO
 import com.terracon.survey.model.TreeAssessmentPoint
 import com.terracon.survey.model.TreeAssessmentSpecies
 import com.terracon.survey.utils.AppUtils
@@ -51,6 +52,7 @@ import com.terracon.survey.utils.ErrorUtils
 import com.terracon.survey.utils.RealPathUtil
 import com.terracon.survey.views.add_point_form_bio.AddPointFormBioAdapter
 import com.terracon.survey.views.add_point_form_bio.FragmentSample
+import com.terracon.survey.views.add_point_form_bio.PoiAdapter
 import io.ak1.pix.helpers.PixBus
 import io.ak1.pix.helpers.PixEventCallback
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -67,6 +69,11 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
     private lateinit var binding: TreeAssessmentDetailsFormActivityBinding
     private lateinit var listAdapter: TreeAssessmentDetailsAdapter
 
+
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private val permissionId = 2
+    private var location: Location? = null
+
     private val imagePicker: ImagePicker by lazy {
         registerImagePicker(this)
     }
@@ -79,6 +86,12 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
         setupListAdapter()
         setupObservers()
         setupUi()
+        setupLocationService()
+    }
+
+    private fun setupLocationService() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
     }
 
     private fun setupListAdapter() {
@@ -92,9 +105,9 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
 
                     binding.serialNumberEditText.editText?.setText(item.serial_number)
 
-                        binding.scientificSpeciesNameEditText.editText?.setText(item.name)
-                        binding.speciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList(item.name,true))
-
+                       // binding.scientificSpeciesNameEditText.editText?.setText(item.name)
+                      //  binding.speciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList(item.name,true))
+                        binding.speciesNameEditText.editText?.setText(item.name)
 
                         binding.girthEditText.editText?.setText(item.girth.toString())
                     binding.heightEditText.editText?.setText(item.height.toString())
@@ -103,8 +116,12 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
                     binding.uploadImage.text =
                         if (item.images.isNullOrEmpty()) getString(R.string.capture_upload_image) else item.images!!
 
+                        treeAssessmentFormMainViewModel.imageLong = if(item.gps_longitude.isNullOrEmpty()) "" else item.gps_longitude!!
+                        treeAssessmentFormMainViewModel.imageLat = if(item.gps_latitude.isNullOrEmpty()) "" else item.gps_latitude!!
 
-                    treeAssessmentFormMainViewModel.imageUrl =
+
+
+                        treeAssessmentFormMainViewModel.imageUrl =
                         if (item.images.isNullOrEmpty()) "" else item.images!!
 
                 }else{
@@ -126,25 +143,30 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
         treeAssessmentFormMainViewModel.speciesList.observe(this) { data ->
             listAdapter.submitList(data)
         }
-        treeAssessmentFormMainViewModel.floraFaunaSpeciesList.observe(this) { data ->
+        treeAssessmentFormMainViewModel.speciesDTOList.observe(this) { data ->
             if (!data.isNullOrEmpty()) {
                 binding.speciesNameAutoCompleteTextView.setAdapter(
-                    ArrayAdapter(
-                        this, R.layout.dropdown_item, data
-                    )
+//                    ArrayAdapter(
+//                        this, R.layout.dropdown_item,R.id.item, data
+//                    )
+                    PoiAdapter(this, R.layout.dropdown_item, data)
                 )
             }
 
         }
-        treeAssessmentFormMainViewModel.floraFaunaScientificSpeciesList.observe(this) { data ->
-            if (!data.isNullOrEmpty()) {
-                binding.scientificSpeciesNameAutoCompleteTextView.setAdapter(
-                    ArrayAdapter(
-                        this, R.layout.dropdown_item, data
-                    )
-                )
-            }
+        binding.speciesNameAutoCompleteTextView.setOnItemClickListener() { parent, _, position, id ->
+            val selectedPoi = parent.adapter.getItem(position) as SpeciesNameDTO?
+            binding.speciesNameAutoCompleteTextView.setText(selectedPoi?.scientific_name)
         }
+//        treeAssessmentFormMainViewModel.floraFaunaScientificSpeciesList.observe(this) { data ->
+//            if (!data.isNullOrEmpty()) {
+//                binding.scientificSpeciesNameAutoCompleteTextView.setAdapter(
+//                    ArrayAdapter(
+//                        this, R.layout.dropdown_item,R.id.item, data
+//                    )
+//                )
+//            }
+//        }
         treeAssessmentFormMainViewModel.isLoading.observe(this) { isLoading ->
             if (isLoading) {
                 binding.progressView.root.visibility = View.VISIBLE
@@ -204,58 +226,58 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
             supportActionBar?.title = treeAssessmentFormMainViewModel.project.name
         }
 
-        binding.scientificSpeciesNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
-            L.d { "item select--${(view as MaterialTextView).text}" }
-            try {
-                binding.speciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList((view as MaterialTextView).text.toString(),true))
-            }catch (e:Exception){
-                L.d { "error---${e}" }
-            }
-        }
-        binding.speciesNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
-            L.d { "item select--${(view as MaterialTextView).text}" }
-            try {
-                binding.scientificSpeciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList((view as MaterialTextView).text.toString(),false))
-            }catch (e:Exception){
-                L.d { "error---${e}" }
-            }
-        }
-
-        binding.scientificSpeciesNameAutoCompleteTextView.setOnFocusChangeListener { view, isFocus ->
-            try {
-                if(!isFocus){
-                    L.d { "errorrororo---${treeAssessmentFormMainViewModel.floraFaunaScientificSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  }}"}
-                    if(treeAssessmentFormMainViewModel.floraFaunaScientificSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  } == null){
-                        binding.scientificSpeciesNameEditText.editText?.setText("Not Specified")
-                        binding.speciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList((view as MaterialAutoCompleteTextView).text.toString(),true))
-
-                    }
-                }
-            }catch (e:Exception){
-                L.d { "error--${e}" }
-            }
-        }
-
-        binding.speciesNameAutoCompleteTextView.setOnFocusChangeListener { view, isFocus ->
-            try {
-                if(!isFocus){
-                    L.d { "errorrororo---${treeAssessmentFormMainViewModel.floraFaunaSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString()) }}"}
-                    if(treeAssessmentFormMainViewModel.floraFaunaSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  } == null){
-                        binding.speciesNameEditText.editText?.setText("Not Specified")
-                        binding.scientificSpeciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList((view as MaterialAutoCompleteTextView).text.toString(),false))
-                    }
-                }
-            }catch (e:Exception){
-                L.d { "error--${e}" }
-            }
-        }
+//        binding.scientificSpeciesNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
+//            L.d { "item select--${(view as MaterialTextView).text}" }
+//            try {
+//                binding.speciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList((view as MaterialTextView).text.toString(),true))
+//            }catch (e:Exception){
+//                L.d { "error---${e}" }
+//            }
+//        }
+//        binding.speciesNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
+//            L.d { "item select--${(view as MaterialTextView).text}" }
+//            try {
+//                binding.scientificSpeciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList((view as MaterialTextView).text.toString(),false))
+//            }catch (e:Exception){
+//                L.d { "error---${e}" }
+//            }
+//        }
+//
+//        binding.scientificSpeciesNameAutoCompleteTextView.setOnFocusChangeListener { view, isFocus ->
+//            try {
+//                if(!isFocus){
+//                    L.d { "errorrororo---${treeAssessmentFormMainViewModel.floraFaunaScientificSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  }}"}
+//                    if(treeAssessmentFormMainViewModel.floraFaunaScientificSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  } == null){
+//                        binding.scientificSpeciesNameEditText.editText?.setText("Not Specified")
+//                        binding.speciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList((view as MaterialAutoCompleteTextView).text.toString(),true))
+//
+//                    }
+//                }
+//            }catch (e:Exception){
+//                L.d { "error--${e}" }
+//            }
+//        }
+//
+//        binding.speciesNameAutoCompleteTextView.setOnFocusChangeListener { view, isFocus ->
+//            try {
+//                if(!isFocus){
+//                    L.d { "errorrororo---${treeAssessmentFormMainViewModel.floraFaunaSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString()) }}"}
+//                    if(treeAssessmentFormMainViewModel.floraFaunaSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  } == null){
+//                        binding.speciesNameEditText.editText?.setText("Not Specified")
+//                        binding.scientificSpeciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList((view as MaterialAutoCompleteTextView).text.toString(),false))
+//                    }
+//                }
+//            }catch (e:Exception){
+//                L.d { "error--${e}" }
+//            }
+//        }
 
         binding.addItemBtn.setOnClickListener {
             if (binding.serialNumberEditText.editText?.text.isNullOrBlank()) {
                 Toast.makeText(this, "Please enter Serial Number", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            if (binding.scientificSpeciesNameEditText.editText?.text.isNullOrBlank() || binding.speciesNameEditText.editText?.text.isNullOrBlank()) {
+            if (binding.speciesNameEditText.editText?.text.isNullOrBlank() || binding.speciesNameEditText.editText?.text.isNullOrBlank()) {
                 Toast.makeText(this, "Please select Species", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
@@ -271,16 +293,18 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
                 Toast.makeText(this, "Please enter Canopy Diameter", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
+          //  binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
             binding.speciesNameAutoCompleteTextView.clearFocus()
             var species = TreeAssessmentSpecies(
-                name = binding.scientificSpeciesNameEditText.editText?.text.toString(),
+                name = binding.speciesNameEditText.editText?.text.toString(),
                 serial_number = binding.serialNumberEditText.editText?.text.toString(),
                 girth = binding.girthEditText.editText?.text.toString(),
                 height = binding.heightEditText.editText?.text.toString(),
                 canopy_diameter = binding.diameterEditText.editText?.text.toString(),
                 images = treeAssessmentFormMainViewModel.imageUrl,
-                comment = binding.commentsEditText.editText?.text.toString()
+                comment = binding.commentsEditText.editText?.text.toString(),
+                gps_latitude = treeAssessmentFormMainViewModel.imageLat,
+                gps_longitude = treeAssessmentFormMainViewModel.imageLong
 
             )
             if (treeAssessmentFormMainViewModel.isEdit) {
@@ -297,7 +321,7 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
 
             binding.serialNumberEditText.editText?.setText("")
 
-            binding.scientificSpeciesNameEditText.editText?.setText("")
+          //  binding.scientificSpeciesNameEditText.editText?.setText("")
             binding.speciesNameEditText.editText?.setText("")
             binding.serialNumberEditText.editText?.setText("")
             binding.serialNumberEditText.editText?.setText("")
@@ -308,33 +332,21 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
 
             binding.uploadImage.text = resources.getString(R.string.capture_upload_image)
             treeAssessmentFormMainViewModel.imageUrl = ""
+            treeAssessmentFormMainViewModel.imageLong = ""
+            treeAssessmentFormMainViewModel.imageLat = ""
             treeAssessmentFormMainViewModel.isEditIndex = null
             treeAssessmentFormMainViewModel.isEdit = false
         }
 
         binding.saveBtn.setOnClickListener {
-            L.d { "list--${treeAssessmentFormMainViewModel.getSpeciesList()}" }
-            if (treeAssessmentFormMainViewModel.speciesList.value.isNullOrEmpty()) {
-                Toast.makeText(this, "Please add Species", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-            MaterialAlertDialogBuilder(this)
-                .setTitle(getString(R.string.confirmation))
-                .setMessage(getString(R.string.form_submit_msg))
-                .setNeutralButton("Cancel") { dialog, which ->
-
-                }
-                .setPositiveButton("Submit") { dialog, which ->
-                    setupPointDataPayload()
-                }
-                .show()
+        saveData()
         }
 
         //set pre filled values
         binding.uploadImage.setOnClickListener {
-            binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
+        //    binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
             binding.speciesNameAutoCompleteTextView.clearFocus()
-            openFilePicker()
+            getLocation()
 //            startActivity(Intent(this, FragmentSample::class.java))
 //            PixBus.results {
 //                when (it.status) {
@@ -370,6 +382,24 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
 
     }
 
+    private fun saveData(){
+        L.d { "list--${treeAssessmentFormMainViewModel.getSpeciesList()}" }
+        if (treeAssessmentFormMainViewModel.speciesList.value.isNullOrEmpty()) {
+            Toast.makeText(this, "Please add Species", Toast.LENGTH_LONG).show()
+            return
+        }
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.confirmation))
+            .setMessage(getString(R.string.form_submit_msg))
+            .setNeutralButton("Cancel") { dialog, which ->
+
+            }
+            .setPositiveButton("Submit") { dialog, which ->
+                setupPointDataPayload()
+            }
+            .show()
+    }
+
     private fun deleteItem(item:TreeAssessmentSpecies,index:Int){
         MaterialAlertDialogBuilder(this)
             .setTitle("Delete")
@@ -401,14 +431,15 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_main_save, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-        if (id == R.id.logoutBtn) {
-            AppUtils.logoutUser(this)
+        if (id == R.id.saveBtn) {
+            saveData()
+           // AppUtils.logoutUser(this)
             return true
         }
         if(id==android.R.id.home){
@@ -464,6 +495,84 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
             }
 
             ImageProvider.NONE -> {}
+        }
+    }
+
+
+    //location
+    private fun isLocationEnabled(): Boolean {
+        val locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
+    }
+
+    private fun checkPermissions(): Boolean {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            return true
+        }
+        return false
+    }
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            permissionId
+        )
+    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == permissionId) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                getLocation()
+            }else{
+                Toast.makeText(this, "Location Permission not allowed", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission", "SetTextI18n")
+    private fun getLocation() {
+        if (checkPermissions()) {
+            if (isLocationEnabled()) {
+                mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
+                    location = task.result
+                    if (location != null) {
+                        L.d { "Location Complete ${location?.latitude} -- ${location?.longitude}" }
+                        treeAssessmentFormMainViewModel.imageLong = location?.longitude.toString()
+                        treeAssessmentFormMainViewModel.imageLat = location?.latitude.toString()
+//                        val geocoder = Geocoder(this, Locale.getDefault())
+//                        val list: List<Address> =
+//                            geocoder.getFromLocation(location.latitude, location.longitude, 1)!!
+                        // binding.gpsEditText.editText?.setText("${location?.latitude} , ${location?.longitude}")
+                    }
+                }
+                openFilePicker()
+            } else {
+                Toast.makeText(this, "Please turn on location", Toast.LENGTH_LONG).show()
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
+            }
+        } else {
+            requestPermissions()
         }
     }
 }

@@ -64,6 +64,9 @@ class AddPointFormBioViewModel(
     var isEdit = false
     var isEditIndex: Int? = null
     var imageUrl: String = ""
+    var imageLong: String = ""
+    var imageLat: String = ""
+
 
     init {
        // getSpeciesNamesList()
@@ -130,12 +133,14 @@ class AddPointFormBioViewModel(
         val commonList = arrayListOf<String>()
 
         list?.forEach { it ->
-            it.scientific_name?.let { it1 -> scientificList.add(it1) }
-            it.common_name?.let { it1 -> commonList.add(it1) }
+            var name = "${it.common_name} (${it.scientific_name})"
+            commonList.add(name)
+           // it.scientific_name?.let { it1 -> scientificList.add(it1) }
+           // it.common_name?.let { it1 -> commonList.add(it1) }
         }
-        scientificList.add("Not Specified")
-        commonList.add("Not Specified")
-        _floraFaunaScientificSpeciesList.value = scientificList.sorted()
+       // scientificList.add("Not Specified")
+       // commonList.add("Not Specified")
+      //  _floraFaunaScientificSpeciesList.value = scientificList.sorted()
         _floraFaunaSpeciesList.value = commonList.sorted()
 
     }

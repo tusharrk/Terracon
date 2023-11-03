@@ -1,20 +1,29 @@
 package com.terracon.survey.views.add_point_form_bio
 
+import android.Manifest
 import android.R.attr.data
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
+import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.motion.widget.Debug.getLocation
+import androidx.core.app.ActivityCompat
 import androidx.core.view.get
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.app.imagepickerlibrary.ImagePicker
@@ -24,6 +33,8 @@ import com.app.imagepickerlibrary.model.ImageProvider
 import com.app.imagepickerlibrary.model.PickerType
 import com.app.imagepickerlibrary.ui.bottomsheet.SSPickerOptionsBottomSheet
 import com.bumptech.glide.Glide
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textview.MaterialTextView
@@ -33,6 +44,7 @@ import com.terracon.survey.databinding.AddPointFormBioActivityBinding
 import com.terracon.survey.model.BioPoint
 import com.terracon.survey.model.Project
 import com.terracon.survey.model.Species
+import com.terracon.survey.model.SpeciesNameDTO
 import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.ErrorUtils
 import com.terracon.survey.utils.FileHelper
@@ -50,6 +62,11 @@ class AddPointFormBioActivity : AppCompatActivity(),
     private val addPointFormBioViewModel by viewModel<AddPointFormBioViewModel>()
     private lateinit var binding: AddPointFormBioActivityBinding
     private lateinit var listAdapter: AddPointFormBioAdapter
+
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private val permissionId = 2
+    private var location: Location? = null
+
     private val imagePicker: ImagePicker by lazy {
         registerImagePicker(this)
     }
@@ -62,6 +79,12 @@ class AddPointFormBioActivity : AppCompatActivity(),
         setupListAdapter()
         setupObservers()
         setupUi()
+        setupLocationService()
+    }
+
+    private fun setupLocationService() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
     }
 
     private fun setupListAdapter() {
@@ -72,8 +95,10 @@ class AddPointFormBioActivity : AppCompatActivity(),
                     addPointFormBioViewModel.isEdit = true
                     addPointFormBioViewModel.isEditIndex = index
 
-                    binding.scientificSpeciesNameEditText.editText?.setText(item.name)
-                    binding.speciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList(item.name,true))
+                  //  binding.scientificSpeciesNameEditText.editText?.setText(item.name)
+                    binding.speciesNameEditText.editText?.setText(item.name)
+
+                    //binding.speciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList(item.name,true))
 
                     binding.countEditText.editText?.setText(item.count)
                     binding.commentEditText.editText?.setText(item.comment)
@@ -82,6 +107,9 @@ class AddPointFormBioActivity : AppCompatActivity(),
 
                     addPointFormBioViewModel.imageUrl =
                         if (item.images.isNullOrEmpty()) "" else item.images!!
+                    addPointFormBioViewModel.imageLong = if(item.gps_longitude.isNullOrEmpty()) "" else item.gps_longitude!!
+                    addPointFormBioViewModel.imageLat = if(item.gps_latitude.isNullOrEmpty()) "" else item.gps_latitude!!
+
                 }else{
                     deleteItem(item,index)
                 }
@@ -113,24 +141,37 @@ class AddPointFormBioActivity : AppCompatActivity(),
         addPointFormBioViewModel.speciesBioList.observe(this) { data ->
             listAdapter.submitList(data)
         }
-        addPointFormBioViewModel.floraFaunaSpeciesList.observe(this) { data ->
+        addPointFormBioViewModel.speciesDTOList.observe(this) { data ->
             if (!data.isNullOrEmpty()) {
                 binding.speciesNameAutoCompleteTextView.setAdapter(
-                    ArrayAdapter(
-                        this, R.layout.dropdown_item, data
-                    )
+//                    ArrayAdapter(
+//                        this, R.layout.dropdown_item,R.id.item, data
+//                    )
+                    PoiAdapter(this, R.layout.dropdown_item, data)
+                   // AutoSuggestAdapter(this, R.layout.dropdown_item, data)
+                          //  CustomAutoCompleteAdapter(this, R.layout.dropdown_item, data)
                 )
+//                val autoCompleteTextView: AutoCompleteTextView = findViewById(R.id.autoCompleteTextView)
+//
+//                val items = listOf("Item 1", "Item 2", "Item 3", "Item 4")
+//
+//                val adapter =
+//                autoCompleteTextView.setAdapter(adapter)
             }
         }
-        addPointFormBioViewModel.floraFaunaScientificSpeciesList.observe(this) { data ->
-            if (!data.isNullOrEmpty()) {
-                binding.scientificSpeciesNameAutoCompleteTextView.setAdapter(
-                    ArrayAdapter(
-                        this, R.layout.dropdown_item, data
-                    )
-                )
-            }
+        binding.speciesNameAutoCompleteTextView.setOnItemClickListener() { parent, _, position, id ->
+            val selectedPoi = parent.adapter.getItem(position) as SpeciesNameDTO?
+            binding.speciesNameAutoCompleteTextView.setText(selectedPoi?.scientific_name)
         }
+//        addPointFormBioViewModel.floraFaunaScientificSpeciesList.observe(this) { data ->
+//            if (!data.isNullOrEmpty()) {
+//                binding.scientificSpeciesNameAutoCompleteTextView.setAdapter(
+//                    ArrayAdapter(
+//                        this, R.layout.dropdown_item, data
+//                    )
+//                )
+//            }
+//        }
         addPointFormBioViewModel.isLoading.observe(this) { isLoading ->
             if (isLoading) {
                 binding.progressView.root.visibility = View.VISIBLE
@@ -197,65 +238,67 @@ class AddPointFormBioActivity : AppCompatActivity(),
 //            )
 //        )
 
-        binding.scientificSpeciesNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
-            L.d { "item select--${(view as MaterialTextView).text}" }
-            try {
-              binding.speciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList((view as MaterialTextView).text.toString(),true))
-            }catch (e:Exception){
-                L.d { "error---${e}" }
-            }
-        }
-        binding.speciesNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
-            L.d { "item select--${(view as MaterialTextView).text}" }
-            try {
-                binding.scientificSpeciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList((view as MaterialTextView).text.toString(),false))
-            }catch (e:Exception){
-                L.d { "error---${e}" }
-            }
-        }
+//        binding.scientificSpeciesNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
+//            L.d { "item select--${(view as MaterialTextView).text}" }
+//            try {
+//              binding.speciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList((view as MaterialTextView).text.toString(),true))
+//            }catch (e:Exception){
+//                L.d { "error---${e}" }
+//            }
+//        }
+//        binding.speciesNameAutoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
+//            L.d { "item select--${(view as MaterialTextView).text}" }
+//            try {
+//                binding.scientificSpeciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList((view as MaterialTextView).text.toString(),false))
+//            }catch (e:Exception){
+//                L.d { "error---${e}" }
+//            }
+//        }
 
-        binding.scientificSpeciesNameAutoCompleteTextView.setOnFocusChangeListener { view, isFocus ->
-            try {
-            if(!isFocus){
-                L.d { "errorrororo---${addPointFormBioViewModel.floraFaunaScientificSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  }}"}
-            if(addPointFormBioViewModel.floraFaunaScientificSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  } == null){
-                binding.scientificSpeciesNameEditText.editText?.setText("Not Specified")
-                binding.speciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList((view as MaterialAutoCompleteTextView).text.toString(),true))
-
-            }
-            }
-            }catch (e:Exception){
-                L.d { "error--${e}" }
-            }
-        }
-
-        binding.speciesNameAutoCompleteTextView.setOnFocusChangeListener { view, isFocus ->
-            try {
-                if(!isFocus){
-                L.d { "errorrororo---${addPointFormBioViewModel.floraFaunaSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString()) }}"}
-                if(addPointFormBioViewModel.floraFaunaSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  } == null){
-                    binding.speciesNameEditText.editText?.setText("Not Specified")
-                    binding.scientificSpeciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList((view as MaterialAutoCompleteTextView).text.toString(),false))
-                }
-            }
-        }catch (e:Exception){
-            L.d { "error--${e}" }
-        }
-        }
+//        binding.scientificSpeciesNameAutoCompleteTextView.setOnFocusChangeListener { view, isFocus ->
+//            try {
+//            if(!isFocus){
+//                L.d { "errorrororo---${addPointFormBioViewModel.floraFaunaScientificSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  }}"}
+//            if(addPointFormBioViewModel.floraFaunaScientificSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  } == null){
+//                binding.scientificSpeciesNameEditText.editText?.setText("Not Specified")
+//                binding.speciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList((view as MaterialAutoCompleteTextView).text.toString(),true))
+//
+//            }
+//            }
+//            }catch (e:Exception){
+//                L.d { "error--${e}" }
+//            }
+//        }
+//
+//        binding.speciesNameAutoCompleteTextView.setOnFocusChangeListener { view, isFocus ->
+//            try {
+//                if(!isFocus){
+//                L.d { "errorrororo---${addPointFormBioViewModel.floraFaunaSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString()) }}"}
+//                if(addPointFormBioViewModel.floraFaunaSpeciesList.value?.firstOrNull { item -> item == ((view as MaterialAutoCompleteTextView).text.toString())  } == null){
+//                    binding.speciesNameEditText.editText?.setText("Not Specified")
+//                    binding.scientificSpeciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList((view as MaterialAutoCompleteTextView).text.toString(),false))
+//                }
+//            }
+//        }catch (e:Exception){
+//            L.d { "error--${e}" }
+//        }
+//        }
 
 
         binding.addItemBtn.setOnClickListener {
-            if (binding.scientificSpeciesNameEditText.editText?.text.isNullOrBlank() || binding.speciesNameEditText.editText?.text.isNullOrBlank()) {
+            if (binding.speciesNameEditText.editText?.text.isNullOrBlank() || binding.speciesNameEditText.editText?.text.isNullOrBlank()) {
                 Toast.makeText(this, "Please select Species", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
+           // binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
             binding.speciesNameAutoCompleteTextView.clearFocus()
             var species = Species(
-                name = binding.scientificSpeciesNameEditText.editText?.text.toString(),
+                name = binding.speciesNameEditText.editText?.text.toString(),
                 count = binding.countEditText.editText?.text.toString(),
                 images = addPointFormBioViewModel.imageUrl,
-                comment = binding.commentEditText.editText?.text.toString()
+                comment = binding.commentEditText.editText?.text.toString(),
+                gps_latitude = addPointFormBioViewModel.imageLat,
+                gps_longitude = addPointFormBioViewModel.imageLong
 
             )
             if (addPointFormBioViewModel.isEdit) {
@@ -270,18 +313,20 @@ class AddPointFormBioActivity : AppCompatActivity(),
             }
             listAdapter.notifyDataSetChanged()
 
-            binding.scientificSpeciesNameEditText.editText?.setText("")
+           // binding.scientificSpeciesNameEditText.editText?.setText("")
             binding.speciesNameEditText.editText?.setText("")
             binding.countEditText.editText?.setText("0")
             binding.commentEditText.editText?.setText("")
             binding.uploadImage.text = resources.getString(R.string.capture_upload_image)
             addPointFormBioViewModel.imageUrl = ""
+            addPointFormBioViewModel.imageLong = ""
+            addPointFormBioViewModel.imageLat = ""
             addPointFormBioViewModel.isEditIndex = null
             addPointFormBioViewModel.isEdit = false
         }
         binding.incrementCount.setOnClickListener {
             try {
-                binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
+               // binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
                 binding.speciesNameAutoCompleteTextView.clearFocus()
                 var count = Integer.parseInt(binding.countEditText.editText?.text.toString())
                 count += 1
@@ -292,7 +337,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
         }
         binding.decrementCount.setOnClickListener {
             try {
-                binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
+              //  binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
                 binding.speciesNameAutoCompleteTextView.clearFocus()
                 var count = Integer.parseInt(binding.countEditText.editText?.text.toString())
                 if (count > 0) {
@@ -305,9 +350,10 @@ class AddPointFormBioActivity : AppCompatActivity(),
         }
 
         binding.uploadImage.setOnClickListener {
-            binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
+          //  binding.scientificSpeciesNameAutoCompleteTextView.clearFocus()
             binding.speciesNameAutoCompleteTextView.clearFocus()
-            openFilePicker()
+            getLocation()
+
 //            startActivity(Intent(this, FragmentSample::class.java))
 //            PixBus.results {
 //                when (it.status) {
@@ -330,23 +376,8 @@ class AddPointFormBioActivity : AppCompatActivity(),
 
 
         binding.saveBtn.setOnClickListener {
-            L.d { "list--${addPointFormBioViewModel.getSpeciesList()}" }
-            if (addPointFormBioViewModel.speciesBioList.value.isNullOrEmpty()) {
-                Toast.makeText(this, "Please add Species", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
 
-            MaterialAlertDialogBuilder(this)
-                .setTitle(getString(R.string.confirmation))
-                .setMessage(getString(R.string.form_submit_msg))
-                .setNeutralButton("Cancel") { dialog, which ->
-
-                }
-                .setPositiveButton("Submit") { dialog, which ->
-                    setupPointDataPayload()
-                }
-                .show()
-
+            saveData()
         }
         try {
             onBackPressedDispatcher.addCallback(this /* lifecycle owner */) {
@@ -356,6 +387,25 @@ class AddPointFormBioActivity : AppCompatActivity(),
         }catch (e:Exception){
 
         }
+    }
+
+    private fun saveData(){
+        L.d { "list--${addPointFormBioViewModel.getSpeciesList()}" }
+        if (addPointFormBioViewModel.speciesBioList.value.isNullOrEmpty()) {
+            Toast.makeText(this, "Please add Species", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.confirmation))
+            .setMessage(getString(R.string.form_submit_msg))
+            .setNeutralButton("Cancel") { dialog, which ->
+
+            }
+            .setPositiveButton("Submit") { dialog, which ->
+                setupPointDataPayload()
+            }
+            .show()
     }
 
     private fun setupPointDataPayload() {
@@ -412,14 +462,15 @@ class AddPointFormBioActivity : AppCompatActivity(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_main_save, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-        if (id == R.id.logoutBtn) {
-            AppUtils.logoutUser(this)
+        if (id == R.id.saveBtn) {
+            saveData()
+           // AppUtils.logoutUser(this)
             return true
         }
         if(id==android.R.id.home){
@@ -461,6 +512,83 @@ class AddPointFormBioActivity : AppCompatActivity(),
     override fun onSupportNavigateUp(): Boolean {
         this.finish()
         return true
+    }
+
+    //location
+    private fun isLocationEnabled(): Boolean {
+        val locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
+    }
+
+    private fun checkPermissions(): Boolean {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            return true
+        }
+        return false
+    }
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            permissionId
+        )
+    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == permissionId) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                getLocation()
+            }else{
+                Toast.makeText(this, "Location Permission not allowed", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission", "SetTextI18n")
+    private fun getLocation() {
+        if (checkPermissions()) {
+            if (isLocationEnabled()) {
+                mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
+                    location = task.result
+                    if (location != null) {
+                        L.d { "Location Complete ${location?.latitude} -- ${location?.longitude}" }
+                        addPointFormBioViewModel.imageLong = location?.longitude.toString()
+                        addPointFormBioViewModel.imageLat = location?.latitude.toString()
+//                        val geocoder = Geocoder(this, Locale.getDefault())
+//                        val list: List<Address> =
+//                            geocoder.getFromLocation(location.latitude, location.longitude, 1)!!
+                       // binding.gpsEditText.editText?.setText("${location?.latitude} , ${location?.longitude}")
+                    }
+                }
+                openFilePicker()
+            } else {
+                Toast.makeText(this, "Please turn on location", Toast.LENGTH_LONG).show()
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
+            }
+        } else {
+            requestPermissions()
+        }
     }
 }
 

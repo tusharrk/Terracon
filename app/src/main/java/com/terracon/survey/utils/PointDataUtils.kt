@@ -183,10 +183,10 @@ object PointDataUtils {
                                             Log.d("TAG_X", it.data.toString())
                                             L.d { " uploadImagesAndUpdateDB success--${it.data.toString()}" }
 
-                                            activity.runOnUiThread {
-                                                val msg = it.data.message
-                                                showToast(activity, msg)
-                                            }
+//                                            activity.runOnUiThread {
+//                                                val msg = it.data.message
+//                                                showToast(activity, msg)
+//                                            }
                                             var speciesListNew: MutableList<Species> = speciesList
                                             speciesListNew.removeAt(index)
                                             uploadImagesAndUpdateDB(

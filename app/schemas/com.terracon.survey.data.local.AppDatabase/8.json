@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 10,
-    "identityHash": "0b3be22a2d1029b0e6148fd84ac5c5b2",
+    "version": 8,
+    "identityHash": "2f58dca223ed9bbea332668f9078c56e",
     "entities": [
       {
         "tableName": "User",
@@ -844,7 +844,7 @@
       },
       {
         "tableName": "TreeAssessmentSpecies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dbId` INTEGER PRIMARY KEY AUTOINCREMENT, `id` INTEGER, `tempId` INTEGER, `canopy_diameter` TEXT, `comment` TEXT NOT NULL, `girth` TEXT, `gps_latitude` TEXT, `gps_longitude` TEXT, `height` TEXT, `images` TEXT NOT NULL, `name` TEXT NOT NULL, `serial_number` TEXT NOT NULL, `tree_assessment_survey_points_id` INTEGER NOT NULL, `isImageSynced` INTEGER NOT NULL, `isSynced` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dbId` INTEGER PRIMARY KEY AUTOINCREMENT, `id` INTEGER, `tempId` INTEGER, `canopy_diameter` TEXT, `comment` TEXT NOT NULL, `girth` TEXT, `gps_latitude` TEXT, `gps_longitude` TEXT, `height` TEXT, `images` TEXT NOT NULL, `name` TEXT NOT NULL, `serial_number` TEXT NOT NULL, `tree_assessment_survey_points_id` INTEGER NOT NULL, `isSynced` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "dbId",
@@ -925,12 +925,6 @@
             "notNull": true
           },
           {
-            "fieldPath": "isImageSynced",
-            "columnName": "isImageSynced",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "isSynced",
             "columnName": "isSynced",
             "affinity": "INTEGER",
@@ -950,7 +944,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0b3be22a2d1029b0e6148fd84ac5c5b2')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2f58dca223ed9bbea332668f9078c56e')"
     ]
   }
 }

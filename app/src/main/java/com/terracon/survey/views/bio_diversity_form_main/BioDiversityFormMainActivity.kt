@@ -49,9 +49,18 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         binding = BioDiversityFormMainActivityBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+       // val isEdit: Boolean? = intent.getSerializableExtra("isEdit") as Boolean?
+      //  if (isEdit != null) {
+      //      bioDiversityFormMainViewModel.isEdit = isEdit
+      //  }
+
         setupUi()
         setupObservers()
-        setupLocationService()
+       // if(!bioDiversityFormMainViewModel.isEdit){
+            setupLocationService()
+       // }
+
     }
 
     private fun setupLocationService() {
@@ -160,7 +169,8 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
 
         }
         binding.gpsEditText.setEndIconOnClickListener {
-            getLocation()
+           // getLocation()
+            setupLocationService()
         }
 
         binding.radioBtngrp.setOnCheckedChangeListener { radioGroup, i ->
@@ -311,6 +321,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
             ArrayAdapter(
                 this,
                 R.layout.dropdown_item,
+                R.id.item,
                 resources.getStringArray(R.array.season_names)
             )
         )
@@ -319,6 +330,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
             ArrayAdapter(
                 this,
                 R.layout.dropdown_item,
+                R.id.item,
                 resources.getStringArray(R.array.weather_condition_names)
             )
         )
@@ -327,6 +339,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
             ArrayAdapter(
                 this,
                 R.layout.dropdown_item,
+                R.id.item,
                 resources.getStringArray(R.array.habitat_names)
             )
         )

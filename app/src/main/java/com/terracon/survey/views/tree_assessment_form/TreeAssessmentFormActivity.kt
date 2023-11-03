@@ -171,6 +171,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
             ArrayAdapter(
                 this,
                 R.layout.dropdown_item,
+                R.id.item,
                 resources.getStringArray(R.array.habitat_names)
             )
         )

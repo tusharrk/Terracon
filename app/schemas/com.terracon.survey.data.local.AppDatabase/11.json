@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 11,
-    "identityHash": "aa8936c29ed52c21c1dcf2519149a7a5",
+    "identityHash": "0b3be22a2d1029b0e6148fd84ac5c5b2",
     "entities": [
       {
         "tableName": "User",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `account_verify_flag` TEXT NOT NULL, `created_at` TEXT NOT NULL, `mobile` TEXT NOT NULL, `name` TEXT NOT NULL, `status` TEXT NOT NULL, `token` TEXT NOT NULL, `updated_at` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `account_verify_flag` TEXT NOT NULL, `created_at` TEXT NOT NULL, `mobile` TEXT NOT NULL, `name` TEXT NOT NULL, `status` TEXT NOT NULL, `token` TEXT NOT NULL, `updated_at` TEXT NOT NULL, `password` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -55,6 +55,12 @@
             "columnName": "updated_at",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "password",
+            "columnName": "password",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -68,7 +74,7 @@
       },
       {
         "tableName": "Project",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `client_name` TEXT NOT NULL, `created_at` TEXT NOT NULL, `created_by` INTEGER NOT NULL, `description` TEXT NOT NULL, `location_of_survey` TEXT NOT NULL, `map_kml` TEXT NOT NULL, `name` TEXT NOT NULL, `total_study_area_in_sq_km` TEXT NOT NULL, `type` TEXT NOT NULL, `villages` TEXT NOT NULL, `updated_at` TEXT NOT NULL, `updated_by` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `client_name` TEXT NOT NULL, `created_at` TEXT NOT NULL, `created_by` INTEGER NOT NULL, `description` TEXT, `location_of_survey` TEXT, `map_kml` TEXT, `name` TEXT NOT NULL, `total_study_area_in_sq_km` TEXT, `type` TEXT NOT NULL, `villages` TEXT, `updated_at` TEXT NOT NULL, `updated_by` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -98,19 +104,19 @@
             "fieldPath": "description",
             "columnName": "description",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "location_of_survey",
             "columnName": "location_of_survey",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "map_kml",
             "columnName": "map_kml",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "name",
@@ -122,7 +128,7 @@
             "fieldPath": "total_study_area_in_sq_km",
             "columnName": "total_study_area_in_sq_km",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "type",
@@ -134,7 +140,7 @@
             "fieldPath": "villages",
             "columnName": "villages",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "updated_at",
@@ -160,7 +166,7 @@
       },
       {
         "tableName": "Flora",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `aesthetic` TEXT NOT NULL, `authority` TEXT NOT NULL, `canopy_shape` TEXT NOT NULL, `ecological` TEXT NOT NULL, `economic` TEXT NOT NULL, `english_common_name` TEXT NOT NULL, `family` TEXT NOT NULL, `flower_colour` TEXT NOT NULL, `flowering_season` TEXT NOT NULL, `fruting_season` TEXT NOT NULL, `gisd_status` TEXT NOT NULL, `growth_rate` TEXT NOT NULL, `habit` TEXT NOT NULL, `hindi_local_names` TEXT NOT NULL, `invasiveness_shown_in_india` TEXT NOT NULL, `iucn_status` TEXT NOT NULL, `marathi_local_names` TEXT NOT NULL, `medicinal` TEXT NOT NULL, `natural_survival_capicity` TEXT NOT NULL, `nature_of_tree` TEXT NOT NULL, `old_names` TEXT NOT NULL, `orgin` TEXT NOT NULL, `pollution_tolerance` TEXT NOT NULL, `religious` TEXT NOT NULL, `scientific_names` TEXT NOT NULL, `sn` INTEGER NOT NULL, `social` TEXT NOT NULL, `tree_category` TEXT NOT NULL, `use_of_tree` TEXT NOT NULL, `wood_density` REAL NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `aesthetic` TEXT, `authority` TEXT, `canopy_shape` TEXT, `ecological` TEXT, `economic` TEXT, `english_common_name` TEXT, `family` TEXT, `flower_colour` TEXT, `flowering_season` TEXT, `fruting_season` TEXT, `gisd_status` TEXT, `growth_rate` TEXT, `habit` TEXT, `hindi_local_names` TEXT, `invasiveness_shown_in_india` TEXT, `iucn_status` TEXT, `marathi_local_names` TEXT, `medicinal` TEXT, `natural_survival_capicity` TEXT, `nature_of_tree` TEXT, `old_names` TEXT, `orgin` TEXT, `pollution_tolerance` TEXT, `religious` TEXT, `scientific_names` TEXT, `sn` INTEGER NOT NULL, `social` TEXT, `tree_category` TEXT, `use_of_tree` TEXT, `wood_density` REAL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -172,151 +178,151 @@
             "fieldPath": "aesthetic",
             "columnName": "aesthetic",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "authority",
             "columnName": "authority",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "canopy_shape",
             "columnName": "canopy_shape",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "ecological",
             "columnName": "ecological",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "economic",
             "columnName": "economic",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "english_common_name",
             "columnName": "english_common_name",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "family",
             "columnName": "family",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "flower_colour",
             "columnName": "flower_colour",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "flowering_season",
             "columnName": "flowering_season",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "fruting_season",
             "columnName": "fruting_season",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "gisd_status",
             "columnName": "gisd_status",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "growth_rate",
             "columnName": "growth_rate",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "habit",
             "columnName": "habit",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "hindi_local_names",
             "columnName": "hindi_local_names",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "invasiveness_shown_in_india",
             "columnName": "invasiveness_shown_in_india",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "iucn_status",
             "columnName": "iucn_status",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "marathi_local_names",
             "columnName": "marathi_local_names",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "medicinal",
             "columnName": "medicinal",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "natural_survival_capicity",
             "columnName": "natural_survival_capicity",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "nature_of_tree",
             "columnName": "nature_of_tree",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "old_names",
             "columnName": "old_names",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "orgin",
             "columnName": "orgin",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "pollution_tolerance",
             "columnName": "pollution_tolerance",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "religious",
             "columnName": "religious",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "scientific_names",
             "columnName": "scientific_names",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "sn",
@@ -328,25 +334,25 @@
             "fieldPath": "social",
             "columnName": "social",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "tree_category",
             "columnName": "tree_category",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "use_of_tree",
             "columnName": "use_of_tree",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "wood_density",
             "columnName": "wood_density",
             "affinity": "REAL",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -568,7 +574,7 @@
       },
       {
         "tableName": "BioPointDetails",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dbId` INTEGER PRIMARY KEY AUTOINCREMENT, `bio_diversity_survey_points_id` INTEGER, `id` INTEGER, `sub_type` TEXT NOT NULL, `type` TEXT NOT NULL, `isSynced` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dbId` INTEGER PRIMARY KEY AUTOINCREMENT, `bio_diversity_survey_points_id` INTEGER, `tempId` INTEGER, `id` INTEGER, `sub_type` TEXT NOT NULL, `type` TEXT NOT NULL, `isSynced` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "dbId",
@@ -579,6 +585,12 @@
           {
             "fieldPath": "bio_diversity_survey_points_id",
             "columnName": "bio_diversity_survey_points_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tempId",
+            "columnName": "tempId",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -618,7 +630,7 @@
       },
       {
         "tableName": "Species",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dbId` INTEGER PRIMARY KEY AUTOINCREMENT, `id` INTEGER, `bio_diversity_survey_data_points_id` INTEGER, `comment` TEXT, `count` TEXT NOT NULL, `images` TEXT, `name` TEXT NOT NULL, `isSynced` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dbId` INTEGER PRIMARY KEY AUTOINCREMENT, `id` INTEGER, `tempId` INTEGER, `bio_diversity_survey_data_points_id` INTEGER, `comment` TEXT, `count` TEXT NOT NULL, `images` TEXT, `name` TEXT NOT NULL, `gps_latitude` TEXT, `gps_longitude` TEXT, `isSynced` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "dbId",
@@ -629,6 +641,12 @@
           {
             "fieldPath": "id",
             "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tempId",
+            "columnName": "tempId",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -663,6 +681,18 @@
             "notNull": true
           },
           {
+            "fieldPath": "gps_latitude",
+            "columnName": "gps_latitude",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "gps_longitude",
+            "columnName": "gps_longitude",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "isSynced",
             "columnName": "isSynced",
             "affinity": "INTEGER",
@@ -680,7 +710,7 @@
       },
       {
         "tableName": "TreeAssessmentPoint",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dbId` INTEGER PRIMARY KEY AUTOINCREMENT, `code` TEXT NOT NULL, `date` TEXT NOT NULL, `gps_latitude` TEXT NOT NULL, `gps_longitude` TEXT NOT NULL, `habitat` TEXT NOT NULL, `id` INTEGER, `length` TEXT NOT NULL, `plot_area` TEXT NOT NULL, `plot_dimension_type` TEXT NOT NULL, `plot_type` TEXT NOT NULL, `project_id` INTEGER NOT NULL, `radius` TEXT NOT NULL, `season_name` TEXT NOT NULL, `time` TEXT NOT NULL, `village` TEXT NOT NULL, `weather_condition` TEXT NOT NULL, `width` TEXT NOT NULL, `isSynced` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dbId` INTEGER PRIMARY KEY AUTOINCREMENT, `code` TEXT NOT NULL, `date` TEXT NOT NULL, `gps_latitude` TEXT NOT NULL, `gps_longitude` TEXT NOT NULL, `habitat` TEXT NOT NULL, `id` INTEGER, `length` TEXT NOT NULL, `plot_area` TEXT NOT NULL, `plot_dimension_type` TEXT NOT NULL, `plot_type` TEXT NOT NULL, `project_id` INTEGER NOT NULL, `radius` TEXT NOT NULL, `season_name` TEXT NOT NULL, `time` TEXT NOT NULL, `village` TEXT NOT NULL, `weather_condition` TEXT NOT NULL, `width` TEXT NOT NULL, `landmark` TEXT, `isSynced` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "dbId",
@@ -791,6 +821,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "landmark",
+            "columnName": "landmark",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "isSynced",
             "columnName": "isSynced",
             "affinity": "INTEGER",
@@ -808,7 +844,7 @@
       },
       {
         "tableName": "TreeAssessmentSpecies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dbId` INTEGER PRIMARY KEY AUTOINCREMENT, `id` INTEGER, `canopy_diameter` INTEGER NOT NULL, `comment` TEXT NOT NULL, `girth` INTEGER NOT NULL, `gps_latitude` INTEGER NOT NULL, `gps_longitude` INTEGER NOT NULL, `height` INTEGER NOT NULL, `images` TEXT NOT NULL, `name` TEXT NOT NULL, `serial_number` TEXT NOT NULL, `tree_assessment_survey_points_id` INTEGER NOT NULL, `isSynced` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dbId` INTEGER PRIMARY KEY AUTOINCREMENT, `id` INTEGER, `tempId` INTEGER, `canopy_diameter` TEXT, `comment` TEXT NOT NULL, `girth` TEXT, `gps_latitude` TEXT, `gps_longitude` TEXT, `height` TEXT, `images` TEXT NOT NULL, `name` TEXT NOT NULL, `serial_number` TEXT NOT NULL, `tree_assessment_survey_points_id` INTEGER NOT NULL, `isImageSynced` INTEGER NOT NULL, `isSynced` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "dbId",
@@ -823,10 +859,16 @@
             "notNull": false
           },
           {
+            "fieldPath": "tempId",
+            "columnName": "tempId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
             "fieldPath": "canopy_diameter",
             "columnName": "canopy_diameter",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "comment",
@@ -837,26 +879,26 @@
           {
             "fieldPath": "girth",
             "columnName": "girth",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "gps_latitude",
             "columnName": "gps_latitude",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "gps_longitude",
             "columnName": "gps_longitude",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "height",
             "columnName": "height",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "images",
@@ -883,6 +925,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "isImageSynced",
+            "columnName": "isImageSynced",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "isSynced",
             "columnName": "isSynced",
             "affinity": "INTEGER",
@@ -902,7 +950,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aa8936c29ed52c21c1dcf2519149a7a5')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0b3be22a2d1029b0e6148fd84ac5c5b2')"
     ]
   }
 }

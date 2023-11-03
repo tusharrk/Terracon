@@ -13,13 +13,14 @@ data class TreeAssessmentSpecies(
     var canopy_diameter: String? = null,
     var comment: String = "",
     var girth: String? = null,
-    var gps_latitude: Int = 0,
-    var gps_longitude: Int = 0,
+    var gps_latitude: String? = "",
+    var gps_longitude: String? = "",
     var height: String? = null,
     var images: String = "",
     var name: String = "",
     var serial_number :String = "",
     var tree_assessment_survey_points_id: Int = 0,
+    var isImageSynced:Boolean = false,
     var isSynced: Boolean = false
 ): Serializable{}
 
