@@ -38,7 +38,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textview.MaterialTextView
-import com.michaelflisar.lumberjack.L
+import com.michaelflisar.lumberjack.core.L
 import com.terracon.survey.R
 import com.terracon.survey.databinding.AddPointFormBioActivityBinding
 import com.terracon.survey.model.BioPoint
@@ -94,6 +94,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
                 if(action == "edit"){
                     addPointFormBioViewModel.isEdit = true
                     addPointFormBioViewModel.isEditIndex = index
+                    addPointFormBioViewModel.selectedItem = item
 
                   //  binding.scientificSpeciesNameEditText.editText?.setText(item.name)
                     binding.speciesNameEditText.editText?.setText(item.name)
@@ -298,16 +299,18 @@ class AddPointFormBioActivity : AppCompatActivity(),
                 images = addPointFormBioViewModel.imageUrl,
                 comment = binding.commentEditText.editText?.text.toString(),
                 gps_latitude = addPointFormBioViewModel.imageLat,
-                gps_longitude = addPointFormBioViewModel.imageLong
+                gps_longitude = addPointFormBioViewModel.imageLong,
 
             )
             if (addPointFormBioViewModel.isEdit) {
                 addPointFormBioViewModel.isEditIndex?.let { it1 ->
-                    addPointFormBioViewModel.updateCountValue(
-                        species,
-                        it1
-                    )
-                    setupPointDataPayload(species)
+                    species.dbId = addPointFormBioViewModel.selectedItem.dbId
+                    addPointFormBioViewModel.updateSpecies(this,species)
+//                    addPointFormBioViewModel.updateCountValue(
+//                        species,
+//                        it1
+//                    )
+//                    setupPointDataPayload(species)
                 }
             } else {
                // addPointFormBioViewModel.addItemToList(species)
@@ -381,14 +384,14 @@ class AddPointFormBioActivity : AppCompatActivity(),
 
             saveData()
         }
-        try {
-            onBackPressedDispatcher.addCallback(this /* lifecycle owner */) {
-                // Back is pressed... Finishing the activity
-                showDiscardAlert()
-            }
-        }catch (e:Exception){
-
-        }
+//        try {
+//            onBackPressedDispatcher.addCallback(this /* lifecycle owner */) {
+//                // Back is pressed... Finishing the activity
+//                showDiscardAlert()
+//            }
+//        }catch (e:Exception){
+//
+//        }
     }
 
     private fun saveData(){
@@ -465,7 +468,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main_save, menu)
+       // menuInflater.inflate(R.menu.menu_main_save, menu)
         return true
     }
 
@@ -477,7 +480,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
             return true
         }
         if(id==android.R.id.home){
-            showDiscardAlert()
+            //showDiscardAlert()
             return true
         }
         return super.onOptionsItemSelected(item)

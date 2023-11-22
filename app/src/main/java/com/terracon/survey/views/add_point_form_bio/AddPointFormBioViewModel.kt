@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.michaelflisar.lumberjack.core.L
 import com.terracon.survey.R
 import com.terracon.survey.data.PointDataRepository
 import com.terracon.survey.data.ProjectRepository
@@ -66,6 +67,7 @@ class AddPointFormBioViewModel(
     var imageUrl: String = ""
     var imageLong: String = ""
     var imageLat: String = ""
+    var selectedItem: Species = Species()
 
 
     init {
@@ -306,7 +308,8 @@ class AddPointFormBioViewModel(
                         Result.Status.SUCCESS -> {
                             _isLoading.value = false
                             if (it.data != null) {
-                                Log.d("TAG_X", it.data.toString())
+                                L.d{"TAG_X-${it.data.toString()}" }
+                                pointBioDetails.dbId = it.data.dbId
                                 getSpeciesListFromDB()
                                 activity.runOnUiThread {
                                     //val msg = it.data.message
@@ -316,6 +319,67 @@ class AddPointFormBioViewModel(
                                         Toast.LENGTH_SHORT
                                     ).show()
                                    // activity.finish()
+                                }
+                            } else {
+                                activity.runOnUiThread {
+                                    Toast.makeText(
+                                        activity,
+                                        "error",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                //_errorState.value = ErrorState.NoData
+                            }
+                        }
+
+                        Result.Status.LOADING -> {
+                            _isLoading.value = true
+                        }
+
+                        Result.Status.ERROR -> {
+                            activity.runOnUiThread {
+                                val errorMsg =
+                                    if (it.error?.message != null) it.error.message else activity.resources.getString(
+                                        R.string.server_error_desc
+                                    )
+                                Toast.makeText(
+                                    activity,
+                                    errorMsg,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+
+                            _isLoading.value = false
+                        }
+
+                        else -> {
+                            // _errorState.value = ErrorState.NoData
+                        }
+                    }
+                }
+        }
+    }
+
+    fun updateSpecies(activity: AddPointFormBioActivity,species: Species){
+        _isLoading.value = true
+        viewModelScope.launch {
+            pointDataRepository.updateSpeciesData(species)
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            _isLoading.value = false
+                            if (it.data != null) {
+                                L.d{"TAG_X-${it.data.toString()}" }
+                                getSpeciesListFromDB()
+                                activity.runOnUiThread {
+                                    //val msg = it.data.message
+                                    Toast.makeText(
+                                        activity,
+                                        "success",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    // activity.finish()
                                 }
                             } else {
                                 activity.runOnUiThread {

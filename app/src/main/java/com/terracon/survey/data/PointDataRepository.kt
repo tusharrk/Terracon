@@ -3,7 +3,7 @@ package com.terracon.survey.data
 
 import android.graphics.Point
 import android.widget.GridLayout.Spec
-import com.michaelflisar.lumberjack.L
+import com.michaelflisar.lumberjack.core.L
 import com.terracon.survey.data.local.PointDataDao
 import com.terracon.survey.data.local.ProjectDao
 import com.terracon.survey.data.remote.PointDataRemoteDataSource
@@ -175,8 +175,8 @@ class PointDataRepository(
     }
     suspend fun saveBioPointDetailsInLocalDB(
         pointDTO: PointDTO,
-        bioPointDetails: BioPointDetails
-    ): Flow<Result<String>> {
+        bioPointDetails: BioPointDetails,
+    ): Flow<Result<BioPointDetails>> {
         return flow {
             emit(Result.loading())
 
@@ -197,15 +197,24 @@ class PointDataRepository(
                     bioPointDetails.species.forEach {
                         it.tempId = id.toInt()
                     }
+                    bioPointDetails.dbId = id.toInt()
                     pointDataDao.insertBioPointDetailsSpeciesList(bioPointDetails.species)
                 }
             }
 
 
-            emit(Result.success("success"))
+            emit(Result.success(bioPointDetails))
         }.flowOn(Dispatchers.IO)
     }
+    suspend fun updateSpeciesData(species: Species): Flow<Result<String>> {
+        return flow {
+            emit(Result.loading())
+            L.d{"TAG_X-${species}" }
 
+            species.dbId?.let { pointDataDao.updateSpeciesData(name = species.name, count = species.count, imageUrl = species.images, comment = species.comment, isSynced = species.isSynced, dbId = it) }
+            emit(Result.success("success"))
+        }
+    }
     suspend fun getPointDetailsFromLocal(pointDTO: PointDTO): Flow<Result<BioPointDetailsResponse>> {
         return flow {
             emit(Result.loading())

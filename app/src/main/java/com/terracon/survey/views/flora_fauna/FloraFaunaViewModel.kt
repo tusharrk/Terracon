@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.GsonBuilder
-import com.michaelflisar.lumberjack.L
+import com.michaelflisar.lumberjack.core.L
 import com.terracon.survey.data.ProjectRepository
 import com.terracon.survey.data.UserRepository
 import com.terracon.survey.model.BioPoint

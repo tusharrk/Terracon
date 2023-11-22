@@ -216,6 +216,7 @@
 
 
             <FrameLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding_40">
@@ -228,6 +229,7 @@
                     android:insetLeft="@dimen/padding_30"
                     android:insetRight="@dimen/padding_30"
                     android:text="@string/submit"
+
                     android:textAppearance="@style/basicButtonStyle" />
 
                 <include

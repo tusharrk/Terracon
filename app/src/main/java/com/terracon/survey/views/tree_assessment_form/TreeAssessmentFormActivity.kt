@@ -25,7 +25,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK
 import com.google.android.material.timepicker.TimeFormat
-import com.michaelflisar.lumberjack.L
+import com.michaelflisar.lumberjack.core.L
 import com.terracon.survey.R
 import com.terracon.survey.databinding.TreeAssessmentFormActivityBinding
 import com.terracon.survey.model.Project

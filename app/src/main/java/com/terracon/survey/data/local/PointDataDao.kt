@@ -93,4 +93,8 @@ interface PointDataDao {
     @Transaction
     @Query("UPDATE Species SET images =:imageUrl, isSynced =:isSynced Where dbId =:dbId ")
     fun updateSpeciesImageUrl(imageUrl: String,isSynced:Boolean,dbId:Int)
+
+    @Transaction
+    @Query("UPDATE Species SET name =:name, count =:count, images =:imageUrl, comment =:comment , isSynced =:isSynced Where dbId =:dbId ")
+    fun updateSpeciesData(name: String,count:String,imageUrl: String?,comment:String?,isSynced:Boolean,dbId:Int)
 }

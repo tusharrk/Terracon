@@ -6,7 +6,7 @@ import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.michaelflisar.lumberjack.L
+import com.michaelflisar.lumberjack.core.L
 import com.terracon.survey.R
 import com.terracon.survey.data.TreeAssessmentRepository
 import com.terracon.survey.model.TreeAssessmentPoint
