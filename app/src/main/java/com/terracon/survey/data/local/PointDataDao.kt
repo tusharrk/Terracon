@@ -69,6 +69,9 @@ interface PointDataDao {
     @Query("DELETE FROM Species WHERE tempId = :id")
     fun deleteSpecies(id: String)
 
+    @Query("DELETE FROM Species WHERE dbId = :id")
+    fun deleteSpeciesById(id: String)
+
 
     @Transaction
     @Query("UPDATE BioPointDetails SET bio_diversity_survey_points_id =:bioPointId Where tempId = :id")

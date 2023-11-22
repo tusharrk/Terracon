@@ -201,7 +201,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
                     context = this,
                     pageName = "projects",
                     onRetry = {
-                        addPointFormBioViewModel.getSpeciesList()
+                        addPointFormBioViewModel.getSpeciesNamesList()
                     })
                 // showError(errorMessage.toString())
             } else {
@@ -307,9 +307,11 @@ class AddPointFormBioActivity : AppCompatActivity(),
                         species,
                         it1
                     )
+                    setupPointDataPayload(species)
                 }
             } else {
-                addPointFormBioViewModel.addItemToList(species)
+               // addPointFormBioViewModel.addItemToList(species)
+                setupPointDataPayload(species)
             }
             listAdapter.notifyDataSetChanged()
 
@@ -390,7 +392,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
     }
 
     private fun saveData(){
-        L.d { "list--${addPointFormBioViewModel.getSpeciesList()}" }
+       // L.d { "list--${addPointFormBioViewModel.getSpeciesList()}" }
         if (addPointFormBioViewModel.speciesBioList.value.isNullOrEmpty()) {
             Toast.makeText(this, "Please add Species", Toast.LENGTH_LONG).show()
             return
@@ -403,17 +405,18 @@ class AddPointFormBioActivity : AppCompatActivity(),
 
             }
             .setPositiveButton("Submit") { dialog, which ->
-                setupPointDataPayload()
+               // setupPointDataPayload()
             }
             .show()
     }
 
-    private fun setupPointDataPayload() {
+    private fun setupPointDataPayload(species:Species) {
         addPointFormBioViewModel.pointBioDetails.type = addPointFormBioViewModel.type
         addPointFormBioViewModel.pointBioDetails.sub_type = addPointFormBioViewModel.subType
         addPointFormBioViewModel.pointBioDetails.tempId =
             addPointFormBioViewModel.pointBio.dbId
-        addPointFormBioViewModel.pointBioDetails.species = addPointFormBioViewModel.getSpeciesList()
+       // addPointFormBioViewModel.pointBioDetails.species = addPointFormBioViewModel.getSpeciesList()
+        addPointFormBioViewModel.pointBioDetails.species = arrayListOf(species)
         L.d { "data--${addPointFormBioViewModel.pointBio}" }
         addPointFormBioViewModel.savePointData(this)
     }
@@ -426,8 +429,8 @@ class AddPointFormBioActivity : AppCompatActivity(),
                 // Respond to neutral button press
             }
             .setPositiveButton("Delete") { dialog, which ->
-                addPointFormBioViewModel.deleteItemFromList(index,item)
-                listAdapter.notifyItemRemoved(index)
+                addPointFormBioViewModel.deleteSpecieFromLocalDB(item)
+               // listAdapter.notifyItemRemoved(index)
 
             }
             .show()

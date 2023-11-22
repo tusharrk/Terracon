@@ -158,6 +158,7 @@ class AddPointFormBioViewModel(
                             if (it.data?.status == "success") {
                                 Log.d("TAG_X", it.data.toString())
                                 if(it.data.data.bio_diversity_survey_data_points != null){
+                                    pointBioDetails.dbId = it.data.data.bio_diversity_survey_data_points.dbId
                                     _speciesBioList.value = ArrayList(it.data.data.bio_diversity_survey_data_points.species)
                                 }
                             } else {
@@ -173,6 +174,77 @@ class AddPointFormBioViewModel(
 
                         Result.Status.ERROR -> {
                             _isLoadingFullScreen.value = false
+                            //_errorState.value = ErrorState.ServerError
+
+
+                        }
+
+                        else -> {
+                            // _errorState.value = ErrorState.NoData
+                        }
+                    }
+                }
+        }
+    }
+
+      fun getSpeciesListFromDB(){
+        //_isLoadingFullScreen.value = true
+        //_errorState.value = null
+        viewModelScope.launch {
+            pointDataRepository.getSpeciesListFromLocal(pointBioDetails)
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                           // _isLoadingFullScreen.value = false
+                           // _errorState.value = null
+                                Log.d("TAG_X", it.data.toString())
+                                if(it.data != null){
+                                    _speciesBioList.value = ArrayList(it.data)
+                                }
+
+                        }
+
+                        Result.Status.LOADING -> {
+                            //_isLoadingFullScreen.value = true
+                            //_errorState.value = null
+                        }
+
+                        Result.Status.ERROR -> {
+                            //_isLoadingFullScreen.value = false
+                            //_errorState.value = ErrorState.ServerError
+
+
+                        }
+
+                        else -> {
+                            // _errorState.value = ErrorState.NoData
+                        }
+                    }
+                }
+        }
+    }
+
+    fun deleteSpecieFromLocalDB(species: Species){
+        //_isLoadingFullScreen.value = true
+        //_errorState.value = null
+        viewModelScope.launch {
+            pointDataRepository.deleteSpecieFromDB(species)
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            // _isLoadingFullScreen.value = false
+                            // _errorState.value = null
+                            Log.d("TAG_X", it.data.toString())
+                        getSpeciesListFromDB()
+                        }
+
+                        Result.Status.LOADING -> {
+                            //_isLoadingFullScreen.value = true
+                            //_errorState.value = null
+                        }
+
+                        Result.Status.ERROR -> {
+                            //_isLoadingFullScreen.value = false
                             //_errorState.value = ErrorState.ServerError
 
 
@@ -235,6 +307,7 @@ class AddPointFormBioViewModel(
                             _isLoading.value = false
                             if (it.data != null) {
                                 Log.d("TAG_X", it.data.toString())
+                                getSpeciesListFromDB()
                                 activity.runOnUiThread {
                                     //val msg = it.data.message
                                     Toast.makeText(
@@ -242,7 +315,7 @@ class AddPointFormBioViewModel(
                                         "success",
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    activity.finish()
+                                   // activity.finish()
                                 }
                             } else {
                                 activity.runOnUiThread {

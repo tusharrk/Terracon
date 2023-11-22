@@ -187,7 +187,7 @@ class PointDataRepository(
             )
 
             if (count.isNotEmpty()) {
-                pointDataDao.deleteSpecies(count[0].dbId.toString())
+               // pointDataDao.deleteSpecies(count[0].dbId.toString())
                 bioPointDetails.species.forEach {
                     it.tempId = count[0].dbId?.toInt()
                 }
@@ -226,6 +226,22 @@ class PointDataRepository(
                     status = "success"
                 )
             emit(Result.success(bioPointDetailsResponse))
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getSpeciesListFromLocal(pointDetails: BioPointDetails): Flow<Result<List<Species>>> {
+        return flow {
+            emit(Result.loading())
+            val species : List<Species> = pointDataDao.getSpeciesById(pointDetails.dbId.toString())
+            emit(Result.success(species))
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun deleteSpecieFromDB(species: Species): Flow<Result<String>> {
+        return flow {
+            emit(Result.loading())
+            pointDataDao.deleteSpeciesById(species.dbId.toString())
+            emit(Result.success("success"))
         }.flowOn(Dispatchers.IO)
     }
 
