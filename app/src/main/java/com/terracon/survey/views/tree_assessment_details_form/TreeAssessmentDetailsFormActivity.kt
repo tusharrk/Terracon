@@ -102,7 +102,7 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
                     if(action == "edit"){
                         treeAssessmentFormMainViewModel.isEdit = true
                     treeAssessmentFormMainViewModel.isEditIndex = index
-
+                        treeAssessmentFormMainViewModel.selectedItem = item
                     binding.serialNumberEditText.editText?.setText(item.serial_number)
 
                        // binding.scientificSpeciesNameEditText.editText?.setText(item.name)
@@ -196,7 +196,7 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
                     context = this,
                     pageName = "projects",
                     onRetry = {
-                        treeAssessmentFormMainViewModel.getSpeciesList()
+                        treeAssessmentFormMainViewModel.getSpeciesNamesList()
                     })
                 // showError(errorMessage.toString())
             } else {
@@ -304,18 +304,18 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
                 images = treeAssessmentFormMainViewModel.imageUrl,
                 comment = binding.commentsEditText.editText?.text.toString(),
                 gps_latitude = treeAssessmentFormMainViewModel.imageLat,
-                gps_longitude = treeAssessmentFormMainViewModel.imageLong
+                gps_longitude = treeAssessmentFormMainViewModel.imageLong,
+                tempId = treeAssessmentFormMainViewModel.treePoint.dbId
 
             )
             if (treeAssessmentFormMainViewModel.isEdit) {
                 treeAssessmentFormMainViewModel.isEditIndex?.let { it1 ->
-                    treeAssessmentFormMainViewModel.updateCountValue(
-                        species,
-                        it1
-                    )
+                    species.dbId = treeAssessmentFormMainViewModel.selectedItem.dbId
+                    treeAssessmentFormMainViewModel.updateSpecies(this,species)
                 }
             } else {
-                treeAssessmentFormMainViewModel.addItemToList(species)
+                setupPointDataPayload(species)
+               // treeAssessmentFormMainViewModel.addItemToList(species)
             }
             listAdapter.notifyDataSetChanged()
 
@@ -365,14 +365,14 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
 //            }
 
         }
-        try {
-            onBackPressedDispatcher.addCallback(this /* lifecycle owner */) {
-                // Back is pressed... Finishing the activity
-                showDiscardAlert()
-            }
-        }catch (e:Exception){
-
-        }
+//        try {
+//            onBackPressedDispatcher.addCallback(this /* lifecycle owner */) {
+//                // Back is pressed... Finishing the activity
+//                showDiscardAlert()
+//            }
+//        }catch (e:Exception){
+//
+//        }
 
 //        binding.speciesNameAutoCompleteTextView.setAdapter(
 //            ArrayAdapter(this, R.layout.dropdown_item, resources.getStringArray(
@@ -395,7 +395,7 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
 
             }
             .setPositiveButton("Submit") { dialog, which ->
-                setupPointDataPayload()
+               // setupPointDataPayload()
             }
             .show()
     }
@@ -408,18 +408,18 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
                 // Respond to neutral button press
             }
             .setPositiveButton("Delete") { dialog, which ->
-                treeAssessmentFormMainViewModel.deleteItemFromList(index,item)
-                listAdapter.notifyItemRemoved(index)
+                treeAssessmentFormMainViewModel.deleteSpecieFromLocalDB(item)
+               // listAdapter.notifyItemRemoved(index)
             }
             .show()
     }
 
-    private fun setupPointDataPayload() {
+    private fun setupPointDataPayload(species: TreeAssessmentSpecies) {
 //        treeAssessmentFormMainViewModel.treeSpecies.bio_diversity_survey_points_id =
 //            treeAssessmentFormMainViewModel.pointBio.dbId
 //        treeAssessmentFormMainViewModel.pointBioDetails.species = addPointFormBioViewModel.getSpeciesList()
         L.d { "data--${treeAssessmentFormMainViewModel.treePoint}" }
-        treeAssessmentFormMainViewModel.savePointData(this)
+        treeAssessmentFormMainViewModel.savePointData(this,species)
     }
 
     private fun openFilePicker() {
@@ -431,7 +431,7 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main_save, menu)
+      //  menuInflater.inflate(R.menu.menu_main_save, menu)
         return true
     }
 
@@ -443,7 +443,7 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
             return true
         }
         if(id==android.R.id.home){
-            showDiscardAlert()
+            //showDiscardAlert()
             return true
         }
         return super.onOptionsItemSelected(item)

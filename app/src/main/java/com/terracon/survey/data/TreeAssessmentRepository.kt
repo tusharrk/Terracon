@@ -1,6 +1,7 @@
 package com.terracon.survey.data
 
 
+import com.michaelflisar.lumberjack.core.L
 import com.terracon.survey.data.local.ProjectDao
 import com.terracon.survey.data.local.TreeAssessmentDao
 import com.terracon.survey.data.remote.ProjectRemoteDataSource
@@ -129,7 +130,7 @@ class TreeAssessmentRepository(
             emit(Result.loading())
 
             if (treeAssessmentPoint.dbId != null) {
-                treeAssessmentDao.deleteSpecies(treeAssessmentPoint.dbId.toString())
+              //  treeAssessmentDao.deleteSpecies(treeAssessmentPoint.dbId.toString())
 //                speciesList.forEach {
 //                    it.tree_assessment_survey_points_id = treeAssessmentPoint.dbId!!
 //                }
@@ -138,6 +139,17 @@ class TreeAssessmentRepository(
 
             emit(Result.success("success"))
         }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun updateSpeciesData(species: TreeAssessmentSpecies): Flow<Result<String>> {
+        return flow {
+            emit(Result.loading())
+            L.d{"TAG_X-${species}" }
+            //canopy_diameter: String,girth: String,gps_latitude: String,gps_longitude: String,height: String,name: String,serial_number:String,isImageSynced:String,imageUrl: String?,comment:String?,isSynced:Boolean,dbId:Int)
+
+            species.dbId?.let { treeAssessmentDao.updateSpeciesData(canopy_diameter = species.canopy_diameter, girth = species.girth,gps_latitude = species.gps_latitude,gps_longitude = species.gps_longitude,height = species.height,name = species.name, serial_number = species.serial_number, isImageSynced = species.isImageSynced, imageUrl = species.images, comment = species.comment, isSynced = species.isSynced, dbId = it) }
+            emit(Result.success("success"))
+        }
     }
 
 
@@ -210,6 +222,23 @@ class TreeAssessmentRepository(
                 )
             }
             emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+
+    suspend fun getSpeciesListFromLocal(treeAssessmentPoint: TreeAssessmentPoint): Flow<Result<List<TreeAssessmentSpecies>>> {
+        return flow {
+            emit(Result.loading())
+            val species : List<TreeAssessmentSpecies> = treeAssessmentDao.getSpeciesById(treeAssessmentPoint.dbId.toString())
+            emit(Result.success(species))
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun deleteSpecieFromDB(species: TreeAssessmentSpecies): Flow<Result<String>> {
+        return flow {
+            emit(Result.loading())
+            treeAssessmentDao.deleteSpeciesById(species.dbId.toString())
+            emit(Result.success("success"))
         }.flowOn(Dispatchers.IO)
     }
 

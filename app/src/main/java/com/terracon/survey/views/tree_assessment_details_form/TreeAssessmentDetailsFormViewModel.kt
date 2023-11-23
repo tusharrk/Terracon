@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.michaelflisar.lumberjack.core.L
 import com.terracon.survey.R
 import com.terracon.survey.data.ProjectRepository
 import com.terracon.survey.data.TreeAssessmentRepository
@@ -65,6 +66,7 @@ class TreeAssessmentDetailsFormViewModel(
 
     var isEdit = false
     var isEditIndex: Int? = null
+    var selectedItem: TreeAssessmentSpecies = TreeAssessmentSpecies()
     var imageUrl: String = ""
     var imageLong: String = ""
     var imageLat: String = ""
@@ -221,17 +223,18 @@ class TreeAssessmentDetailsFormViewModel(
         return list
     }
 
-    fun savePointData(activity: TreeAssessmentDetailsFormActivity){
+    fun savePointData(activity: TreeAssessmentDetailsFormActivity,species: TreeAssessmentSpecies){
         _isLoading.value = true
         viewModelScope.launch {
-            speciesList.value?.let {
-                treeAssessmentRepository.savePointSpeciesInLocalDB(treePoint, it)
+            //speciesList.value?.let {
+                treeAssessmentRepository.savePointSpeciesInLocalDB(treePoint, arrayListOf(species))
                     .collect {
                         when (it?.status) {
                             Result.Status.SUCCESS -> {
                                 _isLoading.value = false
                                 if (it.data != null) {
                                     Log.d("TAG_X", it.data.toString())
+                                    getSpeciesListFromDB()
                                     activity.runOnUiThread {
                                         //val msg = it.data.message
                                         Toast.makeText(
@@ -239,7 +242,7 @@ class TreeAssessmentDetailsFormViewModel(
                                             "success",
                                             Toast.LENGTH_SHORT
                                         ).show()
-                                        activity.finish()
+                                       // activity.finish()
                                     }
                                 } else {
                                     activity.runOnUiThread {
@@ -279,7 +282,139 @@ class TreeAssessmentDetailsFormViewModel(
                             }
                         }
                     }
-            }
+           // }
+        }
+    }
+
+    fun updateSpecies(activity: TreeAssessmentDetailsFormActivity,species: TreeAssessmentSpecies){
+        _isLoading.value = true
+        viewModelScope.launch {
+            treeAssessmentRepository.updateSpeciesData(species)
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            _isLoading.value = false
+                            if (it.data != null) {
+                                L.d{"TAG_X-${it.data.toString()}" }
+                                getSpeciesListFromDB()
+                                activity.runOnUiThread {
+                                    //val msg = it.data.message
+                                    Toast.makeText(
+                                        activity,
+                                        "success",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    // activity.finish()
+                                }
+                            } else {
+                                activity.runOnUiThread {
+                                    Toast.makeText(
+                                        activity,
+                                        "error",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                //_errorState.value = ErrorState.NoData
+                            }
+                        }
+
+                        Result.Status.LOADING -> {
+                            _isLoading.value = true
+                        }
+
+                        Result.Status.ERROR -> {
+                            activity.runOnUiThread {
+                                val errorMsg =
+                                    if (it.error?.message != null) it.error.message else activity.resources.getString(
+                                        R.string.server_error_desc
+                                    )
+                                Toast.makeText(
+                                    activity,
+                                    errorMsg,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+
+                            _isLoading.value = false
+                        }
+
+                        else -> {
+                            // _errorState.value = ErrorState.NoData
+                        }
+                    }
+                }
+        }
+    }
+
+    fun getSpeciesListFromDB(){
+        //_isLoadingFullScreen.value = true
+        //_errorState.value = null
+        viewModelScope.launch {
+            treeAssessmentRepository.getSpeciesListFromLocal(treePoint)
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            // _isLoadingFullScreen.value = false
+                            // _errorState.value = null
+                            Log.d("TAG_X", it.data.toString())
+                            if(it.data != null){
+                                _speciesList.value = ArrayList(it.data)
+                            }
+
+                        }
+
+                        Result.Status.LOADING -> {
+                            //_isLoadingFullScreen.value = true
+                            //_errorState.value = null
+                        }
+
+                        Result.Status.ERROR -> {
+                            //_isLoadingFullScreen.value = false
+                            //_errorState.value = ErrorState.ServerError
+
+
+                        }
+
+                        else -> {
+                            // _errorState.value = ErrorState.NoData
+                        }
+                    }
+                }
+        }
+    }
+
+    fun deleteSpecieFromLocalDB(species: TreeAssessmentSpecies){
+        //_isLoadingFullScreen.value = true
+        //_errorState.value = null
+        viewModelScope.launch {
+            treeAssessmentRepository.deleteSpecieFromDB(species)
+                .collect {
+                    when (it?.status) {
+                        Result.Status.SUCCESS -> {
+                            // _isLoadingFullScreen.value = false
+                            // _errorState.value = null
+                            Log.d("TAG_X", it.data.toString())
+                            getSpeciesListFromDB()
+                        }
+
+                        Result.Status.LOADING -> {
+                            //_isLoadingFullScreen.value = true
+                            //_errorState.value = null
+                        }
+
+                        Result.Status.ERROR -> {
+                            //_isLoadingFullScreen.value = false
+                            //_errorState.value = ErrorState.ServerError
+
+
+                        }
+
+                        else -> {
+                            // _errorState.value = ErrorState.NoData
+                        }
+                    }
+                }
         }
     }
 

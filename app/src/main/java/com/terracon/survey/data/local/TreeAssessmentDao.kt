@@ -64,4 +64,10 @@ interface TreeAssessmentDao {
     @Query("UPDATE TreeAssessmentSpecies SET images =:imageUrl, isImageSynced =:isSynced Where dbId =:dbId ")
     fun updateSpeciesImageUrl(imageUrl: String,isSynced:Boolean,dbId:Int)
 
+    @Query("DELETE FROM TreeAssessmentSpecies WHERE dbId = :id")
+    fun deleteSpeciesById(id: String)
+
+    @Transaction
+    @Query("UPDATE TreeAssessmentSpecies SET canopy_diameter =:canopy_diameter,girth =:girth,gps_latitude =:gps_latitude,gps_longitude =:gps_longitude,height =:height, name =:name,serial_number =:serial_number, isImageSynced =:isImageSynced,  images =:imageUrl, comment =:comment, isSynced =:isSynced Where dbId =:dbId ")
+    fun updateSpeciesData(canopy_diameter: String?,girth: String?,gps_latitude: String?,gps_longitude: String?,height: String?,name: String,serial_number:String,isImageSynced:Boolean,imageUrl: String?,comment:String?,isSynced:Boolean,dbId:Int)
 }
