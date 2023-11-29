@@ -108,6 +108,8 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
                        // binding.scientificSpeciesNameEditText.editText?.setText(item.name)
                       //  binding.speciesNameEditText.editText?.setText(treeAssessmentFormMainViewModel.findSpeciesNameFromList(item.name,true))
                         binding.speciesNameEditText.editText?.setText(item.name)
+                        binding.commonNameTxtValue.text = item.common_name
+
 
                         binding.girthEditText.editText?.setText(item.girth.toString())
                     binding.heightEditText.editText?.setText(item.height.toString())
@@ -157,6 +159,7 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
         binding.speciesNameAutoCompleteTextView.setOnItemClickListener() { parent, _, position, id ->
             val selectedPoi = parent.adapter.getItem(position) as SpeciesNameDTO?
             binding.speciesNameAutoCompleteTextView.setText(selectedPoi?.scientific_name)
+            binding.commonNameTxtValue.text = selectedPoi?.common_name
         }
 //        treeAssessmentFormMainViewModel.floraFaunaScientificSpeciesList.observe(this) { data ->
 //            if (!data.isNullOrEmpty()) {
@@ -297,6 +300,7 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
             binding.speciesNameAutoCompleteTextView.clearFocus()
             var species = TreeAssessmentSpecies(
                 name = binding.speciesNameEditText.editText?.text.toString(),
+                common_name = binding.commonNameTxtValue.text.toString(),
                 serial_number = binding.serialNumberEditText.editText?.text.toString(),
                 girth = binding.girthEditText.editText?.text.toString(),
                 height = binding.heightEditText.editText?.text.toString(),
@@ -323,6 +327,7 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
 
           //  binding.scientificSpeciesNameEditText.editText?.setText("")
             binding.speciesNameEditText.editText?.setText("")
+            binding.commonNameTxtValue.text = ""
             binding.serialNumberEditText.editText?.setText("")
             binding.serialNumberEditText.editText?.setText("")
             binding.girthEditText.editText?.setText("")

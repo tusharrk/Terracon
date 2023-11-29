@@ -21,7 +21,7 @@ import com.terracon.survey.model.User
 
 @Database(
     entities = [User::class, Project::class, Flora::class, Fauna::class, BioPoint::class, BioPointDetails::class, Species::class, TreeAssessmentPoint::class, TreeAssessmentSpecies::class],
-    version = 11,
+    version = 13,
 //      autoMigrations = [
 //        AutoMigration (from = 10, to = 10)
 //    ],
@@ -38,9 +38,9 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var instance: AppDatabase? = null
-        val MIGRATION_1_2 = object : Migration(10, 11) {
+        val MIGRATION_1_2 = object : Migration(12, 13) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE `TreeAssessmentSpecies` ADD isImageSynced INTEGER NOT NULL DEFAULT '0';")
+               // database.execSQL("ALTER TABLE `Species` ADD common_name VARCHAR  NULL;")
                 //database.execSQL("ALTER TABLE `TreeAssessmentSpecies` ALTER COLUMN gps_latitude VARCHAR(20) NULL;")
 
                // database.execSQL("CREATE TABLE IF NOT EXISTS `profile` (...)")
@@ -54,7 +54,7 @@ abstract class AppDatabase : RoomDatabase() {
                         AppDatabase::class.java,
                         "app.db"
                     )
-                        .addMigrations(MIGRATION_1_2)
+                        //.addMigrations(MIGRATION_1_2)
                         .build()
 
 

@@ -34,6 +34,7 @@ class AddPointFormBioAdapter internal constructor(
             // binding.projectDescText.text = item.clientName
             // AppUtils.imageWithGLide(binding.userProfileImage,item.projectUrl)
             binding.speciesNameTxt.text = item.name
+            binding.commonNameTxt.text = item.common_name
             binding.countTxt.text = item.count
             binding.indexTxt.text = (position+1).toString()
             binding.commentTxt.text = item.comment
