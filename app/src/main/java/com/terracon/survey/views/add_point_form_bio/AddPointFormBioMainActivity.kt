@@ -98,7 +98,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
 
                   //  binding.scientificSpeciesNameEditText.editText?.setText(item.name)
                     binding.speciesNameEditText.editText?.setText(item.name)
-
+                    binding.commonNameTxtValue.text = item.common_name
                     //binding.speciesNameEditText.editText?.setText(addPointFormBioViewModel.findSpeciesNameFromList(item.name,true))
 
                     binding.countEditText.editText?.setText(item.count)
@@ -163,6 +163,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
         binding.speciesNameAutoCompleteTextView.setOnItemClickListener() { parent, _, position, id ->
             val selectedPoi = parent.adapter.getItem(position) as SpeciesNameDTO?
             binding.speciesNameAutoCompleteTextView.setText(selectedPoi?.scientific_name)
+            binding.commonNameTxtValue.text = selectedPoi?.common_name
         }
 //        addPointFormBioViewModel.floraFaunaScientificSpeciesList.observe(this) { data ->
 //            if (!data.isNullOrEmpty()) {
@@ -295,6 +296,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
             binding.speciesNameAutoCompleteTextView.clearFocus()
             var species = Species(
                 name = binding.speciesNameEditText.editText?.text.toString(),
+                common_name = binding.commonNameTxtValue.text.toString(),
                 count = binding.countEditText.editText?.text.toString(),
                 images = addPointFormBioViewModel.imageUrl,
                 comment = binding.commentEditText.editText?.text.toString(),
@@ -320,6 +322,7 @@ class AddPointFormBioActivity : AppCompatActivity(),
 
            // binding.scientificSpeciesNameEditText.editText?.setText("")
             binding.speciesNameEditText.editText?.setText("")
+            binding.commonNameTxtValue.text = ""
             binding.countEditText.editText?.setText("0")
             binding.commentEditText.editText?.setText("")
             binding.uploadImage.text = resources.getString(R.string.capture_upload_image)

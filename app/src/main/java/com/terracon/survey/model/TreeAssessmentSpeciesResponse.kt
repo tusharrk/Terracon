@@ -18,6 +18,7 @@ data class TreeAssessmentSpecies(
     var height: String? = null,
     var images: String = "",
     var name: String = "",
+    var common_name: String? = "",
     var serial_number :String = "",
     var tree_assessment_survey_points_id: Int = 0,
     var isImageSynced:Boolean = false,

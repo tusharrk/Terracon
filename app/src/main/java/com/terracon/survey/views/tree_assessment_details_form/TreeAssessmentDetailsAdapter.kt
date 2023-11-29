@@ -34,6 +34,7 @@ class TreeAssessmentDetailsAdapter internal constructor(
             // binding.projectDescText.text = item.clientName
             // AppUtils.imageWithGLide(binding.userProfileImage,item.projectUrl)
             binding.speciesNameTxt.text = item.name
+            binding.commonNameTxt.text = item.common_name
             binding.girthTxt.text = item.girth.toString()
             binding.heightTxt.text = item.height.toString()
             binding.diameterTxt.text = item.canopy_diameter.toString()
