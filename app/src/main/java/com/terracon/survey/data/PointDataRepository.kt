@@ -211,7 +211,7 @@ class PointDataRepository(
             emit(Result.loading())
             L.d{"TAG_X-${species}" }
 
-            species.dbId?.let { pointDataDao.updateSpeciesData(name = species.name, count = species.count, imageUrl = species.images, comment = species.comment, isSynced = species.isSynced, dbId = it) }
+            species.dbId?.let { pointDataDao.updateSpeciesData(name = species.name, count = species.count, imageUrl = species.images, comment = species.comment, gps_longitude = species.gps_longitude, gps_latitude = species.gps_latitude, isSynced = species.isSynced, dbId = it) }
             emit(Result.success("success"))
         }
     }
