@@ -30,12 +30,18 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 object TreePointDataUtils {
+    private var imageUploadedCount = 0
+    private var pointUploadedCount = 0
+    private var speciesUploadedCount = 0
     fun savePointDataToServerFromDB(
         viewModelScope: CoroutineScope,
         treeAssessmentRepository: TreeAssessmentRepository,
         activity: Activity,
         treeAssessmentPoint: TreeAssessmentPoint
     ) {
+        imageUploadedCount = 0
+        pointUploadedCount = 0
+        speciesUploadedCount = 0
         L.d { "save point started" }
         viewModelScope.launch {
             treeAssessmentRepository.submitTreePoint(treeAssessmentPoint, isUpdateLocal = true)
@@ -176,7 +182,7 @@ object TreePointDataUtils {
                                         if (it.data?.status == "success") {
                                             Log.d("TAG_X", it.data.toString())
                                             L.d { " uploadImagesAndUpdateDB success--${it.data.toString()}" }
-
+                                            imageUploadedCount++
 //                                            activity.runOnUiThread {
 //                                                val msg = it.data.message
 //                                                showToast(activity, msg)
@@ -316,6 +322,7 @@ object TreePointDataUtils {
                                         if (it.data != null) {
                                             Log.d("TAG_X", it.data.toString())
                                             L.d { " savePointDetailsToServerFromDB success--${it.data.toString()}" }
+                                            speciesUploadedCount ++
                                             var listNew: MutableList<TreeAssessmentSpecies> =
                                                 list.toMutableList()
                                             listNew.removeAt(index)
@@ -378,8 +385,12 @@ object TreePointDataUtils {
                                 if (it.data != null) {
                                     Log.d("TAG_X", it.data.toString())
                                     L.d { "save point success--${it.data.toString()}" }
-
-                                    showToast(activity, "Point Synced With server")
+                                    pointUploadedCount++
+                                  //  showToast(activity, "Point Synced With server")
+                                    showToast(activity, "Data Synced Successfully " +
+                                            "\nImages Synced = $imageUploadedCount " +
+                                            "\nSpecies Synced = $speciesUploadedCount " +
+                                            "\nPoint Synced = $pointUploadedCount")
                                     (activity as TreePointsListActivity).refreshList()
                                     //showToast(activity, "Data Saved Successfully")
                                 } else {

@@ -29,12 +29,18 @@ import java.io.File
 
 object PointDataUtils {
 
+    private var imageUploadedCount = 0
+    private var pointUploadedCount = 0
+    private var speciesUploadedCount = 0
     fun savePointDataToServerFromDB(
         viewModelScope: CoroutineScope,
         pointDataRepository: PointDataRepository,
         activity: Activity,
         bioPoint: BioPoint
     ) {
+        imageUploadedCount = 0
+        pointUploadedCount = 0
+        speciesUploadedCount = 0
         L.d { "save point started" }
         viewModelScope.launch {
             pointDataRepository.submitPoint(bioPoint, isUpdateLocal = true)
@@ -45,7 +51,6 @@ object PointDataUtils {
                                 if (it.data != null) {
                                     Log.d("TAG_X", it.data.toString())
                                     L.d { "save point success--${it.data.toString()}" }
-
                                     getImageListToUpload(
                                         viewModelScope,
                                         pointDataRepository,
@@ -182,7 +187,7 @@ object PointDataUtils {
                                         if (it.data?.status == "success") {
                                             Log.d("TAG_X", it.data.toString())
                                             L.d { " uploadImagesAndUpdateDB success--${it.data.toString()}" }
-
+                                            imageUploadedCount++
 //                                            activity.runOnUiThread {
 //                                                val msg = it.data.message
 //                                                showToast(activity, msg)
@@ -321,6 +326,7 @@ object PointDataUtils {
                                         if (it.data != null) {
                                             Log.d("TAG_X", it.data.toString())
                                             L.d { " savePointDetailsToServerFromDB success--${it.data.toString()}" }
+                                            speciesUploadedCount += bioDetailsItem.species.size
                                             var listNew: MutableList<BioPointDetails> =
                                                 list.toMutableList()
                                             listNew.removeAt(index)
@@ -382,8 +388,12 @@ object PointDataUtils {
                                 if (it.data != null) {
                                     Log.d("TAG_X", it.data.toString())
                                     L.d { "save point success--${it.data.toString()}" }
-
-                                    showToast(activity, "Point Synced With server")
+                                    pointUploadedCount++
+                                    //showToast(activity, "Point Synced With server")
+                                    showToast(activity, "Data Synced Successfully " +
+                                            "\nImages Synced = $imageUploadedCount " +
+                                            "\nSpecies Synced = $speciesUploadedCount " +
+                                            "\nPoint Synced = $pointUploadedCount")
                                     (activity as PointsListActivity).refreshList()
                                     //showToast(activity, "Data Saved Successfully")
                                 } else {
