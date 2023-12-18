@@ -25,6 +25,7 @@ class TreePointsListAdapter internal constructor(private val onClickListener: On
             binding.habitatTxt.text = item.habitat
             if(item.isSynced){
                 binding.syncBtn.visibility = View.GONE
+                binding.editBtn.visibility = View.GONE
             }
             // AppUtils.imageWithGLide(binding.userProfileImage,item.projectUrl)
             binding.projectCard.setOnClickListener {
@@ -33,6 +34,9 @@ class TreePointsListAdapter internal constructor(private val onClickListener: On
 
             binding.syncBtn.setOnClickListener {
                 onClickListener.onClick(item,"syncData")
+            }
+            binding.editBtn.setOnClickListener {
+                onClickListener.onClick(item,"edit")
             }
 
         }

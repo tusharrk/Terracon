@@ -15,6 +15,7 @@ import com.terracon.survey.databinding.PointsListActivityBinding
 import com.terracon.survey.model.Project
 import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.ErrorUtils
+import com.terracon.survey.views.bio_diversity_form_main.BioDiversityFormMainActivity
 import com.terracon.survey.views.flora_fauna.FloraFaunaActivity
 import com.terracon.survey.views.points_list.PointsListAdapter
 import com.terracon.survey.views.points_list.PointsListViewModel
@@ -50,6 +51,12 @@ class TreePointsListActivity : AppCompatActivity() {
                 val intent = Intent(this, TreeAssessmentDetailsFormActivity::class.java)
                 intent.putExtra("pointData", point as Serializable)
                 intent.putExtra("projectData", treePointsListViewModel.project as Serializable)
+                this.startActivity(intent)
+            }else if(action == "edit"){
+                val intent = Intent(this, TreeAssessmentFormActivity::class.java)
+                intent.putExtra("projectData", treePointsListViewModel.project as Serializable)
+                intent.putExtra("isEdit",true)
+                intent.putExtra("pointData",point as Serializable)
                 this.startActivity(intent)
             } else {
                 treePointsListViewModel.syncDataFromLocalToServer(this, point)

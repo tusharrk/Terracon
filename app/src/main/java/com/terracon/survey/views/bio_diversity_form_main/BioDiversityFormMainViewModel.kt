@@ -34,6 +34,8 @@ var bioPoint: BioPoint = BioPoint()
 
     var isEdit:Boolean = false
 
+    var editBioPointData:BioPoint = BioPoint()
+
 private fun navigateToFloraFaunaActivity(activity: BioDiversityFormMainActivity, project: Project){
     val intent = Intent(activity, FloraFaunaActivity::class.java)
     intent.putExtra("projectData", project as Serializable)

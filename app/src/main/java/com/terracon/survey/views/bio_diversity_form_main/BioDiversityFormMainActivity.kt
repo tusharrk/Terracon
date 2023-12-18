@@ -28,6 +28,7 @@ import com.google.android.material.timepicker.TimeFormat
 import com.michaelflisar.lumberjack.core.L
 import com.terracon.survey.R
 import com.terracon.survey.databinding.BioDiversityFormMainActivityBinding
+import com.terracon.survey.model.BioPoint
 import com.terracon.survey.model.Project
 import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.DateUtils
@@ -50,17 +51,16 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-       // val isEdit: Boolean? = intent.getSerializableExtra("isEdit") as Boolean?
-      //  if (isEdit != null) {
-      //      bioDiversityFormMainViewModel.isEdit = isEdit
-      //  }
+        val isEdit: Boolean? = intent.getSerializableExtra("isEdit") as Boolean?
+        if (isEdit != null) {
+            bioDiversityFormMainViewModel.isEdit = isEdit
+        }
 
         setupUi()
         setupObservers()
-       // if(!bioDiversityFormMainViewModel.isEdit){
+        if(!bioDiversityFormMainViewModel.isEdit){
             setupLocationService()
-       // }
-
+        }
     }
 
     private fun setupLocationService() {
@@ -123,6 +123,8 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
                     location = task.result
                     if (location != null) {
                         L.d { "Location Complete ${location?.latitude} -- ${location?.longitude}" }
+                        bioDiversityFormMainViewModel.bioPoint.gps_latitude = location?.latitude.toString()
+                        bioDiversityFormMainViewModel.bioPoint.gps_longitude = location?.longitude.toString()
 //                        val geocoder = Geocoder(this, Locale.getDefault())
 //                        val list: List<Address> =
 //                            geocoder.getFromLocation(location.latitude, location.longitude, 1)!!
@@ -160,9 +162,9 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         }
         binding.gpsEditText.editText?.setOnClickListener {
             // getLocation()
-            if (location != null) {
+            if (bioDiversityFormMainViewModel.bioPoint.gps_latitude.isNotBlank()) {
                 val url =
-                    "https://www.google.com/maps/search/?api=1&query=${location?.latitude},${location?.longitude}"
+                    "https://www.google.com/maps/search/?api=1&query=${bioDiversityFormMainViewModel.bioPoint.gps_latitude},${bioDiversityFormMainViewModel.bioPoint.gps_longitude}"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
             }
@@ -243,7 +245,7 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
                         return@setOnClickListener
                     }
                 }
-                if (location == null) {
+                if (bioDiversityFormMainViewModel.bioPoint.gps_latitude.isNullOrBlank()) {
                     Toast.makeText(this, "Please refresh location", Toast.LENGTH_LONG)
                         .show()
                     return@setOnClickListener
@@ -262,10 +264,10 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
                             binding.dateEditText.editText?.text.toString()
                         bioDiversityFormMainViewModel.bioPoint.time =
                             binding.timeEditText.editText?.text.toString()
-                        bioDiversityFormMainViewModel.bioPoint.gps_latitude =
-                            location?.latitude.toString()
-                        bioDiversityFormMainViewModel.bioPoint.gps_longitude =
-                            location?.longitude.toString()
+//                        bioDiversityFormMainViewModel.bioPoint.gps_latitude =
+//                            location?.latitude.toString()
+//                        bioDiversityFormMainViewModel.bioPoint.gps_longitude =
+//                            location?.longitude.toString()
 
                         bioDiversityFormMainViewModel.bioPoint.season_name =
                             binding.seasonNameAutoCompleteTextView.text.toString()
@@ -301,9 +303,13 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
         }
 
         //set pre filled values
+        if(bioDiversityFormMainViewModel.isEdit){
+            prefillData()
+        }else{
+            binding.dateEditText.editText?.setText(DateUtils.getTodayDateOrTime("dd MMM yyyy"))
+            binding.timeEditText.editText?.setText(DateUtils.getTodayDateOrTime("hh:mm a"))
+        }
 
-        binding.dateEditText.editText?.setText(DateUtils.getTodayDateOrTime("dd MMM yyyy"))
-        binding.timeEditText.editText?.setText(DateUtils.getTodayDateOrTime("hh:mm a"))
 
 //        if (!project.villages.isNullOrBlank()) {
 //            binding.villageAutoCompleteTextView.setAdapter(
@@ -366,6 +372,36 @@ class BioDiversityFormMainActivity : AppCompatActivity() {
                 binding.saveBtn.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun prefillData(){
+        bioDiversityFormMainViewModel.editBioPointData = intent.getSerializableExtra("pointData") as BioPoint
+
+        binding.dateEditText.editText?.setText(bioDiversityFormMainViewModel.editBioPointData.date)
+        binding.timeEditText.editText?.setText(bioDiversityFormMainViewModel.editBioPointData.time)
+        bioDiversityFormMainViewModel.bioPoint.gps_latitude = bioDiversityFormMainViewModel.editBioPointData.gps_latitude
+        bioDiversityFormMainViewModel.bioPoint.gps_longitude = bioDiversityFormMainViewModel.editBioPointData.gps_longitude
+
+        binding.gpsEditText.editText?.setText("${bioDiversityFormMainViewModel.editBioPointData.gps_latitude} , ${bioDiversityFormMainViewModel.editBioPointData.gps_longitude}")
+        binding.seasonNameEditText.editText?.setText(bioDiversityFormMainViewModel.editBioPointData.season_name)
+        binding.plotCodeEditText.editText?.setText(bioDiversityFormMainViewModel.editBioPointData.code)
+        binding.villageEditText.editText?.setText(bioDiversityFormMainViewModel.editBioPointData.village)
+        binding.weatherEditText.editText?.setText(bioDiversityFormMainViewModel.editBioPointData.weather_condition)
+        binding.habitatEditText.editText?.setText(bioDiversityFormMainViewModel.editBioPointData.habitat)
+
+
+
+        if(bioDiversityFormMainViewModel.editBioPointData.plot_dimension_type == "rectangular"){
+            binding.lengthEditText.editText?.setText(bioDiversityFormMainViewModel.editBioPointData.length)
+            binding.widthEditText.editText?.setText(bioDiversityFormMainViewModel.editBioPointData.width)
+            binding.radioBtngrp.check(R.id.rectangularRadioBtn)
+        }else{
+            binding.radiusEditText.editText?.setText(bioDiversityFormMainViewModel.editBioPointData.radius)
+            binding.radioBtngrp.check(R.id.circularRadioBtn)
+        }
+
+       bioDiversityFormMainViewModel.bioPoint.dbId = bioDiversityFormMainViewModel.editBioPointData.dbId
+
     }
 
 

@@ -30,9 +30,11 @@ class TreeAssessmentFormViewModel(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    var isEdit:Boolean = false
 
+    var editBioPointData:TreeAssessmentPoint = TreeAssessmentPoint()
 
-fun navigateToDetails(activity: TreeAssessmentFormActivity, project: Project){
+private fun navigateToDetails(activity: TreeAssessmentFormActivity, project: Project){
     val intent = Intent(activity, TreeAssessmentDetailsFormActivity::class.java)
     intent.putExtra("projectData", project as Serializable)
     intent.putExtra("pointData", treePoint as Serializable)

@@ -26,6 +26,7 @@ class PointsListAdapter internal constructor(private val onClickListener: OnClic
             binding.habitatTxt.text = item.habitat
             if(item.isSynced){
                 binding.syncBtn.visibility = View.GONE
+                binding.editBtn.visibility = View.GONE
             }
 
             // AppUtils.imageWithGLide(binding.userProfileImage,item.projectUrl)
@@ -35,6 +36,9 @@ class PointsListAdapter internal constructor(private val onClickListener: OnClic
 
             binding.syncBtn.setOnClickListener {
                 onClickListener.onClick(item,"syncData")
+            }
+            binding.editBtn.setOnClickListener {
+                onClickListener.onClick(item,"edit")
             }
 
         }

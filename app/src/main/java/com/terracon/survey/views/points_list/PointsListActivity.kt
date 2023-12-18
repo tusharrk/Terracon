@@ -55,6 +55,12 @@ class PointsListActivity : AppCompatActivity() {
                     intent.putExtra("pointData", bioPoint as Serializable)
                     intent.putExtra("projectData", pointsListViewModel.project as Serializable)
                     this.startActivity(intent)
+                }else if(action == "edit"){
+                    val intent = Intent(this, BioDiversityFormMainActivity::class.java)
+                    intent.putExtra("projectData", pointsListViewModel.project as Serializable)
+                    intent.putExtra("isEdit",true)
+                    intent.putExtra("pointData",bioPoint as Serializable)
+                    this.startActivity(intent)
                 } else {
                     pointsListViewModel.syncDataFromLocalToServer(this, bioPoint)
                     return@OnClickListener
@@ -133,6 +139,7 @@ class PointsListActivity : AppCompatActivity() {
         binding.newChatFab.setOnClickListener {
             val intent = Intent(this, BioDiversityFormMainActivity::class.java)
             intent.putExtra("projectData", pointsListViewModel.project as Serializable)
+            intent.putExtra("isEdit",false)
             this.startActivity(intent)
 
         }

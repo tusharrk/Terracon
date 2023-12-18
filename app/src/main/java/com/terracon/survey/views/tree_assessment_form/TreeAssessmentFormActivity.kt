@@ -28,7 +28,9 @@ import com.google.android.material.timepicker.TimeFormat
 import com.michaelflisar.lumberjack.core.L
 import com.terracon.survey.R
 import com.terracon.survey.databinding.TreeAssessmentFormActivityBinding
+import com.terracon.survey.model.BioPoint
 import com.terracon.survey.model.Project
+import com.terracon.survey.model.TreeAssessmentPoint
 import com.terracon.survey.utils.AppUtils
 import com.terracon.survey.utils.DateUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -49,9 +51,17 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
         binding = TreeAssessmentFormActivityBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        val isEdit: Boolean? = intent.getSerializableExtra("isEdit") as Boolean?
+        if (isEdit != null) {
+            treeAssessmentFormViewModel.isEdit = isEdit
+        }
+
         setupUi()
-        setupLocationService()
         setupObservers()
+        if(!treeAssessmentFormViewModel.isEdit){
+            setupLocationService()
+        }
     }
 
     private fun setupLocationService() {
@@ -113,6 +123,8 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
                 mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
                     location = task.result
                     if (location != null) {
+                        treeAssessmentFormViewModel.treePoint.gps_latitude = location?.latitude.toString()
+                        treeAssessmentFormViewModel.treePoint.gps_longitude = location?.longitude.toString()
 //                        val geocoder = Geocoder(this, Locale.getDefault())
 //                        val list: List<Address> =
 //                            geocoder.getFromLocation(location.latitude, location.longitude, 1)!!
@@ -150,9 +162,9 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
         }
         binding.gpsEditText.editText?.setOnClickListener {
             // getLocation()
-            if (location != null) {
+            if (treeAssessmentFormViewModel.treePoint.gps_latitude.isNotBlank()) {
                 val url =
-                    "https://www.google.com/maps/search/?api=1&query=${location?.latitude},${location?.longitude}"
+                    "https://www.google.com/maps/search/?api=1&query=${treeAssessmentFormViewModel.treePoint.gps_latitude},${treeAssessmentFormViewModel.treePoint.gps_longitude}"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
             }
@@ -163,10 +175,12 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
         }
 
         //set pre filled values
-
-        binding.dateEditText.editText?.setText(DateUtils.getTodayDateOrTime("dd MMM yyyy"))
-        binding.timeEditText.editText?.setText(DateUtils.getTodayDateOrTime("hh:mm a"))
-
+        if(treeAssessmentFormViewModel.isEdit){
+            prefillData()
+        }else {
+            binding.dateEditText.editText?.setText(DateUtils.getTodayDateOrTime("dd MMM yyyy"))
+            binding.timeEditText.editText?.setText(DateUtils.getTodayDateOrTime("hh:mm a"))
+        }
         binding.habitatAutoCompleteTextView.setAdapter(
             ArrayAdapter(
                 this,
@@ -233,7 +247,7 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
                     }
                 }
 
-                if (location == null) {
+                if (treeAssessmentFormViewModel.treePoint.gps_latitude.isNullOrBlank()) {
                     Toast.makeText(this, "Please refresh location", Toast.LENGTH_LONG)
                         .show()
                     return@setOnClickListener
@@ -252,10 +266,10 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
                             binding.dateEditText.editText?.text.toString()
                         treeAssessmentFormViewModel.treePoint.time =
                             binding.timeEditText.editText?.text.toString()
-                        treeAssessmentFormViewModel.treePoint.gps_latitude =
-                            location?.latitude.toString()
-                        treeAssessmentFormViewModel.treePoint.gps_longitude =
-                            location?.longitude.toString()
+//                        treeAssessmentFormViewModel.treePoint.gps_latitude =
+//                            location?.latitude.toString()
+//                        treeAssessmentFormViewModel.treePoint.gps_longitude =
+//                            location?.longitude.toString()
                         treeAssessmentFormViewModel.treePoint.habitat =
                             binding.habitatAutoCompleteTextView.text.toString()
                         treeAssessmentFormViewModel.treePoint.plot_dimension_type =
@@ -306,6 +320,34 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
                 binding.saveBtn.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun prefillData(){
+        treeAssessmentFormViewModel.editBioPointData = intent.getSerializableExtra("pointData") as TreeAssessmentPoint
+
+        binding.dateEditText.editText?.setText(treeAssessmentFormViewModel.editBioPointData.date)
+        binding.timeEditText.editText?.setText(treeAssessmentFormViewModel.editBioPointData.time)
+        treeAssessmentFormViewModel.treePoint.gps_latitude = treeAssessmentFormViewModel.editBioPointData.gps_latitude
+        treeAssessmentFormViewModel.treePoint.gps_longitude = treeAssessmentFormViewModel.editBioPointData.gps_longitude
+
+        binding.gpsEditText.editText?.setText("${treeAssessmentFormViewModel.editBioPointData.gps_latitude} , ${treeAssessmentFormViewModel.editBioPointData.gps_longitude}")
+        binding.plotCodeEditText.editText?.setText(treeAssessmentFormViewModel.editBioPointData.code)
+        binding.landmarkEditText.editText?.setText(treeAssessmentFormViewModel.editBioPointData.landmark)
+        binding.habitatEditText.editText?.setText(treeAssessmentFormViewModel.editBioPointData.habitat)
+
+
+
+        if(treeAssessmentFormViewModel.editBioPointData.plot_dimension_type == "rectangular"){
+            binding.lengthEditText.editText?.setText(treeAssessmentFormViewModel.editBioPointData.length)
+            binding.widthEditText.editText?.setText(treeAssessmentFormViewModel.editBioPointData.width)
+            binding.radioBtngrp.check(R.id.rectangularRadioBtn)
+        }else{
+            binding.radiusEditText.editText?.setText(treeAssessmentFormViewModel.editBioPointData.radius)
+            binding.radioBtngrp.check(R.id.circularRadioBtn)
+        }
+
+        treeAssessmentFormViewModel.treePoint.dbId = treeAssessmentFormViewModel.editBioPointData.dbId
+
     }
 
 
