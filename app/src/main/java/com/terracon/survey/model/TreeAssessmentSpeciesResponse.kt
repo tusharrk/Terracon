@@ -22,8 +22,9 @@ data class TreeAssessmentSpecies(
     var serial_number :String = "",
     var tree_assessment_survey_points_id: Int = 0,
     var isImageSynced:Boolean = false,
-    var isSynced: Boolean = false
-): Serializable{}
+    var isSynced: Boolean = false,
+    var user_created_date:String? = "",
+    ): Serializable{}
 
 
 data class TreeAssessmentSpeciesResponse(

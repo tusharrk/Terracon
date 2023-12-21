@@ -46,6 +46,7 @@ import com.terracon.survey.model.Project
 import com.terracon.survey.model.Species
 import com.terracon.survey.model.SpeciesNameDTO
 import com.terracon.survey.utils.AppUtils
+import com.terracon.survey.utils.DateUtils
 import com.terracon.survey.utils.ErrorUtils
 import com.terracon.survey.utils.FileHelper
 import com.terracon.survey.utils.FileUtils.getFileFromUri
@@ -302,7 +303,6 @@ class AddPointFormBioActivity : AppCompatActivity(),
                 comment = binding.commentEditText.editText?.text.toString(),
                 gps_latitude = addPointFormBioViewModel.imageLat,
                 gps_longitude = addPointFormBioViewModel.imageLong,
-
             )
             if (addPointFormBioViewModel.isEdit) {
                 addPointFormBioViewModel.isEditIndex?.let { it1 ->
@@ -417,6 +417,8 @@ class AddPointFormBioActivity : AppCompatActivity(),
     }
 
     private fun setupPointDataPayload(species:Species) {
+        species.user_created_date = DateUtils.getTodayDateOrTime("yyyy-MM-dd hh:mm:ss")
+
         addPointFormBioViewModel.pointBioDetails.type = addPointFormBioViewModel.type
         addPointFormBioViewModel.pointBioDetails.sub_type = addPointFormBioViewModel.subType
         addPointFormBioViewModel.pointBioDetails.tempId =

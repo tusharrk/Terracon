@@ -420,6 +420,8 @@ class TreeAssessmentDetailsFormActivity : AppCompatActivity(),
     }
 
     private fun setupPointDataPayload(species: TreeAssessmentSpecies) {
+        species.user_created_date = DateUtils.getTodayDateOrTime("yyyy-MM-dd hh:mm:ss")
+
 //        treeAssessmentFormMainViewModel.treeSpecies.bio_diversity_survey_points_id =
 //            treeAssessmentFormMainViewModel.pointBio.dbId
 //        treeAssessmentFormMainViewModel.pointBioDetails.species = addPointFormBioViewModel.getSpeciesList()

@@ -44,6 +44,7 @@ data class Species(
     var common_name: String? = "",
     var gps_latitude:String? = "",
     var gps_longitude:String? = "",
+    var user_created_date:String? = "",
     var isSynced: Boolean = false
 )
 
