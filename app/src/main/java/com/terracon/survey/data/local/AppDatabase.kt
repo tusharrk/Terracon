@@ -21,9 +21,9 @@ import com.terracon.survey.model.User
 
 @Database(
     entities = [User::class, Project::class, Flora::class, Fauna::class, BioPoint::class, BioPointDetails::class, Species::class, TreeAssessmentPoint::class, TreeAssessmentSpecies::class],
-    version = 15,
+    version = 17,
       autoMigrations = [
-        AutoMigration (from = 14, to = 15)
+        AutoMigration (from = 16, to = 17)
     ],
     exportSchema = true
 )
@@ -53,7 +53,7 @@ abstract class AppDatabase : RoomDatabase() {
                         context.applicationContext,
                         AppDatabase::class.java,
                         "app.db"
-                    )
+                    ).fallbackToDestructiveMigration()
                        // .addMigrations(MIGRATION_1_2)
                         .build()
 

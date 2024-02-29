@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 15,
-    "identityHash": "028b72c2d0431c7018ea583d8f399f26",
+    "version": 16,
+    "identityHash": "4967dd43a620591ed314669472a55786",
     "entities": [
       {
         "tableName": "User",
@@ -246,7 +246,7 @@
       },
       {
         "tableName": "Fauna",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `common_name` TEXT NOT NULL, `family` TEXT NOT NULL, `group_name` TEXT NOT NULL, `iucn_status` TEXT NOT NULL, `scientific_name` TEXT NOT NULL, `sr_no` INTEGER NOT NULL, `taxa` TEXT NOT NULL, `wpa_status` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `common_name` TEXT, `family` TEXT, `group_name` TEXT, `iucn_status` TEXT, `scientific_name` TEXT, `sr_no` INTEGER, `taxa` TEXT, `wpa_status` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -258,49 +258,49 @@
             "fieldPath": "common_name",
             "columnName": "common_name",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "family",
             "columnName": "family",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "group_name",
             "columnName": "group_name",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "iucn_status",
             "columnName": "iucn_status",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "scientific_name",
             "columnName": "scientific_name",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "sr_no",
             "columnName": "sr_no",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "taxa",
             "columnName": "taxa",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "wpa_status",
             "columnName": "wpa_status",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -860,7 +860,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '028b72c2d0431c7018ea583d8f399f26')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4967dd43a620591ed314669472a55786')"
     ]
   }
 }

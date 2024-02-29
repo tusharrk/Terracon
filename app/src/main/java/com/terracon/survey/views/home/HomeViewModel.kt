@@ -15,6 +15,7 @@ import com.terracon.survey.model.Result
 import com.terracon.survey.model.User
 import com.terracon.survey.model.UserApiRequestDTO
 import com.terracon.survey.utils.AppUtils
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -104,6 +105,7 @@ class HomeViewModel(
 
     private fun getAllFaunaData() {
         viewModelScope.launch {
+            delay(5000)
             projectRepository.getFaunaData(UserApiRequestDTO(id = 0))
                 .collect {
                     when (it?.status) {

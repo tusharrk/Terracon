@@ -162,12 +162,12 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
         }
         binding.gpsEditText.editText?.setOnClickListener {
             // getLocation()
-            if (treeAssessmentFormViewModel.treePoint.gps_latitude.isNotBlank()) {
-                val url =
-                    "https://www.google.com/maps/search/?api=1&query=${treeAssessmentFormViewModel.treePoint.gps_latitude},${treeAssessmentFormViewModel.treePoint.gps_longitude}"
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                startActivity(intent)
-            }
+//            if (treeAssessmentFormViewModel.treePoint.gps_latitude.isNotBlank()) {
+//                val url =
+//                    "https://www.google.com/maps/search/?api=1&query=${treeAssessmentFormViewModel.treePoint.gps_latitude},${treeAssessmentFormViewModel.treePoint.gps_longitude}"
+//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+//                startActivity(intent)
+//            }
 
         }
         binding.gpsEditText.setEndIconOnClickListener {
@@ -247,11 +247,38 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
                     }
                 }
 
-                if (treeAssessmentFormViewModel.treePoint.gps_latitude.isNullOrBlank()) {
-                    Toast.makeText(this, "Please refresh location", Toast.LENGTH_LONG)
+                if (binding.gpsEditText.editText?.text.isNullOrBlank()) {
+                    Toast.makeText(this, "Please enter Location", Toast.LENGTH_LONG)
                         .show()
                     return@setOnClickListener
                 }
+                if(binding.gpsEditText.editText?.text?.contains(",") == false){
+                    Toast.makeText(this, "Please enter valid Location", Toast.LENGTH_LONG)
+                        .show()
+                    return@setOnClickListener
+                }
+                try {
+                    if(binding.gpsEditText.editText?.text?.count { it == '.' }!! != 2){
+                        Toast.makeText(this, "Please enter valid Location", Toast.LENGTH_LONG)
+                            .show()
+                        return@setOnClickListener
+                    }
+                    if(binding.gpsEditText.editText?.text?.count { it == ',' }!! != 1 ){
+                        Toast.makeText(this, "Please enter valid Location", Toast.LENGTH_LONG)
+                            .show()
+                        return@setOnClickListener
+                    }
+                }catch (e:Exception){
+                    Toast.makeText(this, "Please enter valid Location", Toast.LENGTH_LONG)
+                        .show()
+                    return@setOnClickListener
+                }
+
+//                if (treeAssessmentFormViewModel.treePoint.gps_latitude.isNullOrBlank()) {
+//                    Toast.makeText(this, "Please refresh location", Toast.LENGTH_LONG)
+//                        .show()
+//                    return@setOnClickListener
+//                }
 
                 MaterialAlertDialogBuilder(this)
                     .setTitle(getString(R.string.confirmation))
@@ -266,10 +293,11 @@ class TreeAssessmentFormActivity : AppCompatActivity() {
                             binding.dateEditText.editText?.text.toString()
                         treeAssessmentFormViewModel.treePoint.time =
                             binding.timeEditText.editText?.text.toString()
-//                        treeAssessmentFormViewModel.treePoint.gps_latitude =
-//                            location?.latitude.toString()
-//                        treeAssessmentFormViewModel.treePoint.gps_longitude =
-//                            location?.longitude.toString()
+                        treeAssessmentFormViewModel.treePoint.gps_latitude =
+                            (binding.gpsEditText.editText?.text ?:"0,0").split(",")[0].trim()
+                        treeAssessmentFormViewModel.treePoint.gps_longitude =
+                            (binding.gpsEditText.editText?.text ?:"0,0").split(",")[1].trim()
+
                         treeAssessmentFormViewModel.treePoint.habitat =
                             binding.habitatAutoCompleteTextView.text.toString()
                         treeAssessmentFormViewModel.treePoint.plot_dimension_type =

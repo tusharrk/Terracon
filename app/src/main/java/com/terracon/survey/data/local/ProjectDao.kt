@@ -37,13 +37,13 @@ interface ProjectDao {
     @Query("SELECT group_name FROM Fauna group by group_name")
     fun getFaunaCategories(): List<String>
 
-    @Query("SELECT habit FROM Flora group by habit")
+    @Query("SELECT type FROM Flora group by type")
     fun getFloraCategories(): List<String>
 
     @Query("SELECT common_name, scientific_name FROM Fauna Where group_name = :subType ORDER BY common_name ASC")
     fun getFaunaList(subType:String): List<SpeciesNameDTO>
 
-    @Query("SELECT english_common_name as 'common_name', scientific_names as 'scientific_name' FROM Flora Where habit = :subType ORDER BY english_common_name ASC")
+    @Query("SELECT english_common_name as 'common_name', scientific_names as 'scientific_name' FROM Flora Where type = :subType ORDER BY english_common_name ASC")
     fun getFloraList(subType:String): List<SpeciesNameDTO>
 
     @Delete
