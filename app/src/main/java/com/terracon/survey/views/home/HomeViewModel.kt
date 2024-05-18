@@ -105,7 +105,7 @@ class HomeViewModel(
 
     private fun getAllFaunaData() {
         viewModelScope.launch {
-            delay(5000)
+            //delay(8000)
             projectRepository.getFaunaData(UserApiRequestDTO(id = 0))
                 .collect {
                     when (it?.status) {

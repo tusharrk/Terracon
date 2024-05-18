@@ -46,10 +46,10 @@ interface ProjectDao {
     @Query("SELECT english_common_name as 'common_name', scientific_names as 'scientific_name' FROM Flora Where type = :subType ORDER BY english_common_name ASC")
     fun getFloraList(subType:String): List<SpeciesNameDTO>
 
-    @Delete
-    fun deleteAllFlora(flora: List<Flora>)
+    @Query("DELETE FROM Flora")
+    fun deleteAllFlora()
 
-    @Delete
-    fun deleteAllFauna(fauna: List<Fauna>)
+    @Query("DELETE FROM Fauna")
+    fun deleteAllFauna()
 
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TERRACON</string>
+    <string name="app_name">NatureNotes</string>
     <string name="login_mobile_txt">Continue with Mobile Number and Password</string>
     <string name="register_now_txt">Don\'t have an account? Register  </string>
     <string name="mobile_number">Mobile Number</string>

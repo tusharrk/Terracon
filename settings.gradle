@@ -16,5 +16,5 @@ dependencyResolutionManagement {
 
     }
 }
-rootProject.name = "Terracon"
+rootProject.name = "NatureNotes"
 include ':app'

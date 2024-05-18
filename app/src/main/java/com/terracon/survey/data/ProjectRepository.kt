@@ -63,7 +63,7 @@ class ProjectRepository(
             //Cache to database if response is successful
             if (result.status == Result.Status.SUCCESS && result.data?.status == "success") {
                 result.data.let { it ->
-                    projectDao.deleteAllFlora(it.data.data)
+                    projectDao.deleteAllFlora()
                     projectDao.insertFloraData(it.data.data)
                 }
             }
@@ -79,7 +79,7 @@ class ProjectRepository(
             //Cache to database if response is successful
             if (result.status == Result.Status.SUCCESS && result.data?.status == "success") {
                 result.data.let { it ->
-                    projectDao.deleteAllFauna(it.data.data)
+                    projectDao.deleteAllFauna()
                     projectDao.insertFaunaData(it.data.data)
                 }
             }
